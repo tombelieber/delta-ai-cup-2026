@@ -2,6 +2,7 @@ import {createHash, randomUUID} from 'node:crypto';
 import {normalizeInput, MapClassificationError, SYSTEM_INSTRUCTION} from '../map-classification.mjs';
 import {StudyError, requireStudy} from './source.mjs';
 import {PROJECT_BUDGET_ENFORCED} from './project-budget.mjs';
+import {sanitizeStudyDiagnostics} from './diagnostics.mjs';
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const CACHE_LIMIT = 256;
@@ -11,7 +12,8 @@ const hash = value => createHash('sha256').update(JSON.stringify(value)).digest(
 const mapError = error => {
   if (!(error instanceof MapClassificationError)) return error;
   return Object.assign(new StudyError(error.code, error.status),
-    error.retryAfterSeconds ? {retryAfterSeconds: error.retryAfterSeconds} : {});
+    error.retryAfterSeconds ? {retryAfterSeconds: error.retryAfterSeconds} : {},
+    error.diagnostics ? {diagnostics:sanitizeStudyDiagnostics(error.diagnostics)} : {});
 };
 
 // Metadata exists only in the active request. Cache keys are UID-bound hashes;

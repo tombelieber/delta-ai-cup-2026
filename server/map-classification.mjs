@@ -36,20 +36,32 @@ const record = (value) => value !== null && typeof value === 'object' && !Array.
   && [Object.prototype, null].includes(Object.getPrototypeOf(value));
 const onlyKeys = (value, keys) => Object.keys(value).every((key) => keys.includes(key));
 const failInput = () => { throw new MapClassificationError('invalid_classification_input', 400); };
-const failOutput = () => { throw new MapClassificationError('invalid_provider_output', 502); };
+const failOutput = diagnostics => {
+  const error = new MapClassificationError('invalid_provider_output', 502);
+  if (diagnostics) error.diagnostics = {step:'map_contract',kind:'format',phase:'validation',...diagnostics};
+  throw error;
+};
 
 function text(value, max, invalid, { empty = false } = {}) {
-  if (typeof value !== 'string' || value.length > max || BAD_CONTROL.test(value)) invalid();
+  if (typeof value !== 'string') invalid({reason:'expected_string'});
+  if (value.length > max) invalid({reason:'string_too_long',length:value.length,maximum:max});
+  if (BAD_CONTROL.test(value)) invalid({reason:'disallowed_control_character'});
   const normalized = value.trim().normalize('NFC');
-  if ((!empty && !normalized) || normalized.length > max) invalid();
+  if (!empty && !normalized) invalid({reason:'blank_string'});
+  if (normalized.length > max) invalid({reason:'string_too_long',length:normalized.length,maximum:max});
   return normalized;
 }
 
-function labels(value, invalid, minimum = 2) {
-  if (!Array.isArray(value) || value.length < minimum || value.length > 4) invalid();
-  const path = value.map((label) => text(label, 80, invalid));
-  if (path.some((label) => !LABEL.test(label) || !/[A-Za-z]/u.test(label) || /https?:\/\/|\bwww\./iu.test(label))
-    || new Set(path.map((label) => label.toLocaleLowerCase('en'))).size !== path.length) invalid();
+function labels(value, invalid, minimum = 2, field = 'path') {
+  if (!Array.isArray(value)) invalid({path:field,reason:'expected_array'});
+  if (value.length < minimum || value.length > 4) invalid({path:field,reason:'array_count_out_of_range',count:value.length,minimum,maximum:4});
+  const path = value.map((label,index) => text(label,80,detail=>invalid({...detail,path:`${field}[${index}]`,index})));
+  for (const [index,label] of path.entries()) {
+    if (!LABEL.test(label)) invalid({path:`${field}[${index}]`,index,reason:'disallowed_label'});
+    if (!/[A-Za-z]/u.test(label)) invalid({path:`${field}[${index}]`,index,reason:'missing_latin_label'});
+    if (/https?:\/\/|\bwww\./iu.test(label)) invalid({path:`${field}[${index}]`,index,reason:'url_label'});
+  }
+  if (new Set(path.map((label) => label.toLocaleLowerCase('en'))).size !== path.length) invalid({path:field,reason:'duplicate_label'});
   return path;
 }
 
@@ -92,17 +104,25 @@ export function outputSchema() {
 }
 
 export function validateOutput(value, videos) {
-  if (!record(value) || !onlyKeys(value, ['groups']) || !Array.isArray(value.groups) || value.groups.length > videos.length) failOutput();
+  if (!record(value)) failOutput({path:'map',reason:'expected_object'});
+  if (!onlyKeys(value,['groups'])) failOutput({path:'map',reason:'unexpected_fields'});
+  if (!Array.isArray(value.groups)) failOutput({path:'groups',reason:'expected_array'});
+  if (value.groups.length > videos.length) failOutput({path:'groups',reason:'array_count_out_of_range',count:value.groups.length,maximum:videos.length});
   const requestedIds = new Set(videos.map(({ videoId }) => videoId));
   const seen = new Set(); const items = [];
-  for (const group of value.groups) {
-    if (!record(group) || !onlyKeys(group, ['path', 'confidence', 'contentType', 'videoIds'])
-      || !CONFIDENCE.has(group.confidence) || !CONTENT_TYPES.has(group.contentType)
-      || !Array.isArray(group.videoIds) || !group.videoIds.length || group.videoIds.length > videos.length) failOutput();
-    const path = labels(group.path, failOutput);
-    if (path[0].toLocaleLowerCase('en') === 'more to explore') failOutput();
-    for (const videoId of group.videoIds) {
-      if (!requestedIds.has(videoId) || seen.has(videoId)) failOutput();
+  for (const [index,group] of value.groups.entries()) {
+    const field=`groups[${index}]`;
+    if (!record(group)) failOutput({path:field,index,reason:'expected_object'});
+    if (!onlyKeys(group,['path','confidence','contentType','videoIds'])) failOutput({path:field,index,reason:'unexpected_fields'});
+    if (!CONFIDENCE.has(group.confidence)) failOutput({path:`${field}.confidence`,index,reason:'invalid_enum'});
+    if (!CONTENT_TYPES.has(group.contentType)) failOutput({path:`${field}.contentType`,index,reason:'invalid_enum'});
+    if (!Array.isArray(group.videoIds)) failOutput({path:`${field}.videoIds`,reason:'expected_array'});
+    if (!group.videoIds.length || group.videoIds.length > videos.length) failOutput({path:`${field}.videoIds`,reason:'array_count_out_of_range',count:group.videoIds.length,minimum:1,maximum:videos.length});
+    const path = labels(group.path,failOutput,2,`${field}.path`);
+    if (path[0].toLocaleLowerCase('en') === 'more to explore') failOutput({path:`${field}.path[0]`,index:0,reason:'reserved_path'});
+    for (const [idIndex,videoId] of group.videoIds.entries()) {
+      if (!requestedIds.has(videoId)) failOutput({path:`${field}.videoIds[${idIndex}]`,index:idIndex,reason:'unknown_video_id'});
+      if (seen.has(videoId)) failOutput({path:`${field}.videoIds[${idIndex}]`,index:idIndex,reason:'duplicate_video_id'});
       seen.add(videoId);
       // Enforce the explicitly requested tool boundary even when the model
       // overgeneralizes a generic Claude title. Keep it unresolved rather

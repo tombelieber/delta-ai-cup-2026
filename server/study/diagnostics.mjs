@@ -1,13 +1,15 @@
 import {randomUUID} from 'node:crypto';
 
 const enums={
-  step:new Set(['lesson_contract','citation_contract','countTokens','generateContent']),
+  step:new Set(['lesson_contract','citation_contract','map_contract','countTokens','generateContent']),
   kind:new Set(['format','source_integrity','safety']),
-  phase:new Set(['envelope','finish','content','json','count_tokens']),
+  phase:new Set(['envelope','finish','content','json','count_tokens','validation']),
   reason:new Set(['expected_string','blank_string','string_too_long','disallowed_control_character','expected_array',
     'array_count_out_of_range','expected_object','unknown_anchor','unknown_source','duplicate_options','expected_integer',
     'integer_out_of_range','unsupported_source','invalid_source','response_too_large','invalid_response_json',
-    'invalid_token_count','unfinished_response','missing_output','output_too_large','invalid_output_json']),
+    'invalid_token_count','unfinished_response','missing_output','output_too_large','invalid_output_json',
+    'unexpected_fields','invalid_enum','disallowed_label','missing_latin_label','url_label','duplicate_label',
+    'reserved_path','unknown_video_id','duplicate_video_id']),
   providerStatus:new Set(['OK','CANCELLED','UNKNOWN','INVALID_ARGUMENT','DEADLINE_EXCEEDED','NOT_FOUND','ALREADY_EXISTS',
     'PERMISSION_DENIED','UNAUTHENTICATED','RESOURCE_EXHAUSTED','FAILED_PRECONDITION','ABORTED','OUT_OF_RANGE',
     'UNIMPLEMENTED','INTERNAL','UNAVAILABLE','DATA_LOSS']),
@@ -15,8 +17,8 @@ const enums={
     'MALFORMED_FUNCTION_CALL','IMAGE_SAFETY','UNEXPECTED_TOOL_CALL','TOO_MANY_TOOL_CALLS','MISSING_THOUGHT_SIGNATURE',
     'FINISH_REASON_UNSPECIFIED','MISSING','UNRECOGNIZED']),
 };
-const roots='supported|title|summary|concepts|slides|exercises|source|sources|citations';
-const properties='title|label|explanation|anchorIds|anchorId|body|bullets|question|options|correctIndex|hint|anchors|digest|id|videoId';
+const roots='supported|title|summary|concepts|slides|exercises|source|sources|citations|map|groups';
+const properties='title|label|explanation|anchorIds|anchorId|body|bullets|question|options|correctIndex|hint|anchors|digest|id|videoId|path|confidence|contentType|videoIds';
 const diagnosticPath=new RegExp(`^(?:${roots})(?:\\[\\d{1,3}\\])?(?:\\.(?:${properties})(?:\\[\\d{1,3}\\])?){0,5}$`,'u');
 const actions=new Set(['generate','answer','ask','pptx','preparePptx','inspect','classify','catalogue','session','download']);
 const codes=new Set(['authentication_required','invalid_provider_output','invalid_citation','unsupported_source','provider_unavailable','provider_temporarily_unavailable',
@@ -45,7 +47,7 @@ export function sanitizeStudyDiagnostics(value){
   for(const key of ['retryable','transient','usageKnown']){
     const item=own(value,key);if(typeof item==='boolean')safe[key]=item;
   }
-  for(const key of ['count','length','minimum','maximum']){
+  for(const key of ['count','length','minimum','maximum','index']){
     const item=own(value,key);if(Number.isSafeInteger(item)&&item>=0&&item<=1000000)safe[key]=item;
   }
   const status=own(value,'httpStatus');

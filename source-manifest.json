@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "sourceBaseCommit": "6f659082b5a155866bc64bc6dbe6853f9e54cfb6",
   "historyIncluded": false,
-  "published": false,
-  "filesSha256": "df0f95563f9a859197d3a709d272ca5bf35ac2539adf64118a31d0457dd1541c",
+  "published": true,
+  "filesSha256": "556576303ef6109b3a366350e341c18ea70e1bd3ff49d3ec5def09681c98cb89",
   "files": [
     {
       "path": ".dockerignore",
@@ -946,11 +946,20 @@
       "sourceSha256": "82265dee2f3dd4a390ffb73765d103fc73bfdab32e6fe16871925d4ea27d6859"
     },
     {
-      "path": "server/map-classification.mjs",
-      "bytes": 20630,
-      "sha256": "7a86ef87110299d24285c4c5214031fd97d457bdbe9f313ed4ad684ce047cec5",
+      "path": "server/map-classification-diagnostics.test.mjs",
+      "bytes": 5995,
+      "sha256": "95d66e249ae090b66118f54bba6fc1d85dd542a7a8ecd087b3cf08217487f87f",
       "mode": "644",
-      "sourceSha256": "7a86ef87110299d24285c4c5214031fd97d457bdbe9f313ed4ad684ce047cec5"
+      "sourceSha256": "95d66e249ae090b66118f54bba6fc1d85dd542a7a8ecd087b3cf08217487f87f",
+      "sourceCommit": "a130389f85a2913293a1bd30d22576c972370b14"
+    },
+    {
+      "path": "server/map-classification.mjs",
+      "bytes": 22567,
+      "sha256": "ff733e9a1d37e59ea12e2db04f06a182249dc22b2dd07a9e8721fd715d2ba5de",
+      "mode": "644",
+      "sourceSha256": "ff733e9a1d37e59ea12e2db04f06a182249dc22b2dd07a9e8721fd715d2ba5de",
+      "sourceCommit": "a130389f85a2913293a1bd30d22576c972370b14"
     },
     {
       "path": "server/map-classification.test.mjs",
@@ -1136,10 +1145,11 @@
     },
     {
       "path": "server/study/classification.mjs",
-      "bytes": 4872,
-      "sha256": "b0faed271227692dd7f0cab213f00ce9a576afc0c25f813def3fc135476c0fb2",
+      "bytes": 5020,
+      "sha256": "e15d8d9aafd45bc69a3cf379b836598a1a33da98b289156b77b299907ae540ef",
       "mode": "644",
-      "sourceSha256": "b0faed271227692dd7f0cab213f00ce9a576afc0c25f813def3fc135476c0fb2"
+      "sourceSha256": "e15d8d9aafd45bc69a3cf379b836598a1a33da98b289156b77b299907ae540ef",
+      "sourceCommit": "a130389f85a2913293a1bd30d22576c972370b14"
     },
     {
       "path": "server/study/contract.mjs",
@@ -1150,10 +1160,11 @@
     },
     {
       "path": "server/study/diagnostics.mjs",
-      "bytes": 4633,
-      "sha256": "d75858ee47d30b824e5d02acb1da30cda120aac14ee4a3661285f34d91e27096",
+      "bytes": 4889,
+      "sha256": "b40936ae88d34dddba781e897384db526a6545e0ae2c74108722116aadeac59c",
       "mode": "644",
-      "sourceSha256": "d75858ee47d30b824e5d02acb1da30cda120aac14ee4a3661285f34d91e27096"
+      "sourceSha256": "b40936ae88d34dddba781e897384db526a6545e0ae2c74108722116aadeac59c",
+      "sourceCommit": "a130389f85a2913293a1bd30d22576c972370b14"
     },
     {
       "path": "server/study/pptx.mjs",
@@ -1444,5 +1455,27 @@
     "learner backups, runtime caches and sealed capabilities",
     "demo automation, screenshots, episode pictures and historical archives"
   ],
-  "note": "Synthetic in-source unit tests use artificial identities only. Runtime brand icons are included. No LICENSE file existed; no license selected."
+  "note": "Synthetic in-source unit tests use artificial identities only. Runtime brand icons are included. No LICENSE file existed; no license selected. The original sourceBaseCommit describes the initial clean snapshot. sourceUpdates lists subsequent reviewed byte-exact deltas; private commit hashes are provenance labels, not imported Git history.",
+  "publicRepository": "https://github.com/tombelieber/delta-ai-cup-2026",
+  "publicHistory": {
+    "initialRootCommit": "069ce705ebcbcd77292c30de3c0a1ffc3181d75c",
+    "privateHistoryImported": false,
+    "updateMethod": "Byte-copy of explicitly reviewed source paths; no private Git refs, parents or objects merged."
+  },
+  "sourceUpdates": [
+    {
+      "sourceCommit": "a130389f85a2913293a1bd30d22576c972370b14",
+      "paths": [
+        "server/map-classification-diagnostics.test.mjs",
+        "server/map-classification.mjs",
+        "server/study/classification.mjs",
+        "server/study/diagnostics.mjs"
+      ],
+      "scope": "Private-safe map validation diagnostics and synthetic regression coverage only; no provider, model, prompt, retry, account or onboarding changes.",
+      "verification": {
+        "serverTestCount": 368,
+        "scope": "Approved private candidate gate; public candidate gate is separately rechecked before publication."
+      }
+    }
+  ]
 }
