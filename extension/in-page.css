@@ -1,0 +1,47 @@
+:host {
+  display: block;
+  color-scheme: light;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+}
+.zx-learning-nudge, .zx-learning-nudge * { box-sizing: border-box; }
+.zx-learning-nudge {
+  width: 100%;
+  max-width: 350px;
+  min-width: 0;
+  margin: 0 0 16px;
+  padding: 17px 18px;
+  border: 1px solid #cddff7;
+  border-radius: 12px;
+  background: #fff;
+  color: #223b58;
+  box-shadow: 0 5px 24px #18508e0d;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.zx-nudge-eyebrow { color: #406d9e; font-size: 9px; font-weight: 650; letter-spacing: .08em; }
+.zx-learning-nudge h2 { margin: 8px 0; color: #20334c; font-size: 19px; font-weight: 650; line-height: 1.3; letter-spacing: -.3px; }
+.zx-learning-nudge > p { margin: 6px 0 12px; color: #526880; font-size: 12px; }
+.zx-nudge-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.zx-learning-nudge button { font: inherit; font-size: 11px; min-height: 38px; padding: 8px 11px; border-radius: 7px; cursor: pointer; }
+.zx-nudge-learn { border: 1px solid #2466b8; background: #2466b8; color: #fff; font-weight: 600; }
+.zx-nudge-learn:hover { background: #1c559b; }
+.zx-nudge-dismiss { border: 1px solid transparent; background: transparent; color: #526880; }
+.zx-nudge-dismiss:hover { background: #f0f5fb; }
+.zx-learning-nudge button:disabled { cursor: wait; opacity: .7; }
+.zx-learning-nudge :is(button, summary):focus-visible { outline: 3px solid #9b5700; outline-offset: 3px; }
+.zx-nudge-why { margin-top: 12px; color: #586e87; font-size: 10px; line-height: 1.7; }
+.zx-nudge-why summary { min-height: 26px; cursor: pointer; }
+.zx-nudge-why p { margin: 5px 0 0; }
+.zx-learning-nudge .zx-nudge-error { margin: 10px 0 0; color: #894d19; font-size: 11px; }
+.zx-nudge-error:empty { display: none; }
+@media (max-width: 300px) {
+  .zx-learning-nudge { padding: 14px; }
+  .zx-learning-nudge h2 { font-size: 18px; }
+  .zx-nudge-actions { gap: 5px; }
+}
+@media (pointer: coarse) { .zx-learning-nudge :is(button, summary) { min-height: 44px; } }
+@media (prefers-reduced-motion: reduce) {
+  .zx-learning-nudge, .zx-learning-nudge * { animation: none; transition: none; }
+}

@@ -1,0 +1,68 @@
+.dsu-share { margin: 18px 0; font-family: inherit; color: #332641; }
+.dsu-share * { box-sizing: border-box; }
+.dsu-share .dsu-trigger { display: flex; align-items: center; justify-content: space-between; gap: 14px; width: 100%; min-height: 46px; padding: 12px 15px; border: 1px solid #d9c8e5; border-radius: 10px; background: #faf7fc; color: #68467f; font: inherit; font-size: 13px; font-weight: 600; text-align: left; cursor: pointer; }
+.dsu-share .dsu-trigger:hover:not(:disabled) { border-color: #bca1cf; background: #f1e9f7; }
+.dsu-share .dsu-trigger:disabled { opacity: .5; cursor: default; }
+.dsu-share .dsu-trigger span { flex-shrink: 0; font-size: 21px; }
+.dsu-share .dsu-dialog { width: min(900px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); margin: auto; padding: 26px; border: 1px solid #dfd3e8; border-radius: 18px; background: #fff; color: #332641; box-shadow: 0 22px 90px #21112f40; overflow: auto; overscroll-behavior-y: contain; scrollbar-gutter: stable; font: 13px/1.6 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.dsu-share .dsu-dialog::backdrop { background: #1d142b9e; backdrop-filter: blur(4px); }
+.dsu-share .dsu-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.dsu-share .dsu-header h2 { margin: 0; color: #332641; font-size: 25px; line-height: 1.25; letter-spacing: -.6px; font-weight: 650; overflow-wrap: anywhere; }
+.dsu-share .dsu-eyebrow { margin: 0 0 7px; color: #76558f; font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: 0; }
+.dsu-share .dsu-close { display: grid; place-items: center; flex: none; width: 40px; height: 40px; min-width: 40px; min-height: 40px; padding: 0; border: 1px solid #e0d4e8; border-radius: 50%; background: #fff; color: #76558f; font-size: 26px; line-height: 1; cursor: pointer; }
+.dsu-share .dsu-close:hover { background: #f3edf8; }
+.dsu-share .dsu-description { margin: 16px 0 8px; color: #4f3b60; font-size: 14px; line-height: 1.55; }
+.dsu-share .dsu-privacy { margin: 0 0 22px; color: #6f607e; font-size: 12px; line-height: 1.65; }
+.dsu-share .dsu-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: start; gap: 24px; }
+.dsu-share .dsu-controls, .dsu-share .dsu-preview { min-width: 0; }
+.dsu-share .dsu-topics { min-width: 0; margin: 0; padding: 0; border: 0; }
+.dsu-share .dsu-topics legend { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 5px 10px; width: 100%; padding: 0; color: #4a355b; font-size: 13px; font-weight: 600; }
+.dsu-share .dsu-topics legend span { float: none; color: #6f607e; font-size: 12px; font-weight: 400; }
+.dsu-share .dsu-hint { margin: 9px 0 12px; color: #6f607e; font-size: 12px; line-height: 1.6; }
+.dsu-share .dsu-topic-options { display: grid; gap: 7px; max-height: 300px; padding: 4px; overflow-y: auto; overscroll-behavior-y: contain; scrollbar-gutter: stable; scrollbar-width: thin; scrollbar-color: #c7b7d2 transparent; }
+.dsu-share .dsu-topic-options label { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px; border: 1px solid #e4dbe9; border-radius: 9px; color: #51425f; font-size: 13px; line-height: 1.5; cursor: pointer; }
+.dsu-share .dsu-topic-options label:hover { background: #faf7fc; }
+.dsu-share .dsu-topic-options label:has(input:checked) { border-color: #a98abe; background: #f2eaf8; color: #513760; }
+.dsu-share .dsu-topic-options input, .dsu-share .dsu-practice input { flex: none; width: 18px; height: 18px; margin: 0; accent-color: #76558f; }
+.dsu-share .dsu-topic-options label:has(input:disabled) { opacity: .5; cursor: default; }
+.dsu-share .dsu-topic-options span { min-width: 0; flex: 1; overflow-wrap: anywhere; }
+.dsu-share .dsu-topic-options small { flex-shrink: 0; color: #6f607e; font-size: 12px; font-variant-numeric: tabular-nums; }
+.dsu-share .dsu-format { display: grid; gap: 8px; margin-top: 20px; color: #51425f; font-size: 13px; font-weight: 600; }
+.dsu-share .dsu-format select { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #dcd0e5; border-radius: 9px; background: #fff; color: #4a355b; font: inherit; font-weight: 400; }
+.dsu-share .dsu-practice { display: flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 14px; color: #51425f; font-size: 12px; line-height: 1.5; cursor: pointer; }
+.dsu-share .dsu-preview { margin: 0; }
+.dsu-share .dsu-preview canvas { display: block; width: 100%; height: auto; border: 1px solid #3d2a50; border-radius: 14px; background: #171024; box-shadow: 0 9px 25px #21113217; }
+.dsu-share .dsu-preview-story canvas { width: auto; max-width: 100%; max-height: 540px; margin-inline: auto; }
+.dsu-share .dsu-preview figcaption { margin-top: 11px; color: #6f607e; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.dsu-share .dsu-footer { margin-top: 22px; padding-top: 16px; border-top: 1px solid #e5dcea; }
+.dsu-share .dsu-status { min-height: 20px; margin: 0 0 13px; color: #6f607e; font-size: 12px; line-height: 1.6; }
+.dsu-share .dsu-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
+.dsu-share .dsu-actions button { min-height: 44px; padding: 11px 16px; border: 1px solid #d8c5e5; border-radius: 9px; font: inherit; font-size: 13px; font-weight: 600; line-height: 1.4; cursor: pointer; }
+.dsu-share .dsu-download { background: #fff; color: #68467f; }
+.dsu-share .dsu-download:hover:not(:disabled) { background: #f5eff9; }
+.dsu-share .dsu-native-share { border-color: #76558f !important; background: #76558f; color: #fff; }
+.dsu-share .dsu-native-share:hover:not(:disabled) { background: #624278; }
+.dsu-share .dsu-actions button:disabled { opacity: .5; cursor: default; }
+.dsu-share .dsu-trigger:focus-visible, .dsu-share .dsu-dialog :where(button, input, select):focus-visible { outline: 3px solid #9671b3; outline-offset: 3px; }
+.dsu-share .dsu-unavailable { margin: 10px 3px 0; color: #6f607e; font-size: 12px; line-height: 1.65; }
+@media (max-width: 620px) {
+  .dsu-share .dsu-dialog { padding: 20px 16px; }
+  .dsu-share .dsu-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .dsu-share .dsu-preview { width: 100%; max-width: 430px; margin-inline: auto; }
+  .dsu-share .dsu-preview-story canvas { max-height: 440px; }
+  .dsu-share .dsu-topic-options { max-height: 220px; }
+  .dsu-share .dsu-header h2 { font-size: 23px; }
+  .dsu-share .dsu-actions { justify-content: stretch; }
+  .dsu-share .dsu-actions button { flex: 1 1 130px; }
+}
+@media (max-width: 360px) {
+  .dsu-share .dsu-dialog { width: calc(100vw - 16px); max-height: calc(100dvh - 16px); padding: 18px 13px; border-radius: 14px; }
+  .dsu-share .dsu-header { gap: 10px; }
+  .dsu-share .dsu-header h2 { font-size: 21px; }
+  .dsu-share .dsu-actions { flex-direction: column; }
+  .dsu-share .dsu-actions button { flex: none; width: 100%; }
+}
+@media (forced-colors: active) {
+  .dsu-share .dsu-trigger:focus-visible, .dsu-share .dsu-dialog :where(button, input, select):focus-visible { outline-color: Highlight; }
+  .dsu-share .dsu-topic-options label:has(input:checked) { border: 2px solid Highlight; }
+}

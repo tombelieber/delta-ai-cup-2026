@@ -1,0 +1,206 @@
+/* Native Delta shell. Feature styles stay in their own component files. */
+.delta-context-panel {
+  --dcp-ink: #332641;
+  --dcp-muted: #6f607e;
+  --dcp-accent: #76558f;
+  --dcp-line: #e6dfed;
+  --dcp-surface: #f8f6fa;
+  --dcp-tint: #f1ebf7;
+  width: 100%;
+  max-width: 560px;
+  min-height: 100dvh;
+  margin: auto;
+  background: #fff;
+  color: var(--dcp-ink);
+  font: 14px/1.65 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: anywhere;
+}
+.delta-context-panel * { box-sizing: border-box; }
+.delta-context-panel :where(button, input, select, textarea) { font: inherit; }
+.delta-context-panel :where(button) {
+  min-height: 40px;
+  max-width: 100%;
+  padding: 9px 13px;
+  border: 1px solid #d9cfe3;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--dcp-ink);
+  font-size: 13px;
+  line-height: 1.45;
+  cursor: pointer;
+  transition: background-color .15s, border-color .15s, box-shadow .15s;
+}
+.delta-context-panel :where(button:hover:not(:disabled)) {
+  border-color: #b6a2c6;
+  background: var(--dcp-surface);
+}
+.delta-context-panel :where(button:disabled) { cursor: default; opacity: .55; }
+.delta-context-panel :where(button, a, input, select, textarea, summary):focus-visible {
+  outline: 3px solid #8d6aa8;
+  outline-offset: 3px;
+}
+.delta-context-panel p { line-height: 1.7; }
+.delta-context-panel a {
+  color: var(--dcp-accent);
+  font-size: 13px;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+.dcp-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 22px 19px;
+}
+.dcp-logo {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border: 1px solid #e7def0;
+  border-radius: 12px;
+  background: var(--dcp-tint);
+  color: var(--dcp-accent);
+  font-size: 17px;
+}
+.dcp-header strong { display: block; font-size: 22px; line-height: 1.2; letter-spacing: -.7px; }
+.dcp-header div > span { display: block; margin-top: 3px; color: var(--dcp-muted); font-size: 12px; }
+.dcp-nav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  margin: 0 16px;
+  padding: 4px;
+  border: 1px solid #ece7f1;
+  border-radius: 13px;
+  background: var(--dcp-surface);
+}
+.delta-context-panel .dcp-nav button {
+  min-height: 44px;
+  padding: 10px 3px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--dcp-muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: normal;
+}
+.delta-context-panel .dcp-nav button:hover { background: #eee7f5; color: #523767; }
+.delta-context-panel .dcp-nav button[aria-pressed=true] {
+  border-color: #dfd2e9;
+  background: #fff;
+  color: #59376e;
+  font-weight: 650;
+  box-shadow: 0 1px 3px #3924460c;
+}
+.dcp-content { padding: 25px 22px 28px; min-width: 0; }
+.dcp-title { margin: 0 0 12px; color: var(--dcp-ink); font-size: 28px; line-height: 1.25; letter-spacing: -.85px; }
+.dcp-intro, .dcp-note { color: var(--dcp-muted); font-size: 12px; }
+.dcp-note { margin: 16px 0; }
+.dcp-note[role=status] {
+  padding: 12px 14px;
+  border: 1px solid #e5dcec;
+  border-radius: 11px;
+  background: var(--dcp-surface);
+  color: #604872;
+}
+.dcp-empty { padding: 32px 16px; border: 1px solid var(--dcp-line); border-radius: 16px; background: var(--dcp-surface); color: var(--dcp-muted); font-size: 14px; text-align: left; }
+.dcp-empty h2 { margin: 0 0 12px; color: var(--dcp-ink); font-size: 21px; line-height: 1.35; letter-spacing: -.35px; }
+.dcp-empty p { margin: 10px 0 18px; }
+.dcp-empty button { display: block; margin: 16px 0 0; }
+.dcp-saved, .dcp-current-offer { margin: 22px 0; padding: 21px 18px; border: 1px solid var(--dcp-line); border-radius: 16px; background: var(--dcp-surface); }
+.dcp-current-offer { background: linear-gradient(145deg, #faf8fc, #f3edf8); }
+.dcp-saved h2, .dcp-current-offer h2 { margin: 10px 0; color: var(--dcp-ink); font-size: 21px; line-height: 1.35; letter-spacing: -.4px; }
+.dcp-saved p, .dcp-current-offer p { color: var(--dcp-muted); font-size: 13px; }
+.dcp-current-offer > .dcp-note { margin-bottom: 0; font-size: 12px; }
+.dcp-eyebrow { color: #735881; font-size: 12px; font-weight: 650; letter-spacing: .8px; }
+.dcp-badge { display: inline-block; padding: 5px 8px; border-radius: 6px; background: var(--dcp-tint); color: #68457e; font-size: 12px; }
+.dcp-badge.dcp-earned { background: #eaf5ee; color: #2c6846; }
+.delta-context-panel .dcp-primary { min-height: 44px; border-color: var(--dcp-accent); background: var(--dcp-accent); color: #fff; font-weight: 600; }
+.delta-context-panel .dcp-primary:hover:not(:disabled) { border-color: #644477; background: #644477; }
+.dcp-current-offer > .dcp-primary { width: 100%; margin-top: 6px; text-align: center; }
+.dcp-actions { display: flex; flex-wrap: wrap; gap: 9px; margin: 18px 0; }
+.dcp-actions button { flex: 1; min-width: 112px; min-height: 44px; }
+.dcp-saved details { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--dcp-line); color: var(--dcp-muted); font-size: 12px; }
+.delta-context-panel summary { min-height: 40px; cursor: pointer; }
+.dcp-saved ul { padding-left: 20px; }
+.dcp-saved li { margin: 10px 0; }
+.dcp-saved code { display: block; margin-top: 6px; font-size: 12px; overflow-wrap: anywhere; }
+.dcp-tools { margin-top: 26px; padding: 0 14px; border: 1px solid var(--dcp-line); border-radius: 13px; background: #fcfbfd; color: var(--dcp-muted); font-size: 13px; }
+.dcp-tools > summary { display: list-item; min-height: 46px; padding: 12px 0; color: #554360; font-weight: 550; }
+.dcp-tools[open] { padding-bottom: 16px; }
+.dcp-tools details { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--dcp-line); }
+.dcp-tools details > summary { min-height: 42px; padding: 9px 0; color: #63516e; }
+.dcp-toggle { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; margin: 9px 0 16px; color: var(--dcp-ink); }
+.dcp-toggle input { flex: none; width: 22px; height: 22px; margin: 0; accent-color: var(--dcp-accent); }
+.dcp-toggle small { display: block; margin-top: 5px; color: var(--dcp-muted); font-size: 12px; font-weight: 400; line-height: 1.6; }
+.dcp-watch-list { margin: 16px 0; padding: 0; list-style: none; }
+.dcp-watch-list li { margin: 10px 0; }
+.dcp-watch-list button { width: 100%; text-align: left; overflow-wrap: anywhere; }
+.dcp-watch-list span { display: block; margin-top: 5px; font-size: 12px; }
+.dcp-tools form { margin-top: 18px; }
+.dcp-tools label:not(.dcp-toggle) { display: block; color: #63516e; font-size: 12px; font-weight: 500; }
+.dcp-tools input:not([type=checkbox]) { display: block; width: 100%; min-height: 44px; margin: 7px 0 10px; padding: 10px 12px; border: 1px solid #d5c9df; border-radius: 9px; background: #fff; color: var(--dcp-ink); font-size: 14px; }
+.dcp-tools input::placeholder { color: #7c6b89; }
+.dcp-tools form > button { min-height: 42px; }
+.dcp-tools > .dcp-note { margin-bottom: 12px; }
+.dcp-footer { padding: 18px 22px 24px; border-top: 1px solid #eee8f3; color: var(--dcp-muted); font-size: 12px; line-height: 1.7; }
+.dcp-error { margin-bottom: 20px; padding: 16px; border: 1px solid #e6d0cc; border-radius: 13px; background: #fff7f5; color: #833e35; font-size: 13px; }
+.dcp-error p { margin: 0 0 12px; }
+.dcp-error button { min-height: 42px; border-color: #d9bbb5; background: #fff; color: #793f36; }
+.dcp-win { margin: 22px 0; padding: 18px; border: 1px solid #cfe3d5; border-radius: 13px; background: #edf7f0; color: #2c6846; font-size: 14px; }
+.dcp-win p { margin: 7px 0 0; color: #446d53; font-size: 13px; }
+.dcp-abilities .dsk-overview { padding: 0; }
+.dcp-abilities .dsk-intro, .dcp-abilities .dsk-value, .dcp-abilities .dsk-setup { display: none; }
+
+/* Preserve the embedded legacy lesson without duplicating its outer shell. */
+.delta-context-panel .dll-embedded { border: 0; border-radius: 0; box-shadow: none; }
+.dll-embedded > .dll-header, .dll-embedded > .dll-footer { display: none; }
+.dll-embedded .dll-back-to-skills { margin-top: 0; }
+.dll-embedded .dll-settings { margin-top: 18px; }
+
+/* Legacy skill-map selectors remain available for preserved local lessons. */
+.dcp-map { position: relative; margin-top: 24px; padding-top: 12px; background-image: radial-gradient(#ded6e7 .65px, transparent .65px); background-size: 18px 18px; }
+.dcp-root { position: relative; display: grid; place-items: center; width: 50px; height: 50px; margin: 0 auto 36px; border: 1px solid #d9cfe3; border-radius: 50%; background: var(--dcp-tint); color: #604672; font-size: 13px; font-weight: 650; }
+.dcp-root:after { content: ""; position: absolute; top: 49px; width: 1px; height: 22px; background: #d9cfe3; }
+.dcp-map ul { position: relative; display: grid; grid-template-columns: 1fr 1fr; row-gap: 30px; margin: 0; padding: 0; list-style: none; }
+.dcp-map ul:before { content: ""; position: absolute; top: -14px; right: 25%; left: 25%; height: 1px; background: #d9cfe3; }
+.delta-context-panel .dcp-node button { position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; min-height: 130px; padding: 0 5px; border: 0; background: transparent; text-align: center; }
+.dcp-node strong { background: #fff; font-size: 13px; line-height: 1.5; }
+.dcp-node small { background: #fff; color: var(--dcp-muted); font-size: 12px; }
+.dcp-orb { position: relative; display: grid; place-items: center; width: 68px; height: 68px; border: 1px solid #cdbdd9; border-radius: 50%; background: #fff; color: #654879; font: 650 13px ui-monospace, SFMono-Regular, Consolas, monospace; }
+.dcp-orb:before { content: ""; position: absolute; bottom: 67px; width: 1px; height: 15px; background: #d9cfe3; }
+.dcp-node-planned .dcp-orb { border-style: dashed; background: var(--dcp-surface); color: var(--dcp-muted); }
+.dcp-node button[aria-pressed=true] .dcp-orb { border: 2px solid var(--dcp-accent); background: #f5f0fa; color: var(--dcp-accent); box-shadow: 0 0 0 4px #eee5f6; }
+.dcp-node-earned .dcp-orb, .dcp-node-earned button[aria-pressed=true] .dcp-orb { border-color: #317653; background: #317653; color: #fff; }
+.dcp-orb i { position: absolute; right: -2px; bottom: -2px; display: grid; place-items: center; width: 22px; height: 22px; border: 2px solid #fff; border-radius: 50%; background: #317653; color: #fff; font: 650 12px system-ui, sans-serif; }
+.dcp-map-note { margin-top: 18px; color: var(--dcp-muted); font-size: 12px; text-align: center; }
+.dcp-skill-details { margin-top: 24px; padding-top: 21px; border-top: 1px solid var(--dcp-line); }
+.dcp-skill-details h2 { margin: 10px 0; font-size: 21px; line-height: 1.35; letter-spacing: -.4px; }
+.dcp-skill-details p { color: var(--dcp-muted); font-size: 13px; }
+.dcp-skill-details button { width: 100%; min-height: 44px; margin-top: 12px; }
+
+@media (max-width: 360px) {
+  .dcp-header { padding: 22px 18px 18px; }
+  .dcp-nav { gap: 2px; margin-inline: 10px; padding: 3px; }
+  .delta-context-panel .dcp-nav button { padding-inline: 2px; }
+  .dcp-content { padding: 23px 17px 26px; }
+  .dcp-title { font-size: 26px; }
+  .dcp-saved, .dcp-current-offer { padding: 19px 15px; }
+  .dcp-tools { padding-inline: 12px; }
+  .dcp-footer { padding-inline: 18px; }
+}
+@media (min-width: 480px) {
+  .dcp-header { padding-inline: 26px; }
+  .dcp-nav { margin-inline: 20px; }
+  .dcp-content { padding: 28px 26px 32px; }
+  .dcp-footer { padding-inline: 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .delta-context-panel :where(button) { transition: none; }
+}

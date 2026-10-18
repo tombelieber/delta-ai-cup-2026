@@ -1,0 +1,117 @@
+.delta-account-history {
+  margin: 24px 0;
+  padding: 18px;
+  border: 1px solid #e5dcea;
+  border-radius: 13px;
+  background: #fbf9fd;
+  color: #332641;
+  font: 13px/1.65 ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.delta-account-history * { box-sizing: border-box; }
+.delta-account-history h2 { margin: 7px 0 10px; color: #332641; font-size: 21px; line-height: 1.25; letter-spacing: -.5px; font-weight: 650; }
+.delta-account-history h2:focus { outline: none; }
+.delta-account-history p { margin: 10px 0 14px; }
+.dah-optional { color: #76558f; font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: 0; }
+.dah-intro { color: #5f506e; font-size: 13px; }
+.delta-account-history .dah-note { color: #6f607e; font-size: 12px; line-height: 1.65; }
+.dah-saved { color: #624c74; font-size: 12px; font-variant-numeric: tabular-nums; }
+.delta-account-history :is(button, input) { font: inherit; }
+.delta-account-history :is(button, input, summary):focus-visible { outline: 3px solid #9671b3; outline-offset: 3px; }
+.delta-account-history .dah-button { display: inline-flex; align-items: center; justify-content: center; max-width: 100%; min-height: 44px; margin: 5px 6px 5px 0; padding: 11px 14px; border: 1px solid #d6c7e1; border-radius: 9px; background: #fff; color: #68467f; font-size: 12px; line-height: 1.45; font-weight: 600; text-align: center; cursor: pointer; touch-action: manipulation; }
+.delta-account-history .dah-button:hover:not(:disabled) { background: #eee6f4; }
+.delta-account-history .dah-primary { width: 100%; border-color: #76558f; background: #76558f; color: #fff; }
+.delta-account-history .dah-primary:hover:not(:disabled) { border-color: #624278; background: #624278; }
+.delta-account-history button:disabled { opacity: .5; cursor: default; }
+.delta-account-history .dah-text { display: inline-flex; align-items: center; min-height: 40px; margin: 4px 8px 0 0; padding: 8px 0; border: 0; border-radius: 5px; background: transparent; color: #76558f; font-size: 12px; line-height: 1.5; text-align: start; cursor: pointer; }
+.delta-account-history .dah-text:hover:not(:disabled) { color: #4f315f; text-decoration: underline; text-underline-offset: 3px; }
+.delta-account-history .dah-leave { display: block; width: 100%; margin-top: 10px; }
+.dah-scope { margin: 15px 0 18px; padding-left: 19px; color: #5f506e; font-size: 12px; }
+.dah-scope li { margin: 10px 0; padding-left: 2px; }
+.dah-range { margin: 16px 0; border-block: 1px solid #e5dcea; }
+.dah-range summary { min-height: 42px; padding: 10px 0; color: #68467f; font-size: 12px; cursor: pointer; }
+.dah-range fieldset { min-width: 0; margin: 0; padding: 5px 0 12px; border: 0; }
+.dah-range legend { margin-bottom: 7px; color: #6f607e; font-size: 12px; }
+.dah-range label { display: flex; align-items: center; gap: 10px; min-height: 40px; color: #51425f; font-size: 13px; cursor: pointer; }
+.delta-account-history input[type=radio], .delta-account-history input[type=checkbox] { flex-shrink: 0; width: 18px; height: 18px; margin: 0; accent-color: #76558f; }
+.dah-step { color: #513760; font-size: 13px; font-weight: 600; }
+.dah-account { padding: 13px 14px; border: 1px solid #dacbe5; border-radius: 9px; background: #f2ebf7; }
+.dah-account > span { display: block; margin-bottom: 5px; color: #6f607e; font-size: 12px; }
+.dah-account strong { color: #4a355b; font-size: 14px; font-weight: 600; line-height: 1.5; }
+.dah-confirm { display: flex; align-items: flex-start; gap: 10px; min-height: 44px; padding: 14px 0; color: #51425f; font-size: 13px; cursor: pointer; }
+.dah-confirm input { margin-top: 3px !important; }
+.dah-phase strong, .dah-unavailable strong { color: #4a355b; font-size: 14px; font-weight: 600; }
+.dah-phase p, .dah-unavailable p { color: #6f607e; font-size: 13px; line-height: 1.65; }
+.dah-progress { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 18px 0 10px; }
+.dah-progress > div { display: flex; flex-direction: column-reverse; gap: 6px; min-width: 0; padding: 14px 12px; border: 1px solid #e2d7ea; border-radius: 10px; background: #fff; }
+.dah-progress dt { color: #6f607e; font-size: 12px; line-height: 1.5; }
+.dah-progress dd { margin: 0; color: #5f4274; font-size: clamp(24px, 6vw, 30px); line-height: 1.2; font-weight: 600; letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
+.dah-error { padding: 12px 13px; border: 1px solid #e3c9c2; border-radius: 9px; background: #fff6f3; color: #8d4c3d; font-size: 12px; line-height: 1.65; }
+.dah-notice { color: #427153; font-size: 12px; line-height: 1.65; }
+.dah-manage { margin-top: 18px; padding-top: 10px; border-top: 1px solid #e5dcea; }
+.dah-clear-confirm { padding: 6px 0; }
+.dah-clear-confirm > p { color: #6f607e; font-size: 12px; }
+.dah-clear-confirm strong { color: #513760; font-weight: 600; }
+
+/* History rows and the same saved-video controls inside My map. */
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) { color: #332641; font-size: 13px; line-height: 1.65; }
+.delta-learning-journal[aria-label="Your history"] .dlj-intro { margin-bottom: 18px; color: #6f607e; font-size: 13px; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-time { flex-wrap: wrap; gap: 9px 12px; margin-bottom: 18px; color: #6f607e; font-size: 12px; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-time > div { display: flex; flex-wrap: wrap; gap: 3px; padding: 3px; border: 1px solid #eee5f3; border-radius: 10px; background: #f5f0f9; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-time button { min-height: 40px; padding: 9px 11px; border-radius: 7px; color: #6f607e; font-size: 12px; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-time button[aria-pressed=true] { background: #fff; color: #5f3f76; box-shadow: 0 1px 4px #492b6014; font-weight: 600; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) :is(button, a, input, select, summary):focus-visible { outline: 3px solid #9671b3; outline-offset: 3px; }
+.delta-learning-journal[aria-label="Your history"] .dlj-history-tabs { flex-wrap: wrap; gap: 7px; margin-bottom: 18px; }
+.delta-learning-journal[aria-label="Your history"] .dlj-history-tabs button { min-height: 42px; padding: 9px 12px; border-radius: 9px; color: #6f607e; font-size: 12px; }
+.delta-learning-journal[aria-label="Your history"] .dlj-history-tabs button[aria-pressed=true] { border-color: #d8c5e5; background: #f1e9f7; color: #5f3f76; font-weight: 600; }
+.delta-learning-journal[aria-label="Your history"] .dlj-history-tabs span { min-width: 23px; height: 23px; padding-inline: 4px; border-radius: 6px; background: #eae0f1; color: #6c4d82; font-size: 11px; font-variant-numeric: tabular-nums; }
+.delta-learning-journal[aria-label="Your history"] .dlj-history-search label { color: #6f607e; font-size: 12px; }
+.delta-learning-journal[aria-label="Your history"] input[type=search] { min-height: 44px; padding: 11px 13px; border-color: #dcd0e5; border-radius: 10px; background: #fbf9fd; color: #332641; font-size: 13px; }
+.delta-learning-journal[aria-label="Your history"] input::placeholder { color: #86748f; }
+.delta-learning-journal[aria-label="Your history"] :is(.dlj-filter-disclosure, .dlj-label-help) > summary { min-height: 40px; padding-block: 10px; color: #725187; font-size: 12px; }
+.delta-learning-journal[aria-label="Your history"] .dlj-filter-selects select { min-height: 42px; padding: 9px; border-color: #ded2e7; border-radius: 8px; color: #51425f; font-size: 12px; }
+.delta-learning-journal[aria-label="Your history"] .dlj-results { min-height: 40px; margin-bottom: 10px; color: #6f607e; font-size: 12px; }
+.delta-learning-journal[aria-label="Your history"] .dlj-results button { min-height: 40px; color: #76558f; font-size: 12px; }
+.delta-learning-journal[aria-label="Your history"] .dlj-timeline { max-height: min(640px, 70dvh); margin-left: 5px; padding: 2px 6px 8px 20px; overflow-y: auto; overscroll-behavior-y: contain; scrollbar-gutter: stable; scrollbar-width: thin; scrollbar-color: #c7b7d2 transparent; border-color: #ded1e8; }
+.delta-learning-journal[aria-label="Your history"] .dlj-day { margin: 22px 0 12px; color: #674b7b; font-size: 12px; font-weight: 600; }
+.delta-learning-journal[aria-label="Your history"] .dlj-day::before { left: -17px; top: 5px; }
+.delta-learning-journal[aria-label="Your history"] .dlj-day:first-child { margin-top: 8px; }
+.delta-learning-journal[aria-label="Your history"] .dlj-day small { color: #6f607e; font-size: 11px; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record { margin-bottom: 10px; border-color: #e4dbe9; border-radius: 11px; background: #fff; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record[open] { border-color: #cdb6dd; background: #fdfbfe; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record > summary { min-height: 88px; gap: 10px; padding: 14px 12px; border-radius: 10px; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record > summary:hover { background: #f8f3fb; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record-icon { width: 32px; height: 34px; border-radius: 8px; background: #f1eaf7; color: #89669e; font-size: 14px; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record-title { color: #3d2e4b; font-size: 13px; font-weight: 600; line-height: 1.5; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record-topic { margin-top: 5px; color: #796885; font-size: 11px; line-height: 1.5; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record-meta { margin-top: 7px; color: #6f607e; font-size: 12px; line-height: 1.5; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-learning-badge { margin-top: 9px; padding: 4px 7px; border-color: #ded0e9; background: #f3ecf8; color: #6b4c80; font-size: 11px; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-learning-badge.dlj-checked { border-color: #cce0d2; background: #eef7f1; color: #356548; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record-body { padding: 0 13px 15px 54px; color: #6f607e; font-size: 12px; line-height: 1.65; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record-body dt { color: #725c80; font-size: 11px; letter-spacing: 0; text-transform: none; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record-actions { gap: 8px; margin-top: 13px; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record-actions a { min-height: 40px; color: #76558f; font-size: 12px; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-learn { min-height: 42px; padding: 10px 12px; border-color: #d8c5e5; border-radius: 8px; background: #f2eaf8; color: #68467f; font-size: 12px; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-task-results > summary { min-height: 40px; color: #427153; font-size: 12px; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-task-results :is(strong, small, p, .dlj-task-scope) { font-size: 12px; }
+.delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-more { min-height: 44px; padding: 11px; border-color: #ded2e7; border-radius: 9px; background: #faf7fc; color: #6b4b80; font-size: 12px; }
+.delta-learning-journal[aria-label="Your history"] :is(.dlj-label-help p, .dlj-range-note, .dlj-map-note) { color: #6f607e; font-size: 12px; line-height: 1.65; }
+.delta-learning-journal[aria-label="Your history"] .dlj-empty { padding: 24px 15px; border-color: #dacee3; border-radius: 12px; color: #6f607e; font-size: 13px; }
+.delta-learning-journal[aria-label="Your history"] .dlj-empty p { font-size: 13px; }
+@media (max-width: 360px) {
+  .delta-account-history { padding: 15px; }
+  .dah-progress { gap: 8px; }
+  .dah-progress > div { padding: 12px 9px; }
+  .delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-time > div { width: 100%; }
+  .delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-time button { flex: 1; padding-inline: 7px; }
+  .delta-learning-journal[aria-label="Your history"] .dlj-history-tabs { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .delta-learning-journal[aria-label="Your history"] .dlj-timeline { margin-left: 3px; padding-left: 18px; }
+  .delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record > summary { gap: 8px; padding: 13px 10px; }
+  .delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record-icon { width: 27px; height: 31px; }
+  .delta-learning-journal:is([aria-label="Your history"], .dpu-map) .dlj-record-body { padding-left: 12px; padding-right: 12px; }
+}
+@media (forced-colors: active) {
+  .delta-account-history :is(button, input, summary):focus-visible { outline-color: Highlight; }
+  .delta-learning-journal:is([aria-label="Your history"], .dpu-map) :is(button, a, input, select, summary):focus-visible { outline-color: Highlight; }
+}

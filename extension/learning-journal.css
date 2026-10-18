@@ -1,0 +1,65 @@
+.delta-learning-journal{color:#263044;font:12px/1.6 Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-width:0;overflow-wrap:anywhere}
+.delta-learning-journal *{box-sizing:border-box}.delta-learning-journal .dlj-intro{font-size:12px;color:#798397;line-height:1.7;margin:0 0 18px}
+.delta-learning-journal :is(button,input,select,a){font:inherit}.delta-learning-journal :is(button,a,input,select,summary):focus-visible{outline:3px solid #5078e5;outline-offset:4px}.delta-learning-journal button{cursor:pointer}.delta-learning-journal button:disabled{cursor:default;opacity:.45}
+.dlj-time{display:flex;align-items:center;justify-content:space-between;gap:9px;margin:0 0 17px;font-size:9px;color:#8b93a3}.dlj-time>div{display:flex;gap:2px;padding:3px;border-radius:8px;background:#f2f3f7}.delta-learning-journal .dlj-time button{min-height:30px;border:0;background:transparent;color:#828a9c;padding:5px 8px;border-radius:6px;font-size:9px;white-space:nowrap}.delta-learning-journal .dlj-time button[aria-pressed=true]{background:#fff;color:#4e5067;box-shadow:0 1px 3px #25304b17}
+.dlj-history-tabs{display:flex;gap:5px;margin:0 0 15px}.delta-learning-journal .dlj-history-tabs button{display:flex;align-items:center;gap:6px;min-height:38px;border:1px solid transparent;border-radius:7px;background:transparent;color:#8c94a5;font-size:10px;padding:8px 10px}.delta-learning-journal .dlj-history-tabs button[aria-pressed=true]{background:#f3eef9;color:#685086;border-color:#e6ddee}.dlj-history-tabs span{display:inline-grid;place-items:center;min-width:17px;height:17px;border-radius:4px;background:#f2f3f7;color:#9497aa;font-size:8px}
+.dlj-history-search label,.dlj-related-search{display:block;min-width:0;color:#8590a4;font-size:9px}.delta-learning-journal input[type=search]{display:block;min-width:0;width:100%;min-height:44px;margin:6px 0 0;padding:10px 11px;border:1px solid #e2e6ee;border-radius:9px;background:#f7f8fa;color:#48536a;font-size:11px}.delta-learning-journal input::placeholder{color:#969eac}
+.dlj-filter-disclosure{margin:8px 0 1px}.dlj-filter-disclosure>summary,.dlj-label-help>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;list-style:none;min-height:35px;padding:7px 0;color:#8a8fa3;font-size:9px;cursor:pointer}.dlj-filter-disclosure>summary::-webkit-details-marker,.dlj-label-help>summary::-webkit-details-marker,.dlj-record>summary::-webkit-details-marker{display:none}.dlj-filter-disclosure>summary:after,.dlj-label-help>summary:after{content:"+";font-size:12px;color:#aaa1b7}.dlj-filter-disclosure[open]>summary:after,.dlj-label-help[open]>summary:after{content:"−"}
+.dlj-filter-selects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:5px 0 12px}.dlj-filter-selects label{min-width:0}.delta-learning-journal .dlj-filter-selects select{display:block;min-width:0;width:100%;min-height:42px;margin-top:6px;padding:8px 7px;border:1px solid #e3e7ef;border-radius:7px;background:#fff;color:#788398;font-size:10px}
+.dlj-results{display:flex;align-items:center;justify-content:space-between;gap:9px;min-height:30px;margin:0 0 11px;color:#8b93a3;font-size:9px}.delta-learning-journal .dlj-results button{min-height:30px;border:0;background:transparent;color:#8a74a3;font-size:9px;padding:6px 0 6px 8px}
+.dlj-timeline{margin-left:7px;padding-left:17px;border-left:1px solid #e4e1eb}.dlj-day{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:25px 0 12px;font-size:10px;color:#8e7c9e;font-weight:550;line-height:1.5}.dlj-day:first-child{margin-top:6px}.dlj-day:before{content:"";position:absolute;left:-21px;top:3px;width:7px;height:7px;border:2px solid #cbbfd7;border-radius:50%;background:#fff}.dlj-day small{font-size:8px;font-weight:400;color:#a4a4b4}
+.dlj-record{position:relative;min-width:0;margin-bottom:9px;border:1px solid #e6e8ef;border-radius:9px;background:#fff}.dlj-timeline .dlj-record:before{content:"";position:absolute;left:-18px;top:29px;width:17px;border-top:1px solid #e6e3ec}.delta-learning-journal .dlj-record>summary{display:flex;align-items:flex-start;gap:10px;min-height:76px;padding:12px 11px;list-style:none;cursor:pointer}.dlj-record-icon{flex:none;display:grid;place-items:center;width:29px;height:32px;border-radius:7px;background:#f3f1f7;color:#a697b8;font-size:12px}.dlj-record[data-learning=checked] .dlj-record-icon{background:#eef7f1;color:#75a489}.dlj-record-heading{flex:1;min-width:0}.dlj-record-title{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11px;line-height:1.5;font-weight:550;color:#43516a}.dlj-record-topic{display:block;margin-top:3px;font-size:8px;line-height:1.5;color:#98a1b0}.dlj-record-meta{display:block;margin-top:6px;font-size:9px;line-height:1.55;color:#7d899b}
+.dlj-learning-badge{display:inline-block;margin:7px 4px 0 0;padding:3px 6px;border:1px solid #e6ddf0;border-radius:5px;background:#f3eef9;color:#957aad;font-size:8px;line-height:1.5}.dlj-learning-badge.dlj-checked{background:#ecf7f0;border-color:#deede3;color:#4b8d68}
+.dlj-record-body{padding:0 11px 14px 50px;color:#7a879b;font-size:10px;line-height:1.7}.dlj-record-body dl{margin:0;padding-top:10px;border-top:1px solid #edf0f5}.dlj-record-body dl div+div{margin-top:9px}.dlj-record-body dt{margin:0 0 3px;font-size:8px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:#9ba4b5}.dlj-record-body dd{margin:0}.dlj-record-actions{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}.delta-learning-journal .dlj-record-actions a{display:inline-flex;align-items:center;min-height:32px;color:#7b6a91;font-size:9px;text-decoration:none}.delta-learning-journal .dlj-record-actions a:hover{text-decoration:underline}.delta-learning-journal .dlj-learn{display:inline-flex;align-items:center;justify-content:center;min-height:36px;border:1px solid #e5ddef;border-radius:6px;background:#f6f2fa;color:#9a82b1;padding:8px 10px;font-size:9px;line-height:1.4}
+.dlj-task-results{margin-top:10px}.delta-learning-journal .dlj-task-results>summary{min-height:35px;padding:8px 0;color:#698b75;font-size:10px;cursor:pointer}.dlj-task-results ol{margin:0;padding-left:17px}.dlj-task-results li{margin:8px 0 13px}.dlj-task-results strong{color:#4e8766;font-size:10px}.dlj-task-scope,.dlj-task-results small{display:block;font-size:9px}.dlj-task-results code{display:block;max-width:100%;padding:7px;margin:5px 0;border:1px solid #e4e9f0;border-radius:5px;background:#f7f9fb;white-space:pre-wrap;overflow-wrap:anywhere;font:10px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;color:#667d92}.dlj-task-results p{font-size:9px;color:#90a397}
+.dlj-label-help{margin:19px 0 8px;border-block:1px solid #eceaf1}.dlj-label-help p{margin:7px 0 11px;color:#9397a9;font-size:9px;line-height:1.7}.dlj-label-help strong{font-weight:550;color:#7e7591}.dlj-range-note,.dlj-map-note{font-size:9px;line-height:1.7;color:#8a95a5;margin:17px 0 0}.dlj-empty{text-align:center;line-height:1.8;color:#8995a7;padding:25px 12px;border:1px dashed #e4e6ee;border-radius:10px;margin:10px 0;font-size:11px}.dlj-empty strong{font-size:14px;font-weight:550}.dlj-empty p{font-size:11px;margin:8px 0 0}
+.dlj-universe{margin:0 -8px;border-radius:18px;overflow:hidden;border:1px solid #302940;background:radial-gradient(ellipse at 48% 40%,#352a50 0%,#1b172e 48%,#121020 100%);color:#ddd5ef}.dlj-universe-top{display:flex;justify-content:space-between;gap:9px;padding:16px 17px 0;font-size:10px;color:#aaa0bf}.dlj-universe-top strong{font-weight:550;color:#ded3ed}.dlj-orbit-stage{position:relative;width:100%;aspect-ratio:400/430;isolation:isolate}.dlj-orbit-stage>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.delta-learning-journal .dlj-planet{position:absolute;transform:translate(-50%,-50%);z-index:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;width:78px;height:78px;min-height:78px;padding:8px;border:1px solid #b5a4d65c;border-radius:50%;background:radial-gradient(circle at 31% 25%,#5b4d72,#332a49 56%,#211d32);color:var(--dlj-planet-color,#dacced);box-shadow:inset -6px -7px 12px #0b0a1796,0 0 24px #aa8be00d;text-align:center}.dlj-planet strong{white-space:nowrap;font-variant-numeric:tabular-nums;font-size:19px;font-weight:540;letter-spacing:-.6px}.dlj-planet span{font-size:10px;font-weight:500;line-height:1.2}.dlj-planet small{font-size:7px;color:#9ccbb0;line-height:1.2}.delta-learning-journal .dlj-planet-self{width:62px;height:62px;min-height:62px;background:radial-gradient(circle at 36% 25%,#77628f,#463654 56%,#2e253e);color:#f3e8ff;box-shadow:0 0 32px #ab85c23d,inset -4px -5px 10px #20152750}.dlj-planet-self span{font-size:9px;letter-spacing:1.6px}.dlj-planet-self strong{font-size:17px}.delta-learning-journal .dlj-planet:hover{border-color:#e0c9ff99}.delta-learning-journal .dlj-planet:focus-visible{outline:3px solid #fff;outline-offset:5px}.dlj-universe-caption{border-top:1px solid #ffffff13;padding:12px 15px;color:#a69bb9;font-size:10px;line-height:1.55;min-height:58px}
+.dlj-topic-pages{display:flex;align-items:center;justify-content:space-between;gap:5px;margin:12px 0;font-size:8px;color:#8c859e}.delta-learning-journal .dlj-topic-pages button{min-height:32px;padding:5px 7px;border:1px solid #e3ddeb;border-radius:6px;background:#fff;color:#897497;font-size:9px}.dlj-map-key{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0 4px;font-size:8px;line-height:1.6;color:#9098a8}
+.delta-learning-journal .dlj-more{display:block;width:100%;min-height:40px;margin-top:16px;border:1px solid #e3e7ef;border-radius:8px;background:#fafbfc;color:#7a708b;font-size:10px;padding:8px 10px}
+.delta-learning-journal .dlj-back-map{min-height:36px;border:0;background:transparent;color:#8e76a2;font-size:10px;padding:5px 0;margin:0 0 12px}.dlj-topic-heading{display:flex;align-items:center;justify-content:space-between;gap:9px;margin:0 0 16px}.dlj-topic-heading h2{margin:0;font-size:23px;line-height:1.25;letter-spacing:-.6px;font-weight:630}.dlj-topic-heading h2:focus{outline:none}.dlj-topic-heading>span{font-size:10px;color:#8b94a4}.dlj-related-search{margin-bottom:12px}
+@media(max-width:360px){.dlj-time{gap:5px;font-size:8px}.delta-learning-journal .dlj-time button{font-size:8px;padding-inline:6px}.delta-learning-journal .dlj-history-tabs button{font-size:9px;padding-inline:8px}.delta-learning-journal .dlj-record>summary{padding:11px 9px;gap:8px}.dlj-record-icon{width:26px;height:29px;font-size:10px}.dlj-record-title{font-size:10px}.dlj-record-meta{font-size:8px}.dlj-record-body{padding-left:43px;padding-right:9px}.delta-learning-journal .dlj-planet{width:65px;height:65px;min-height:65px;padding:7px}.dlj-planet strong{font-size:16px}.dlj-planet span{font-size:9px}.delta-learning-journal .dlj-planet-self{width:53px;height:53px;min-height:53px}.dlj-universe-caption{font-size:9px}.dlj-map-key{font-size:7px}}
+
+
+/* Shared source previews in History and every My map video list. */
+.delta-learning-journal .dlj-record { container-type: inline-size; }
+.delta-learning-journal .dlj-record .dlj-record-preview {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 96px;
+  height: 54px;
+  margin-top: 1px;
+  overflow: hidden;
+  border: 1px solid #e0d3e9;
+  border-radius: 8px;
+  background: #f2ecf7;
+}
+.delta-learning-journal .dlj-record .dlj-record-thumbnail {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.delta-learning-journal .dlj-record .dlj-record-preview > .dlj-record-icon {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  font-size: 18px;
+}
+.delta-learning-journal .dlj-record .dlj-record-preview > [hidden] { display: none !important; }
+.delta-learning-journal .dlj-record .dlj-record-title-link {
+  min-height: 40px;
+  color: #4a355b;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.delta-learning-journal .dlj-record-title-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+@container (max-width: 340px) {
+  .delta-learning-journal .dlj-record .dlj-record-preview { width: 72px; height: 41px; }
+}

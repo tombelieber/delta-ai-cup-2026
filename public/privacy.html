@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Privacy | Delta</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#f7f5fa;color:#30263e;font:16px/1.75 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:800px;margin:40px auto;padding:38px;background:#fff;border:1px solid #e7dfef;border-radius:22px}nav,footer{display:flex;gap:20px;flex-wrap:wrap}a{color:#705293;text-underline-offset:3px}a:focus-visible{outline:3px solid #ad94cb;outline-offset:4px}h1{font-size:36px;letter-spacing:-1px;line-height:1.2;margin:30px 0 12px}h2{font-size:21px;margin:32px 0 8px}p,ul{margin:10px 0}li{margin:6px 0}.note{padding:16px 20px;background:#f4eefb;border-left:3px solid #9576b8;border-radius:4px}.meta{color:#776982;font-size:13px}footer{margin-top:36px;padding-top:20px;border-top:1px solid #e7dfef;font-size:14px}@media(max-width:600px){main{margin:0;padding:26px 22px;border:0;border-radius:0;min-height:100vh}h1{font-size:30px}}
+  </style>
+</head>
+<body>
+<main>
+  <nav aria-label="Delta"><a href="/">Delta</a><a href="/learn?study=1">Learning lab</a><a href="/support.html">Help</a></nav>
+  <h1>Your learning, with clear boundaries.</h1>
+  <p class="meta">Delta privacy notice · Updated 18 October 2026</p>
+  <p>Delta helps you learn from YouTube content, practise and return to source-linked material. This notice covers the Delta website and Chrome extension.</p>
+  <p class="note"><strong>Local records do not mean all processing is local.</strong> Viewing records and your saved learning library stay in this browser profile. When you request AI help, selected content is processed by Delta's backend and Google's Gemini API. Google sign-in and an account credit ledger use Firebase.</p>
+
+  <h2>What stays in your browser</h2>
+  <p>The extension stores YouTube video links, titles, available creator information, observed playback ranges, optional learning goals, imported history, topic groupings and learning results in Chrome local storage. Playback recording is enabled by default; you can turn it off in <strong>Watching records &amp; settings</strong>. Recording a range does not establish understanding.</p>
+  <p>YouTube account-history import requires you to confirm the visible account. Optional Chrome page-visit import asks for Chrome's history permission, filters records to YouTube video links and lets you choose what to import. These imports do not delete or change your original YouTube or Chrome history.</p>
+  <p>Website learning records use browser local storage separated by signed-in user and service. Website and extension libraries are separate; signing into Google does not synchronise them across devices. A local backup or PowerPoint you download is a file you control. Treat backups as private: they may include access capabilities for your saved lessons.</p>
+
+  <h2>What is sent for AI features</h2>
+  <p>When you create a lesson, Delta sends the selected caption excerpt, video identity and title, chosen explanation context, experience level and selected prior learning concepts to its backend and Gemini. When you ask a follow-up, your question and relevant excerpts from the saved lessons you supply are sent for a source-based answer. A source needs readable timestamped captions; a YouTube URL alone does not guarantee usable content.</p>
+  <p>If you choose AI topic analysis, the selected video metadata is processed to suggest topic groupings. Local history and playback recording do not by themselves authorise uploading your complete browsing history. Delta does not request your Google password, read unrelated websites or sell browsing history for advertising.</p>
+  <p><strong>Gemini provider processing:</strong> this release uses the Gemini Developer API's unpaid service. Under <a href="https://ai.google.dev/gemini-api/terms" rel="noreferrer">Google's Gemini API terms</a>, Google may use submitted content and generated responses to improve its services; human reviewers may process that content. Do not submit sensitive, confidential or personal information in captions, questions or explanation context. Google's own terms and privacy policy apply to that processing.</p>
+
+  <h2>Google sign-in and free AI allowance</h2>
+  <p>Google sign-in is handled through Firebase Authentication. Delta verifies the resulting identity token on its backend. Firebase processes the Google account identity needed to sign you in; Delta does not receive your password. The extension can open the learning website for sign-in. Website session authentication is separate from extension playback records.</p>
+  <p>Firestore stores a hashed user identifier, numeric credit totals, hashed session and operation identifiers, operation status and accounting timestamps. The credit ledger does not store your viewing history, captions, questions or lesson text. Credit is tied to your verified account so clearing browser data cannot create another allowance.</p>
+  <p>The free allowance is up to <strong>US$0.50 of estimated AI usage per account for its lifetime</strong>, with a separate budget below US$0.10 for each learning session. It is not cash, a recurring balance or a promise of unlimited availability. Unknown failed usage may remain reserved. Shared provider rate limits can temporarily pause requests even when you have credit.</p>
+
+  <h2>Backend processing and retention</h2>
+  <p>The backend runs on Google Cloud Run. It temporarily processes requests and keeps an encrypted private runtime cache of generated lessons and source context, with separate numeric cost receipts. This cache is not a cloud library that synchronises your learning across devices. Cloud Run's runtime storage can disappear when an instance is replaced.</p>
+  <p>In Google sign-in mode, saved lessons can remain usable after seven days: each request verifies your current Google identity and ownership, and possession of an old access capability alone does not grant access. Anonymous local or guarded-mode capabilities expire after seven days. A downloaded PowerPoint remains your local file. Signing out hides the current website library but does not erase its local records or the lifetime credit ledger. Firebase identity records and the numeric ledger remain to operate authentication and prevent allowance abuse. Hosting and authentication providers may retain operational metadata such as request timing, IP addresses and security logs under their own policies.</p>
+
+  <h2>Your controls</h2>
+  <ul>
+    <li>Turn playback recording off without deleting previously saved records.</li>
+    <li>Decline optional history import, revoke Chrome history permission or remove Delta's imported copy through the extension.</li>
+    <li>Export a private local backup or PowerPoint before clearing site or extension data. Clearing that data removes local records and can be irreversible.</li>
+    <li>Sign out to stop using the website under the current Google account. This does not reset used or reserved credit.</li>
+  </ul>
+  <p>For account-data or privacy requests, contact the Delta operator through the channel that supplied this build. A public support contact and store listing have not yet been configured; do not send passwords, API keys, identity tokens or private learning backups. See <a href="/support.html">Help</a> for safe troubleshooting.</p>
+  <footer><a href="/support.html">Help and limitations</a><a href="https://policies.google.com/privacy" rel="noreferrer">Google Privacy Policy</a></footer>
+</main>
+</body>
+</html>

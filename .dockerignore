@@ -1,0 +1,11 @@
+**
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!index.html
+!vite.config.mjs
+!src/**
+!extension/**
+!public/**
+!server/**
+!Dockerfile
