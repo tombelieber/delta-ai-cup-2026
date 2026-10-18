@@ -4,6 +4,7 @@
 
 - [Get started and install the Chrome pilot](https://delta-511903.web.app)
 - [Open the learning website](https://delta-assistant-613646062582.us-central1.run.app/learn?study=1)
+- [Watch the 170-second working demo](https://www.youtube.com/watch?v=B6xKy5bTu0o) — My map visual walkthrough starts at 1:38.
 - [Privacy](https://delta-assistant-613646062582.us-central1.run.app/privacy.html) · [Support](https://delta-assistant-613646062582.us-central1.run.app/support.html)
 
 ## Product and pilot scope

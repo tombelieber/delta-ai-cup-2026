@@ -3,7 +3,7 @@
   "sourceBaseCommit": "6f659082b5a155866bc64bc6dbe6853f9e54cfb6",
   "historyIncluded": false,
   "published": true,
-  "filesSha256": "bdb09889392005e4e2595c92bf9a1440975522bcd6e93236746c69148a030467",
+  "filesSha256": "19bb56fc7f4b2c1c02800cdeefd8956f69554afa480736fb34ef540a0bd34a17",
   "files": [
     {
       "path": ".dockerignore",
@@ -830,10 +830,10 @@
     },
     {
       "path": "README.md",
-      "bytes": 4268,
-      "sha256": "9b9c1752ebd367a41b1a931c28034a3d93a8b2d935d8f5bda4b023908f1e96a9",
+      "bytes": 4397,
+      "sha256": "f5289664d6ddd35de2867ef37a0676f2b95ef4271d752ef8bc25e565403a940c",
       "mode": "644",
-      "transformation": "public product/setup documentation generated from locked source and aggregate engineering evidence"
+      "transformation": "Public product/setup documentation generated from locked source and aggregate engineering evidence; includes the independently accessible single working-demo link."
     },
     {
       "path": "server/catalogue.mjs",
