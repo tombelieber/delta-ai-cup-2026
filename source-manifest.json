@@ -3,7 +3,7 @@
   "sourceBaseCommit": "6f659082b5a155866bc64bc6dbe6853f9e54cfb6",
   "historyIncluded": false,
   "published": true,
-  "filesSha256": "556576303ef6109b3a366350e341c18ea70e1bd3ff49d3ec5def09681c98cb89",
+  "filesSha256": "bdb09889392005e4e2595c92bf9a1440975522bcd6e93236746c69148a030467",
   "files": [
     {
       "path": ".dockerignore",
@@ -113,10 +113,12 @@
     },
     {
       "path": "docs/submission/performance.md",
-      "bytes": 3347,
-      "sha256": "41b2ff49328882105ef6e2c212d98fb59d69dfc97e346316f17e36b83b4b2a1a",
+      "bytes": 4527,
+      "sha256": "5adbc3058545b296839fb790242001f8e5040e7b08bb87521236a7ee3e43d4c4",
       "mode": "644",
-      "transformation": "public product/setup documentation generated from locked source and aggregate engineering evidence"
+      "transformation": "Public aggregate performance summary; added anonymous completed Map cohort and incremental estimate, excluding private records, account balances, operator configuration and detailed evidence paths.",
+      "sourceCommit": "318506ff2ae5fc9b7f34bd2878c1c38c65e8caa4",
+      "sourceSha256": "e7e8c9ed254203c529feb9a9da9766559c7d54b88f9df081323d1dcc6b362219"
     },
     {
       "path": "docs/submission/setup.md",
@@ -1476,6 +1478,13 @@
         "serverTestCount": 368,
         "scope": "Approved private candidate gate; public candidate gate is separately rechecked before publication."
       }
+    },
+    {
+      "sourceCommit": "318506ff2ae5fc9b7f34bd2878c1c38c65e8caa4",
+      "paths": [
+        "docs/submission/performance.md"
+      ],
+      "scope": "Sanitized documentation update only: anonymous Map completion counts, HTTP outcome denominators and incremental estimated usage; no private inputs, account balances, operational receipts or runtime changes."
     }
   ]
 }

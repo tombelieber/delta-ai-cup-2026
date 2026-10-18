@@ -9,9 +9,17 @@ These are small historical curated observations, not representative model accura
 | Initial four-topic run | Three of four first-pass lessons completed; HTTP 200 for Finance / IELTS / SUMIF; Accounting returned application 502 | One sample per topic on an earlier runtime |
 | Changed Accounting candidate | One initial attempt succeeded, HTTP 200, 10.3709 seconds whole-request latency, US$0.013485 estimated debit | Changed prompt/runtime; not an unchanged retry or a four-topic first-pass result |
 | Learning exercise/export checks | Eight distinct AI-authored exercise keys matched across four topics; four actual seven-slide PPTX files saved across two versions | Key agreement is not independent factual accuracy or learner improvement |
-| Map workflow observation | 100 metadata records imported and retained after reload; 24 reviewed, 20 grouped and four unresolved, with 76 pending when the provider quota gate stopped work | Partial processing; model confidence enum is not measured precision |
+| Earlier Map workflow observation | 100 metadata records imported and retained after reload; 24 reviewed, 20 grouped and four unresolved, with 76 pending when the provider quota gate stopped work | Partial processing; model confidence enum is not measured precision |
 
 Earlier whole-request lesson times were Finance 11.3951 s, IELTS 13.0670 s and SUMIF 8.9412 s; failed Accounting took 18.0854 s. These include backend and provider interaction. Provider-only latency and browser elapsed time were not measured.
+
+## Completed Map cohort
+
+Eight new classification HTTP attempts were observed across two changed runtime versions: seven returned HTTP 200 and one returned HTTP 502 with `invalid_provider_output`. A diagnostics-only patch preceded the bounded resume; there were no automatic retries or prompt/schema changes. This 7/8 HTTP-success result is separate from the lesson-generation denominators and does not measure classification accuracy.
+
+The Map reached 100/100 reviewed: 80 grouped and 20 unresolved, with no items remaining ready for classification. Reload preserved these results. Metadata grouping is an organizational outcome, not evidence of knowledge or learning improvement. Private record contents and topic labels are excluded.
+
+All eight new operations settled with US$0.049586 incremental estimated usage and no new outstanding reservations in that cohort. This is a conservative application estimate, not a provider invoice; earlier held reservations are outside this incremental figure. A subsequent one-question Recall check succeeded. The budget snapshot preceded that request, so it does not establish a post-Recall balance, new latency or learning gain.
 
 ## Historical local experiment
 
