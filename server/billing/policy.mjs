@@ -26,6 +26,8 @@ export function orderState(value){
     &&typeof value.granted==='boolean'&&typeof value.capacityReserved==='boolean'&&integer(value.importsUsed)&&value.importsUsed<=100
     &&integer(value.sessionsUsed)&&integer(value.sessionsHeld)&&value.sessionsUsed+value.sessionsHeld<=20&&integer(value.createdAt)&&integer(value.updatedAt));
   for(const name of ['available','held','spent'])check(object(value[name])&&Object.keys(value[name]).length===3&&Object.keys(CAPACITY).every(k=>integer(value[name][k])));
+  check(!value.granted||value.capacityReserved);
+  if(value.status==='granted'){check(value.granted&&value.capacityReserved&&value.checkoutId&&value.paymentIntentId);for(const k of Object.keys(CAPACITY))check(value.available[k]+value.held[k]+value.spent[k]===CAPACITY[k]);}
   check(value.checkoutId===null||/^cs_test_[A-Za-z0-9]+$/.test(value.checkoutId));
   check(value.paymentIntentId===null||/^pi_[A-Za-z0-9]+$/.test(value.paymentIntentId));
   check(integer(value.expiresAt)&&(value.checkoutUrl===null||checkoutUrl(value.checkoutUrl,value.checkoutId)));

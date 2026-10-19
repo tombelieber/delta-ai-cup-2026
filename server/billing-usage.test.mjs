@@ -17,3 +17,10 @@ test('twenty session units cannot be held twice across clients; failed generatio
   assert.equal((await ledger.snapshot('alice')).sessions.reserved,20);
   assert.equal((await ledger.snapshot('bob')).sessions.remaining,0);
 });
+
+test('paid dispatch rechecks shared project backing and stops after a reported project overrun',async()=>{
+  const f=await fixture();await f.usage.begin('alice','source');const account=f.usage.forUser('alice'),original=structuredClone(f.store.records.get(STUDY_PROJECT_BUDGET_PATH));
+  f.store.records.set(STUDY_PROJECT_BUDGET_PATH,{...original,reservedMicros:0});await assert.rejects(account.reserve({operationId:'unbacked',sessionId:'source',amountUsd:.01}),{code:'billing_ledger_invalid'});
+  f.store.records.set(STUDY_PROJECT_BUDGET_PATH,{...original,spentMicros:8000000});await assert.rejects(account.reserve({operationId:'overrun',sessionId:'source',amountUsd:.01}),{code:'project_budget_exhausted'});
+  assert.equal([...f.store.records.keys()].some(p=>p.startsWith('studyPaidOperations/')),false);
+});

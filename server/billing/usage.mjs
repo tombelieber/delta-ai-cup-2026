@@ -75,6 +75,9 @@ export function createPaidUsage({store,key,now=Date.now}){
           const [existing]=await tx.read([opPath]),{s,order}=await owned(tx,uid,sessionId);
           if(existing){check(existing.sessionId===sessionId&&existing.reservedMicros===amount);return {created:false,operationState:existing.status};}
           requireStudy(order.status==='granted'&&['generating','complete','classification'].includes(s.status),'paid_allowance_exhausted',402);
+          const [rawBudget]=await tx.read([STUDY_PROJECT_BUDGET_PATH]),project=projectBudgetState(rawBudget);
+          check(project.reservedMicros>=Object.values(order.available).reduce((n,v)=>n+v,0)+Object.values(order.held).reduce((n,v)=>n+v,0));
+          requireStudy(project.reservedMicros+project.spentMicros<=project.limitMicros,'project_budget_exhausted',429,'Shared project capacity is paused. Saved results remain available.');
           requireStudy(amount>0&&s.reservedMicros+s.spentMicros+amount<100000,'video_budget_exceeded',429);
           requireStudy(order.available[kind]>=amount,'paid_capacity_exhausted',429,'The funded allocation is used or reserved. Saved results remain available.');
           requireStudy(s.operationKeys.length<128,'paid_capacity_exhausted',429);

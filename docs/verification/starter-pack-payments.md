@@ -11,7 +11,7 @@ Status: implemented and locally verified; **not deployed, not a live payment lau
 
 ## Payment and abuse boundaries
 
-Checkout parameters are server-owned: one pack, USD500 cents, card-only, no promotion code, no adaptive currency or automatic tax, manual capture. Before capture, the transaction reserves USD2.50 from the **existing unchanged USD10 project ledger**: learning USD2, classification USD0.25, recovery USD0.25. Insufficient capacity cancels the authorization instead of granting an unfunded pack.
+Checkout parameters are server-owned: one pack, USD500 cents, card-only, no promotion code, no adaptive currency or automatic tax, manual capture. Before capture, the transaction reserves USD2.50 from the **existing unchanged USD10 project ledger**: learning USD2, classification USD0.25, recovery USD0.25. Insufficient capacity cancels the authorization instead of granting an unfunded pack. Each paid AI dispatch also rechecks global backing and pauses if the shared project reports an overrun; it cannot treat a previously granted pack as authority to bypass the project cap.
 
 Only explicitly configured verified test UIDs may open or fulfil Sandbox purchases, preventing arbitrary public test cards from minting real Gemini spending capacity. Expected account, test mode, full amount, item, owner, order and PaymentIntent bindings are checked from canonical Stripe state. A signed event or browser return alone cannot grant a pack. Unknown capture keeps capacity reserved; reconciliation checks the existing payment. Duplicate/out-of-order delivery cannot duplicate the grant. Confirmed refund/dispute withdraws unused rights while in-flight usage still settles conservatively.
 
@@ -21,7 +21,7 @@ The sole `/api/billing/stripe-webhook` route verifies the exact bounded raw byte
 
 | Check | Result |
 |---|---|
-| Server suite | 412 passed; 0 failed |
+| Server suite | 413 passed; 0 failed |
 | Extension suite | 310 passed; 0 failed |
 | Competition packaging suite | 9 passed; 0 failed |
 | Web and MV3 builds | Passed |
