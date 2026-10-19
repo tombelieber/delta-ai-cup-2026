@@ -1,3 +1,4 @@
+import {admitImportBatch,importAdmissionMessage} from './import-admission.js';
 import { validVideoId } from './store.js';
 
 // Imported visits are kept apart from observed playback and checked learning results.
@@ -76,9 +77,9 @@ function trustedPanel(api, panelSender, sender) {
   } catch { return false; }
 }
 
-export function createHistoryImportHandler({ api, panelSender, now = Date.now }) {
+export function createHistoryImportHandler({ api, panelSender, now = Date.now, admitImports }) {
   // The queue only serializes active events. All durable data and pending tokens live in storage.
-  let writes = Promise.resolve();
+  let writes = Promise.resolve(), admission = null;
   const run = (operation) => {
     const result = writes.then(operation, operation);
     writes = result.catch(() => {});
@@ -106,6 +107,7 @@ export function createHistoryImportHandler({ api, panelSender, now = Date.now })
   return async function handleHistoryImport(message, sender) {
     if (!trustedPanel(api, panelSender, sender)) reject('History import is available only in the Delta extension panel.');
     if (!MESSAGE_TYPES.has(message?.type)) reject('This history import action is not supported.');
+    if(['HISTORY_CANCEL','HISTORY_CLEAR','HISTORY_DISCONNECT','HISTORY_PREVIEW'].includes(message.type))admission?.abort();
     return run(async () => {
       try {
         if (message.type === 'HISTORY_STATUS') return await status();
@@ -151,11 +153,16 @@ export function createHistoryImportHandler({ api, panelSender, now = Date.now })
           await clearPreview();
           reject('This history preview has expired or changed. Preview your visits again.');
         }
-        if (!Array.isArray(message.videoIds) || !message.videoIds.length || message.videoIds.length > MAX_PREVIEW_ROWS
+        if (!Array.isArray(message.videoIds) || !message.videoIds.length || message.videoIds.length > 100
           || message.videoIds.some((videoId) => !validVideoId(videoId))) reject('Choose valid videos from the current history preview.');
         const previewRows = cleanVisits(preview.visits, preview.createdAt, { startTime: Math.max(0, preview.createdAt - preview.days * DAY_MS) }).slice(0, MAX_PREVIEW_ROWS);
         const selected = new Set(message.videoIds);
         if ([...selected].some((videoId) => !previewRows.some((visit) => visit.videoId === videoId))) reject('The selection does not match this history preview. Preview your visits again.');
+        const controller=new AbortController();admission=controller;
+        try{await admitImportBatch(admitImports,preview.token,[...selected],controller.signal);}
+        catch(error){reject(importAdmissionMessage(error));}
+        await requirePermission();
+        if(currentTime()>=preview.expiresAt)reject('This history preview has expired. Preview your visits again; admitted videos can be retried without using another import.');
         const saved = (await api.storage.local.get(HISTORY_IMPORT_KEY))[HISTORY_IMPORT_KEY];
         const before = normalizeImportedHistory(saved, time);
         const merged = new Map(before.visits.map((visit) => [visit.videoId, visit]));
@@ -170,12 +177,13 @@ export function createHistoryImportHandler({ api, panelSender, now = Date.now })
         const changed = JSON.stringify(visits) !== JSON.stringify(before.visits)
           || JSON.stringify(saved) !== JSON.stringify({ schemaVersion: 1, visits: before.visits, updatedAt: before.updatedAt });
         const updatedAt = changed ? time : before.updatedAt;
+        if(admission?.signal.aborted)reject('Import stopped. Your saved records are kept.');
         if (changed) await api.storage.local.set({ [HISTORY_IMPORT_KEY]: { schemaVersion: 1, visits, updatedAt } });
         return { ok: true, granted: true, visits, updatedAt };
       } catch (error) {
         if (error instanceof HistoryImportError) throw error;
         throw new HistoryImportError('Chrome history import could not be completed. Please try again; you can continue learning without importing.');
-      }
+      }finally{admission=null;}
     });
   };
 }

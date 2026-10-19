@@ -6,6 +6,7 @@ import { createLearningHandler, LEARNING_STORE_PREFIX, learningMetadata, SKILLS_
 import { createHistoryImportHandler } from './history-import.js';
 import { createAccountHistoryHandler } from './account-history.js';
 import { createLearningLibrary, learningEntryState, PANEL_INTENT_KEY } from './learning-library.js';
+import { createImportAdmission } from './import-admission.js';
 import { createHostedActionBroker } from './hosted-actions.js';
 
 export const ANALYSIS_PREPARED_KEY = 'zhixin.analysis.prepared.v1';
@@ -28,11 +29,12 @@ export function installBackground(api, now = Date.now, fetchImpl = globalThis.fe
     const skills = (await api.storage.local.get(SKILLS_STORE_KEY))[SKILLS_STORE_KEY];
     return { learningEndpoint, learningRevision: metadata.revision, learningWriterId: metadata.writerId, ...skillsMetadata(skills), ...await learningEntryState(api.storage.local, videoId) };
   };
-  const historyImport = createHistoryImportHandler({ api, panelSender, now });
-  const accountHistory = createAccountHistoryHandler({ api, panelSender, now });
+  const hostedActions = createHostedActionBroker({ api, readEndpoint, panelSender, now });
+  const admitImports = createImportAdmission({api,broker:hostedActions});
+  const historyImport = createHistoryImportHandler({ api, panelSender, now, admitImports });
+  const accountHistory = createAccountHistoryHandler({ api, panelSender, now, admitImports });
   const library = createLearningLibrary({ api, repository, readEndpoint, panelSender, contentSender, now });
   const handleLearning = createLearningHandler({ api, repository, readEndpoint, panelSender, contentSender, fetchImpl });
-  const hostedActions = createHostedActionBroker({ api, readEndpoint, panelSender, now });
   async function handle(message, sender) {
     if (typeof message?.type === 'string' && message.type.startsWith('DELTA_HOSTED_ACTION_')) return hostedActions.handleInternal(message, sender);
     if (typeof message?.type === 'string' && message.type.startsWith('ACCOUNT_HISTORY_')) return accountHistory(message, sender);

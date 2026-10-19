@@ -47,7 +47,7 @@ test('public map needs no owner code and requests only its exact host before che
   assert.equal(result.status.processed, 1); assert.equal(result.status.pending, 0);
 });
 
-test('public queue uses bounded twelve-video batches and saves partial results without resubmitting unresolved metadata', async () => {
+test('public queue uses bounded ten-video batches and saves partial results without resubmitting unresolved metadata', async () => {
   const sizes = [];
   const { controller, data } = harness({ selectedEndpoint: publicEndpoint, entries: Array.from({ length: 25 }, (_, n) => video(n)), fetchImpl: async () => enabledConfig(),
     openHostedAction: async ({ payload }) => {
@@ -57,7 +57,7 @@ test('public queue uses bounded twelve-video batches and saves partial results w
   await controller.begin();
   let result;
   for (let n = 0; n < 3; n++) result = await controller.classifyNext();
-  assert.deepEqual(sizes, [12, 12, 1]);
+  assert.deepEqual(sizes, [10, 10, 5]);
   assert.equal(result.status.pending, 0); assert.equal(result.status.reviewed, 25); assert.equal(result.status.processed, 22);
   assert.equal(Object.keys(data[MAP_CLASSIFICATION_KEY].reviews).length, 25);
   assert.equal((await controller.classifyNext()).batch.submitted, 0); assert.equal(sizes.length, 3);

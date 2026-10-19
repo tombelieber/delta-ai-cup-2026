@@ -2,7 +2,7 @@ import {StudyError,requireStudy} from './source.mjs';
 import {createStudyAccess} from './access.mjs';
 import {createStudyFailureDiagnostic} from './diagnostics.mjs';
 
-const POST_ACTIONS=new Set(['generate','answer','ask','pptx','preparePptx','inspect','classify']);
+const POST_ACTIONS=new Set(['generate','answer','ask','pptx','preparePptx','inspect','classify','registerImports']);
 const DOWNLOAD=/^download\/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
 function createUidAdmission({requestsPerMinute=60,maxConcurrent=2,maxUsers=500}={},now=Date.now){
   for(const [value,max] of [[requestsPerMinute,6000],[maxConcurrent,32],[maxUsers,5000]]){
@@ -27,7 +27,7 @@ function createUidAdmission({requestsPerMinute=60,maxConcurrent=2,maxUsers=500}=
   };
 }
 
-export function createStudyRouter(service,{accounts,classificationService,admission,now=Date.now,onDiagnostic}={}){
+export function createStudyRouter(service,{accounts,entitlements,classificationService,admission,now=Date.now,onDiagnostic}={}){
   const access=service?.access||createStudyAccess();
   requireStudy(access.mode!=='google'||['authenticate','config','forUser'].every(name=>typeof accounts?.[name]==='function'),
     'firebase_configuration_invalid',503);
@@ -44,7 +44,7 @@ export function createStudyRouter(service,{accounts,classificationService,admiss
     const denied=access.check(request,{download});
     if(denied){json(denied.status,{error:denied.code,message:denied.message});return true;}
     if(action==='auth-config'&&request.method==='GET'){json(200,accounts?.config()||{enabled:false,limitUsd:.5});return true;}
-    const method=POST_ACTIONS.has(action)?'POST':['session','catalogue'].includes(action)||DOWNLOAD.test(action)?'GET':null;
+    const method=POST_ACTIONS.has(action)?'POST':['session','catalogue','entitlements'].includes(action)||DOWNLOAD.test(action)?'GET':null;
     if(!method){json(404,{error:'not_found'});return true;}
     // This existing process-local peer limit is a cheap admission bound, not
     // an end-user IP identity behind Cloud Run. It must precede Firebase RPCs.
@@ -61,7 +61,7 @@ export function createStudyRouter(service,{accounts,classificationService,admiss
     };
     let principal,release;
     try{
-      if(access.mode==='google'||action==='session'){
+      if(access.mode==='google'||['session','entitlements','registerImports'].includes(action)){
         try{
           requireStudy(typeof accounts?.authenticate==='function','authentication_required',401);
           principal=await accounts.authenticate(request);
@@ -76,6 +76,12 @@ export function createStudyRouter(service,{accounts,classificationService,admiss
         try{json(200,{user:{uid:principal.uid},quota:await accounts.forUser(principal.uid).snapshot()});}
         catch(error){await actionFailure(error);}return true;
       }
+      if(action==='entitlements'){
+        try{
+          requireStudy(typeof entitlements?.forUser==='function','import_ledger_unavailable',503,'Import allowance is unavailable. Saved records remain available.');
+          json(200,await entitlements.forUser(principal.uid).snapshot());
+        }catch(error){await actionFailure(error);}return true;
+      }
       if(download){
         try{const file=await service.downloadPptx(action.slice('download/'.length),{principal});response.writeHead(200,{'content-type':file.contentType,'content-length':file.buffer.length,'cache-control':'no-store','content-disposition':`attachment; filename="${file.filename}"`});response.end(file.buffer);}
         catch(error){await actionFailure(error,'export_unavailable');}return true;
@@ -85,10 +91,19 @@ export function createStudyRouter(service,{accounts,classificationService,admiss
       }
       if(request.headers['content-type']?.split(';')[0]?.trim()!=='application/json'){json(415,{error:'unsupported_media_type'});return true;}
       try{
-        let input;try{input=JSON.parse(await readBody(request,350000));}catch(error){if(error.status===413)throw error;throw new StudyError('invalid_request');}
-        if(action==='classify'){
+        let input;try{input=JSON.parse(await readBody(request,action==='registerImports'?16384:350000));}catch(error){if(error.status===413)throw error;throw new StudyError('invalid_request');}
+        if(action==='registerImports'){
+          requireStudy(typeof entitlements?.forUser==='function','import_ledger_unavailable',503,'Import allowance is unavailable. Saved records remain available.');
+          json(200,await entitlements.forUser(principal.uid).register(input));
+        }
+        else if(action==='classify'){
           requireStudy(principal?.uid,'authentication_required',401);
           requireStudy(typeof classificationService?.classify==='function','classification_unavailable',503,'Map analysis is unavailable. Your saved records are kept.');
+          if(access.mode==='google'){
+            requireStudy(Array.isArray(input?.videos)&&input.videos.length>0&&input.videos.length<=12,'invalid_classification_input',400);
+            requireStudy(typeof entitlements?.forUser==='function','import_ledger_unavailable',503,'Import allowance is unavailable. Saved records remain available.');
+            await entitlements.forUser(principal.uid).assertRegistered(input?.videos?.map(video=>video?.videoId));
+          }
           json(200,await classificationService.classify(input,{principal}));
         }
         else if(action==='pptx'){const result=await service.exportPptx(input,{principal});response.writeHead(200,{'content-type':result.contentType,'content-length':result.buffer.length,'cache-control':'no-store','content-disposition':`attachment; filename="${result.filename}"`});response.end(result.buffer);}

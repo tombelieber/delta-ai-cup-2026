@@ -128,6 +128,7 @@ test('unknown backend StudyError codes are generic and authentication denial sta
 async function classifyThroughRouter(classificationService,input){
   let result;const events=[];
   const router=createStudyRouter({access:{mode:'google',check:()=>null}},{classificationService,
+    entitlements:{forUser:()=>({assertRegistered:async()=>{}})},
     accounts:{config:()=>({enabled:true}),authenticate:async()=>({uid:privateValue}),forUser(){throw Error('unused');}},
     onDiagnostic:event=>events.push(event)});
   await router({request:{method:'POST',headers:{'content-type':'application/json'}},url:new URL('https://test/api/study/classify'),response:{},rateAllowed:()=>true,

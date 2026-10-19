@@ -55,7 +55,7 @@ test('classification conversion and real router failure logging preserve safe se
   const service=createStudyClassificationService({env:{GEMINI_MODEL:'gemini-3.8-flash'},
     accounts:{forUser:()=>({check:async()=>{}})},provider:{classifyMetadata:async()=>validateOutput({groups:[{...group(),videoIds:['private-id!']}]},videos)}});
   const router=createStudyRouter({access:{mode:'google',check:()=>null}},
-    {classificationService:service,accounts:{config:()=>({enabled:true}),authenticate:async()=>({uid:privateValue}),forUser:()=>({})},onDiagnostic:event=>events.push(event)});
+    {classificationService:service,entitlements:{forUser:()=>({assertRegistered:async()=>{}})},accounts:{config:()=>({enabled:true}),authenticate:async()=>({uid:privateValue}),forUser:()=>({})},onDiagnostic:event=>events.push(event)});
   let response;
   await router({request:{method:'POST',headers:{'content-type':'application/json'}},response:{},
     url:new URL('https://study.example/api/study/classify'),json:(status,body)=>{response={status,body};},

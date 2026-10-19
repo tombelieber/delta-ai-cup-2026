@@ -2,6 +2,7 @@ import { DEFAULT_API_ENDPOINT, normalizeApiEndpoint } from './analysis-client.js
 import { validVideoId } from './store.js';
 import { metadataForMap, validMapLabel } from './map-model.js';
 import { validateMapAnalysisResponse } from './map-analysis-client.js';
+import { importPayload, importReceipt } from './import-contract.js';
 import { PANEL_INTENT_KEY } from './learning-library.js';
 
 export const HOSTED_ACTIONS_KEY='delta.hosted-actions.v1';
@@ -38,17 +39,17 @@ export function createHostedActionBroker({api,readEndpoint,panelSender,now=Date.
     let changed=false;
     for(const [id,expiresAt]of Object.entries(state.results))if(!Number.isFinite(expiresAt)||expiresAt<=now()){delete state.results[id];await api.storage.session.remove(hostedActionResultKey(id));changed=true;}
     for(const [nonce,pending]of Object.entries(state.pending))if(!Number.isFinite(pending.expiresAt)||pending.expiresAt<=now()){
-      delete state.pending[nonce];if(pending.action==='classify')await finish(state,pending,'cancelled',null,'This action expired. Open it again from Delta.');changed=true;
+      delete state.pending[nonce];if(['classify','imports'].includes(pending.action))await finish(state,pending,'cancelled',null,'This action expired. Open it again from Delta.');changed=true;
     }
     if(changed)await persist(state);return state;
   }
   async function finish(state,pending,status,result=null,error='',details={}){
     delete state.pending[pending.nonce];
-    if(pending.action!=='classify')return;
+    if(!['classify','imports'].includes(pending.action))return;
     const ids=Object.keys(state.results);while(ids.length>=16){const id=ids.shift();delete state.results[id];await api.storage.session.remove(hostedActionResultKey(id));}
     state.results[pending.requestId]=now()+HOSTED_ACTION_TTL_MS;
-    const httpStatus=[400,401,403,409,422,429,500,503,504].includes(details.status)?details.status:null;
-    const code=httpStatus===429?'QUOTA':[401,403].includes(httpStatus)?'AUTH_REQUIRED':status==='cancelled'?'CANCELLED':'HOSTED_UNAVAILABLE';
+    const httpStatus=[400,401,402,403,409,422,429,500,503,504].includes(details.status)?details.status:null;
+    const code=[402,429].includes(httpStatus)?'QUOTA':[401,403].includes(httpStatus)?'AUTH_REQUIRED':status==='cancelled'?'CANCELLED':'HOSTED_UNAVAILABLE';
     await api.storage.session.set({[hostedActionResultKey(pending.requestId)]:{requestId:pending.requestId,action:pending.action,status,endpoint:pending.endpoint,...(result?{result}:{}),...(error?{error,code,...(httpStatus?{httpStatus}:{})}:{}),at:now()}});
   }
   function internalSender(sender){return sender?.id===api.runtime.id&&panelSender(sender);}
@@ -64,11 +65,12 @@ export function createHostedActionBroker({api,readEndpoint,panelSender,now=Date.
   async function capture(tabId,message){let timer;try{return await Promise.race([api.tabs.sendMessage(tabId,message),new Promise(resolve=>{timer=setTimeout(()=>resolve(null),15000);})]);}catch{return null;}finally{clearTimeout(timer);}}
   async function open(message){
     const endpoint=hostedEndpoint(await readEndpoint());if(message.endpoint&&message.endpoint!==endpoint)throw Error('The service changed. Open the action again.');
-    if(!requestIdValid(message.requestId)||!['learn','classify'].includes(message.action))throw Error('Invalid hosted action.');
+    if(!requestIdValid(message.requestId)||!['learn','classify','imports'].includes(message.action))throw Error('Invalid hosted action.');
     const state=await read();if(Object.keys(state.pending).length>=8)throw Error('Finish or close another pending Delta action first.');
     if(Object.values(state.pending).some(value=>value.requestId===message.requestId)||state.results[message.requestId])throw Error('This action has already been opened.');
     let payload;
-    if(message.action==='classify')payload=classificationPayload(message.payload);
+    if(message.action==='imports')payload=importPayload(message.payload);
+    else if(message.action==='classify')payload=classificationPayload(message.payload);
     else{
       if(message.videoId!=null&&!validVideoId(message.videoId))throw Error('Open a YouTube video before learning.');
       const matching=value=>Number.isInteger(value?.id)&&sourceId(value.url)&&(!message.videoId||sourceId(value.url)===message.videoId);
@@ -101,7 +103,7 @@ export function createHostedActionBroker({api,readEndpoint,panelSender,now=Date.
       if(message?.type==='DELTA_HOSTED_ACTION_OPEN')return open(message);
       if(message?.type==='DELTA_HOSTED_ACTION_CANCEL'){
         if(!requestIdValid(message.requestId))fail();const state=await read();const pending=Object.values(state.pending).find(value=>value.requestId===message.requestId);
-        if(pending){await finish(state,pending,'cancelled',null,'Map analysis stopped. Your records are saved.');await persist(state);}return {ok:true};
+        if(pending){await finish(state,pending,'cancelled',null,pending.action==='imports'?'History import stopped. Your existing saved records are kept.':'Map analysis stopped. Your records are saved.');await persist(state);}return {ok:true};
       }
       fail();
     });
@@ -112,15 +114,15 @@ export function createHostedActionBroker({api,readEndpoint,panelSender,now=Date.
     let url;try{url=new URL(sender.url);}catch{fail();}
     if(url.origin!==pending.endpoint||sender.origin!=null&&sender.origin!==pending.endpoint||url.pathname!=='/learn'||url.searchParams.get('hosted')!=='1'||url.searchParams.get('request')!==pending.nonce||url.searchParams.get('extension')!==api.runtime.id)fail();
     if(message.type==='DELTA_HOSTED_ACTION_GET')return {ok:true,action:pending.action,requestId:pending.nonce,expiresAt:pending.expiresAt,payload:pending.payload};
-    if(message.type==='DELTA_HOSTED_ACTION_RESULT'&&pending.action==='classify'){
-      const result=validateMapAnalysisResponse(message.result,pending.payload.videos);await finish(state,pending,'complete',result);await persist(state);return {ok:true};
+    if(message.type==='DELTA_HOSTED_ACTION_RESULT'&&['classify','imports'].includes(pending.action)){
+      const result=pending.action==='imports'?importReceipt(message.result,pending.payload):validateMapAnalysisResponse(message.result,pending.payload.videos);await finish(state,pending,'complete',result);await persist(state);return {ok:true};
     }
-    if(message.type==='DELTA_HOSTED_ACTION_ERROR'&&pending.action==='classify'){
-      const messageText=message.status===429?'Your free AI allowance or the model quota is unavailable. Your records are saved.':'Map analysis did not finish. Your records are saved. Return to Delta and try again.';
+    if(message.type==='DELTA_HOSTED_ACTION_ERROR'&&['classify','imports'].includes(pending.action)){
+      const messageText=pending.action==='imports'?(message.status===402?'This selection exceeds your remaining free history imports. Choose fewer videos; additional imports are not on sale yet. Saved records remain available.':'Import registration did not finish. Your saved records are kept. Return to Delta and try again.'):message.status===429?'Your free AI allowance or the model quota is unavailable. Your records are saved.':'Map analysis did not finish. Your records are saved. Return to Delta and try again.';
       await finish(state,pending,'error',null,messageText,{status:message.status});await persist(state);return {ok:true};
     }
     fail();
   });}
-  async function handleTabRemoved(tabId){return serial(async()=>{const state=await read();for(const pending of Object.values(state.pending))if(pending.tabId===tabId)await finish(state,pending,'cancelled',null,'The learning website was closed. Your records are saved.');await persist(state);});}
+  async function handleTabRemoved(tabId){return serial(async()=>{const state=await read();for(const pending of Object.values(state.pending))if(pending.tabId===tabId)await finish(state,pending,'cancelled',null,'The learning website was closed. Your existing saved records are kept.');await persist(state);});}
   return {handleInternal,handleExternal,handleTabRemoved};
 }

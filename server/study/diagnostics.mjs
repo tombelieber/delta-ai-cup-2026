@@ -20,8 +20,9 @@ const enums={
 const roots='supported|title|summary|concepts|slides|exercises|source|sources|citations|map|groups';
 const properties='title|label|explanation|anchorIds|anchorId|body|bullets|question|options|correctIndex|hint|anchors|digest|id|videoId|path|confidence|contentType|videoIds';
 const diagnosticPath=new RegExp(`^(?:${roots})(?:\\[\\d{1,3}\\])?(?:\\.(?:${properties})(?:\\[\\d{1,3}\\])?){0,5}$`,'u');
-const actions=new Set(['generate','answer','ask','pptx','preparePptx','inspect','classify','catalogue','session','download']);
+const actions=new Set(['generate','answer','ask','pptx','preparePptx','inspect','classify','catalogue','session','download','entitlements','registerImports']);
 const codes=new Set(['authentication_required','invalid_provider_output','invalid_citation','unsupported_source','provider_unavailable','provider_temporarily_unavailable',
+  'import_ledger_unavailable','import_allowance_exhausted','import_operation_conflict','import_registration_required','invalid_import_registration',
   'provider_not_configured','provider_billing_required','free_tier_quota_exhausted','free_route_not_verified','generation_disabled',
   'paid_route_not_verified','metered_route_required','project_budget_configuration_invalid','project_budget_unavailable','project_budget_exhausted',
   'credit_ledger_unavailable','credit_ledger_invalid','credit_operation_conflict','credit_operation_not_found','credit_ledger_capacity',

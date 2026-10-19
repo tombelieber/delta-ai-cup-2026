@@ -29,7 +29,7 @@ function area(values) {
     get setCount() { return setCount; },
   };
 }
-function fixture() {
+function fixture({admitImports = async input => ({...input,added:0,imports:{limit:10,used:0,remaining:10}})} = {}) {
   const values = {}, sessions = {}, sent = [], tabs = new Map();
   let clock = currentTime, nextTab = 10, visibleAccount = identity;
   const forbidden = () => assert.fail('History import must not use permissions, browser history, cookies or model calls.');
@@ -48,7 +48,7 @@ function fixture() {
       },
     },
   };
-  const make = () => createAccountHistoryHandler({ api, panelSender: sender => sender?.url === native.url, now: () => clock });
+  const make = () => createAccountHistoryHandler({ api, admitImports, panelSender: sender => sender?.url === native.url, now: () => clock });
   let handle = make();
   return { api, values, sessions, sent, tabs, send: (message, sender = native) => handle(message, sender),
     restart: () => { handle = make(); }, advance: ms => { clock += ms; }, account: value => { visibleAccount = value; },
@@ -294,13 +294,13 @@ test('latest-ten rejects reordered ordinal claims before saving and later full i
 });
 
 
-test('omitted import scope defaults to maximum100 while explicit latest10 and full history remain available', async () => {
+test('omitted import scope defaults to latest ten while explicit latest10 and full history remain available', async () => {
   const f=fixture();
-  assert.equal(DEFAULT_ACCOUNT_HISTORY_RANGE,'latest100');
+  assert.equal(DEFAULT_ACCOUNT_HISTORY_RANGE,'latest10');
   assert.ok(ACCOUNT_HISTORY_IMPORT_SCOPES.some(scope=>scope.id==='all'));
   assert.ok(ACCOUNT_HISTORY_IMPORT_SCOPES.some(scope=>scope.id==='latest10'));
   const opened=await f.send({type:'ACCOUNT_HISTORY_OPEN'});
-  assert.equal(opened.session.range,'latest100');assert.equal(opened.session.startDate,null);
+  assert.equal(opened.session.range,'latest10');assert.equal(opened.session.startDate,null);
   assert.equal(f.sent.some(message=>message.type==='DELTA_ACCOUNT_HISTORY_START'),false);
   assert.equal(f.values[ACCOUNT_HISTORY_KEY],undefined);
 });
@@ -346,4 +346,28 @@ test('maximum100 timeout and round budget retain partial rows and cannot claim a
   }
   const f=fixture(),state=await start(f,'latest100');
   await assert.rejects(f.send({type:'ACCOUNT_HISTORY_FINISH',jobId:state.session.id,accountKey:identity.key,reason:'limit'},content(state.session.tabId)),/unverified/);
+});
+
+
+test('account history cannot persist a batch before account admission; denied data stays absent', async()=>{
+  let requested;
+  const f=fixture({admitImports:async input=>{requested=input;throw Object.assign(Error('Your ten free history imports are used.'),{code:'QUOTA'});}});
+  const started=await start(f,'latest10');
+  await assert.rejects(f.send(batch(started.session,[visibleRow(1,null,{pageOrder:0})]),content(started.session.tabId)),/free history imports/);
+  assert.deepEqual(requested.videoIds,[videoId(1)]);assert.equal(f.values[ACCOUNT_HISTORY_KEY].accounts[identity.key].entries.length,0);
+});
+test('account change while hosted admission is open prevents local persistence',async()=>{
+  const f=fixture({admitImports:async input=>{f.account(otherIdentity);return {...input,added:0,imports:{limit:10,used:0,remaining:10}};}});
+  const started=await start(f,'latest10');
+  await assert.rejects(f.send(batch(started.session,[visibleRow(1,null,{pageOrder:0})]),content(started.session.tabId)),/account changed/i);
+  assert.equal(f.values[ACCOUNT_HISTORY_KEY].accounts[identity.key].entries.length,0);
+});
+
+test('native pause cancels a waiting admission immediately without committing the batch',async()=>{
+  let began;const ready=new Promise(resolve=>{began=resolve;});
+  const f=fixture({admitImports:(_input,{signal})=>new Promise((resolve,reject)=>{began();signal.addEventListener('abort',()=>reject(Object.assign(Error('Import stopped. Your saved records are kept.'),{code:'CANCELLED'})),{once:true});})});
+  const started=await start(f,'latest10'),saving=f.send(batch(started.session,[visibleRow(1,null,{pageOrder:0})]),content(started.session.tabId));
+  const failed=assert.rejects(saving,/stopped/);await ready;
+  await f.send({type:'ACCOUNT_HISTORY_PAUSE',jobId:started.session.id});await failed;
+  assert.equal(f.values[ACCOUNT_HISTORY_KEY].accounts[identity.key].entries.length,0);
 });

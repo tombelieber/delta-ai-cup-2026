@@ -1,0 +1,68 @@
+{
+  "version": "0.7.0",
+  "filename": "Delta-Chrome-MVP-0.7.0.zip",
+  "bytes": 1909544,
+  "sha256": "74b070473eeca9f90337cc332dffe7943e91441890f45a1e673d853053008f7c",
+  "files": [
+    {
+      "path": "assets/panel-C-4Wv8th.css",
+      "bytes": 118456,
+      "sha256": "c1174659d73896d0f6bd4c31701a2212bd7b785f67db8e81a0d004655c947e37"
+    },
+    {
+      "path": "background.js",
+      "bytes": 13084,
+      "sha256": "75149d02a4c3a7086a7027f4517775542a3dca1a526b06dfcdc0ccaa815dde68"
+    },
+    {
+      "path": "chunks/learning-protocol-3J8FiqjE.js",
+      "bytes": 151448,
+      "sha256": "8258bf153a8952998c2f709c4ad78fe78855b706c83892b442f55d64d4149540"
+    },
+    {
+      "path": "content.js",
+      "bytes": 728720,
+      "sha256": "39456d738d56809c8b4ab183d2a4a07f06339026c4dfa7fc80e9867715c8eb6f"
+    },
+    {
+      "path": "icons/delta.svg",
+      "bytes": 251,
+      "sha256": "8dd408e459a3990ba871fb08758a44ed1affd3bb122852191063b68dc5e9ef25"
+    },
+    {
+      "path": "icons/icon-128.png",
+      "bytes": 5194,
+      "sha256": "df8030508b6827424e0766acb6647ea5a30b7c770a533a3433f20922c0d4f61a"
+    },
+    {
+      "path": "icons/icon-16.png",
+      "bytes": 672,
+      "sha256": "e9c59c532f41823972074b540d7ed5f75dda4ccbaa012035c7355514921a7338"
+    },
+    {
+      "path": "icons/icon-32.png",
+      "bytes": 1353,
+      "sha256": "c1900b956ee25b2c7523f7f6d7e91daa6a8317cabad95650a098b9a4fe87ac25"
+    },
+    {
+      "path": "icons/icon-48.png",
+      "bytes": 2059,
+      "sha256": "5b38da6222ded13f6cffd3b59421fbbf38cea985ca277a0eb27c19286fdade3a"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 1472,
+      "sha256": "f8e96e3ae4adf71c6ee6e465e37c0a19e1f47c7aa5531868e8f3f237ffb2842b"
+    },
+    {
+      "path": "panel.html",
+      "bytes": 440,
+      "sha256": "46e1afb13b89e9d4a74fccdc14a9c55ee42a083a7d38a266b85f5cd762a69ea4"
+    },
+    {
+      "path": "panel.js",
+      "bytes": 885063,
+      "sha256": "cccdb5f91711389ac47f6350ce1d69313bfc844215ddce27dbeccafe30588cbc"
+    }
+  ]
+}

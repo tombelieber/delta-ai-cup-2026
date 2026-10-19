@@ -1,3 +1,4 @@
+import {importPayload,importReceipt,importBalance} from '../../extension/import-contract.js';
 const KEY='delta.study.local.v1';
 const VIDEO_ID=/^[A-Za-z0-9_-]{11}$/;
 function youtubeId(value){try{const url=new URL(value);if(!['https:','http:'].includes(url.protocol)||url.username||url.password)return '';
@@ -50,6 +51,10 @@ export function createStudyClient({endpoint='',fetchImpl=globalThis.fetch,storag
   return {library,request,
     catalogue:()=>request('catalogue'),
     session:()=>request('session'),
+    async entitlements(){const value=await request('entitlements');
+      if(value?.schemaVersion!==1||value.starterPack?.available!==false)throw Error('The import allowance response could not be verified.');
+      return {schemaVersion:1,imports:importBalance(value.imports),starterPack:{priceUsd:5,additionalImports:100,studySessions:20,available:false}};},
+    async registerImports(input){const payload=importPayload(input);return importReceipt(await request('registerImports',payload),payload);},
     async generate(input){const result=await request('generate',input);validateResult(result);
       await change(value=>{const existing=value.items.find(x=>x.lesson.id===result.lesson.id);
         if(existing){Object.assign(existing,{...result,attempts:existing.attempts||[]});return;}

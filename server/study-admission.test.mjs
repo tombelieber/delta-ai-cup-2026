@@ -12,13 +12,14 @@ function setup({admission,now,classificationService,mode='google',rateAllowed=()
   const service={access:{mode,check:()=>null},catalogue,
     async downloadPptx(id,{principal}){calls.download++;return {buffer:Buffer.from('PK'),filename:`${principal.uid}.pptx`,contentType:'application/test'};},
     async inspect(){calls.work++;return {saved:true};},async ask(){calls.work++;return {answer:'Saved answer.'};}};
-  const router=createStudyRouter(service,{accounts,classificationService,admission,now});
-  async function request(action='session',{method='GET',uid='alice',type='application/json'}={}){
+  const entitlements={forUser:()=>({assertRegistered:async()=>{}})}; // Already registered fixture; real ledger isolation has HTTP coverage.
+  const router=createStudyRouter(service,{accounts,entitlements,classificationService,admission,now});
+  async function request(action='session',{method='GET',uid='alice',type='application/json',body={}}={}){
     const result={};
     await router({request:{method,headers:{authorization:uid,'content-type':type}},url:new URL(`https://study.test/api/study/${action}`),
       response:{writeHead(status,headers){Object.assign(result,{status,headers});},end(buffer){result.buffer=buffer;}},
       json(status,body,headers){Object.assign(result,{status,body,headers});},
-      readBody:async()=>{calls.body++;return '{}';},rateAllowed:request=>{calls.rate++;return rateAllowed(request);}});
+      readBody:async()=>{calls.body++;return JSON.stringify(body);},rateAllowed:request=>{calls.rate++;return rateAllowed(request);}});
     return result;
   }
   return {request,calls};
@@ -120,9 +121,10 @@ test('classification requires authentication and forwards only the verified prin
   const {request,calls}=setup({classificationService:{async classify(input,context){invoked.push({input,context});return {items:[]};}}});
   assert.equal((await request('classify',{method:'POST',uid:null})).status,401);
   assert.equal(calls.body,0);assert.equal(invoked.length,0);
-  const result=await request('classify',{method:'POST'});
+  const input={videos:[{videoId:'abcdefghijk'}]};
+  const result=await request('classify',{method:'POST',body:input});
   assert.equal(result.status,200);assert.deepEqual(result.body,{items:[]});
-  assert.deepEqual(invoked,[{input:{},context:{principal:{uid:'alice'}}}]);
+  assert.deepEqual(invoked,[{input,context:{principal:{uid:'alice'}}}]);
 });
 
 test('classification fails closed without its metered service or a verified principal',async()=>{

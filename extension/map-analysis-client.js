@@ -2,7 +2,7 @@ import { metadataForMap, mapMetadataFingerprint, normalizeMapPath, validMapLabel
 import { DEFAULT_API_ENDPOINT } from './analysis-client.js';
 
 export const MAP_HOSTED_ENDPOINT = DEFAULT_API_ENDPOINT;
-export const MAP_HOSTED_BATCH_SIZE = 12;
+export const MAP_HOSTED_BATCH_SIZE = 10;
 export const usesHostedMap = endpoint => endpoint === MAP_HOSTED_ENDPOINT;
 
 export class MapAnalysisError extends Error {
@@ -101,7 +101,7 @@ export function createMapAnalysisClient({ fetchImpl = globalThis.fetch, timeoutM
         throw new MapAnalysisError('The private map access token is invalid.', { code: 'INVALID_ACCESS_TOKEN' });
       }
       if (metadata.length > 300) throw new MapAnalysisError('Analyze at most 300 videos per batch. Your records are saved.', { code: 'INVALID_REQUEST' });
-      if (hosted && metadata.length > MAP_HOSTED_BATCH_SIZE) throw new MapAnalysisError('Analyze at most 12 videos per signed-in batch. Your records are saved.', { code: 'INVALID_REQUEST' });
+      if (hosted && metadata.length > MAP_HOSTED_BATCH_SIZE) throw new MapAnalysisError('Analyze at most 10 videos per signed-in batch. Your records are saved.', { code: 'INVALID_REQUEST' });
       if (!Array.isArray(existingPaths) || existingPaths.length > 80) throw new MapAnalysisError('Existing map paths are invalid.', { code: 'INVALID_REQUEST' });
       const paths = [...new Map(existingPaths.map(path => {
         if (!Array.isArray(path) || path.length < 1 || path.length > 4 || !path.every(validMapLabel)) throw new MapAnalysisError('Existing map paths are invalid.', { code: 'INVALID_REQUEST' });
@@ -125,6 +125,7 @@ export function createMapAnalysisClient({ fetchImpl = globalThis.fetch, timeoutM
           const status = Number.isSafeInteger(issue?.status) && issue.status >= 400 && issue.status <= 599 ? issue.status : null;
           throw new MapAnalysisError(code === 'free_tier_quota_exhausted' ? 'Gemini provider quota has been reached. Map analysis is paused; your saved records are kept.'
             : code === 'project_budget_exhausted' ? 'Delta’s shared project AI budget is used or reserved. Your saved records are kept.'
+            : status === 402 ? 'This selection exceeds your remaining free history imports. Choose fewer videos. Additional imports are not on sale yet; your saved records are kept.'
             : status === 429 ? 'Your free AI allowance is unavailable or used up. Map analysis is paused; saved records are kept.'
             : code === 'CANCELLED' ? 'Map analysis stopped. Your records are saved.' : 'Map analysis could not finish in the Delta website. Your records and previous results are saved.', { code, status });
         }
@@ -148,10 +149,12 @@ export function createMapAnalysisClient({ fetchImpl = globalThis.fetch, timeoutM
           const source = body?.error && typeof body.error === 'object' ? body.error : body;
           const candidateCode = typeof body?.error === 'string' ? body.error : source?.code;
           const code = typeof candidateCode === 'string' && /^[a-zA-Z0-9_]{1,80}$/.test(candidateCode) ? candidateCode
+            : status === 402 ? 'This selection exceeds your remaining free history imports. Choose fewer videos. Additional imports are not on sale yet; your saved records are kept.'
             : status === 429 ? 'QUOTA' : status === 403 ? 'FORBIDDEN' : 'SERVICE_UNAVAILABLE';
           const retry = Number.isFinite(source?.retryAfterSeconds) && source.retryAfterSeconds >= 0
             ? Math.min(86400000, source.retryAfterSeconds * 1000) : retryAfter(response.headers?.get?.('retry-after'));
           throw new MapAnalysisError(code === 'classification_busy' ? 'Map analysis is busy and has paused. Your records are saved.'
+            : status === 402 ? 'This selection exceeds your remaining free history imports. Choose fewer videos. Additional imports are not on sale yet; your saved records are kept.'
             : status === 429 ? 'Free model quota reached. Map analysis is paused; your records are saved.'
             : status === 403 ? 'Map analysis is not allowed. Your records are saved.'
               : 'Map analysis is unavailable. Your records are saved.',

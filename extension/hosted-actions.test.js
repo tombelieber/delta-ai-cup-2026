@@ -98,3 +98,22 @@ test('quota failure reaches native caller as a safe typed error without raw prov
   await f.broker.handleExternal({type:'DELTA_HOSTED_ACTION_ERROR',requestId:pending.nonce,code:'QUOTA',status:429,error:'raw private provider body'},{url:f.tabs.get(pending.tabId).url,origin:DEFAULT_API_ENDPOINT,frameId:0,tab:{id:pending.tabId}});
   await assert.rejects(promise,error=>error.code==='QUOTA'&&error.status===429&&!error.message.includes('raw private'));
 });
+
+test('hosted import admission survives restart and returns only its bound receipt',async()=>{
+  const f=fixture(),payload={operationId:'history-1',videoIds:[videoId]},opened=await f.request('imports',{payload});f.restart();
+  const sender=f.external(opened),loaded=await f.broker.handleExternal({type:'DELTA_HOSTED_ACTION_GET',requestId:opened.nonce},sender);
+  assert.deepEqual(loaded.payload,payload);
+  const result={...payload,added:1,imports:{limit:10,used:1,remaining:9}};
+  await assert.rejects(f.broker.handleExternal({type:'DELTA_HOSTED_ACTION_RESULT',requestId:opened.nonce,result:{...result,videoIds:['abcdefghijk']}},sender));
+  await f.broker.handleExternal({type:'DELTA_HOSTED_ACTION_RESULT',requestId:opened.nonce,result:{...result,idToken:'private'}},sender);
+  assert.deepEqual(f.values()[hostedActionResultKey(opened.requestId)].result,result);
+  await assert.rejects(f.broker.handleExternal({type:'DELTA_HOSTED_ACTION_RESULT',requestId:opened.nonce,result},sender));
+});
+test('native imports settle on quota denial and tab closure without credential leakage',async()=>{
+  const f=fixture(),promise=openHostedAction({action:'imports',payload:{operationId:'history-1',videoIds:[videoId]}},{api:f.api});
+  await new Promise(resolve=>setTimeout(resolve,0));const pending=Object.values(f.values()[HOSTED_ACTIONS_KEY].pending)[0];
+  await f.broker.handleExternal({type:'DELTA_HOSTED_ACTION_ERROR',requestId:pending.nonce,status:402,error:'private'},f.external({tabId:pending.tabId}));
+  await assert.rejects(promise,e=>e.status===402&&e.code==='QUOTA'&&!e.message.includes('private'));
+  const opened=await f.request('imports',{payload:{operationId:'history-2',videoIds:[videoId]}});await f.broker.handleTabRemoved(opened.tabId);
+  assert.equal(f.values()[hostedActionResultKey(opened.requestId)].status,'cancelled');
+});

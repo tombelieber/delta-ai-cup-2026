@@ -26,3 +26,10 @@ test('website failure forwards only allowlisted quota status, without provider d
   let sent;const bridge=createExtensionBridge({location:url,runtime:{sendMessage(id,message,callback){sent=message;callback({ok:true});}}});
   await bridge.fail({status:429,code:'user_quota_exhausted',message:'raw private provider body'});assert.equal(sent.code,'QUOTA');assert.equal(sent.status,429);assert.equal(JSON.stringify(sent).includes('raw private'),false);
 });
+
+test('import receipts strip identity fields and denial preserves the dedicated allowance status',async()=>{
+  let sent;const bridge=createExtensionBridge({location:url,runtime:{sendMessage(id,message,callback){sent=message;callback({ok:true});}}});
+  await bridge.completeImport({operationId:'one',videoIds:['733mgqrzNKs'],added:1,imports:{limit:10,used:1,remaining:9},uid:'private',idToken:'private'});
+  assert.equal(sent.result.operationId,'one');assert.equal(JSON.stringify(sent).includes('private'),false);
+  await bridge.fail({status:402,message:'private'});assert.equal(sent.status,402);assert.equal(sent.code,'QUOTA');
+});

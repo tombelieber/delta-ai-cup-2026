@@ -143,6 +143,7 @@ test('low and medium model confidence remain unresolved rather than becoming inf
 test('real HTTP entry wiring reaches only the authenticated metered classification service',async t=>{
   const {service,accounts,calls}=setup();
   const server=createServer({studyService:{access:{mode:'google',check:()=>null}},studyAccounts:accounts,
+    studyEntitlements:{forUser:()=>({assertRegistered:async()=>{}})},
     classificationService:service,studyAccessMode:'google'});
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   t.after(()=>new Promise(resolve=>{server.close(resolve);server.closeAllConnections();}));

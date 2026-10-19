@@ -1,6 +1,8 @@
 import {createHash} from 'node:crypto';
 import {StudyError, requireStudy} from './source.mjs';
 import {studyProjectBudgetConfig, projectBudgetState, applyProjectBudgetDelta, PROJECT_BUDGET_ENFORCED} from './project-budget.mjs';
+import {createStudyEntitlements, createFirestoreEntitlementStore} from './entitlements.mjs';
+import {studySigningKey} from './access.mjs';
 
 const LIMIT_MICROS = 500000;
 const AUTHOR_LIMIT_MICROS = 5000000;
@@ -279,7 +281,10 @@ export async function createFirebaseStudyAccounts({env = process.env, now = Date
     const app = getApps().find(candidate => candidate.name === name)
       || initializeApp({projectId: project, credential: applicationDefault()}, name);
     requireStudy(app.options.projectId === project, 'firebase_configuration_invalid', 503);
-    return createStudyAccounts({env, auth: getAuth(app), store: createFirestoreStudyAccountStore(getFirestore(app), {env}), now});
+    const firestore = getFirestore(app);
+    const accounts = createStudyAccounts({env, auth: getAuth(app), store: createFirestoreStudyAccountStore(firestore, {env}), now});
+    accounts.entitlements = createStudyEntitlements({store: createFirestoreEntitlementStore(firestore), key: studySigningKey(env), now});
+    return accounts;
   } catch (error) {
     if (error instanceof StudyError) throw error;
     throw new StudyError('firebase_configuration_invalid', 503, 'Google sign-in is not configured.');

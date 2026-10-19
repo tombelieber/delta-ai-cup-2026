@@ -76,3 +76,30 @@ test('the normal web entry reuses its verified auth configuration without a seco
   const auth=createStudyAuth({authConfig:config,mockSDK:fixture.sdk,fetchImpl:async(url,init)=>{urls.push(url);return transport()(url,init);}});
   await auth.initialize();assert.equal(auth.snapshot().status,'signed-in');assert.deepEqual(urls,['/api/study/session']);auth.dispose();
 });
+
+test('import balance is separate from AI credit and a late response cannot cross accounts',async()=>{
+  const fixture=sdkFixture(user('alice'));let finish;
+  const auth=createStudyAuth({mockSDK:fixture.sdk,fetchImpl:(url,init)=>url.endsWith('/entitlements')?new Promise(resolve=>{finish=()=>resolve(new Response(JSON.stringify({schemaVersion:1,imports:{limit:10,used:3,remaining:7},starterPack:{priceUsd:5,additionalImports:100,studySessions:20,available:false}})));}):transport()(url,init)});
+  await auth.initialize();const pending=auth.refreshEntitlements();await new Promise(resolve=>setImmediate(resolve));
+  fixture.setUser(user('bob'));finish();await pending;await auth.refreshSession();
+  assert.equal(auth.snapshot().user.uid,'bob');assert.equal(auth.snapshot().entitlements,null);assert.deepEqual(auth.snapshot().quota,quota);auth.dispose();
+});
+test('unavailable import ledger never resets balance or disables a saved user library',async()=>{
+  const fixture=sdkFixture(user('alice'));
+  const auth=createStudyAuth({mockSDK:fixture.sdk,fetchImpl:(url,init)=>url.endsWith('/entitlements')?Promise.resolve(new Response('{}',{status:503})):transport()(url,init)});
+  await auth.initialize();await assert.rejects(auth.refreshEntitlements());
+  assert.equal(auth.snapshot().status,'signed-in');assert.equal(auth.snapshot().entitlements,null);assert.equal(auth.snapshot().importsStatus,'unavailable');assert.deepEqual(auth.snapshot().quota,quota);auth.dispose();
+});
+
+test('successful entitlement refresh restores the exact import balance without deducting AI credit',async()=>{
+  const fixture=sdkFixture(user('alice')),value={schemaVersion:1,imports:{limit:10,used:3,remaining:7},starterPack:{priceUsd:5,additionalImports:100,studySessions:20,available:false}};
+  const auth=createStudyAuth({mockSDK:fixture.sdk,fetchImpl:(url,init)=>url.endsWith('/entitlements')?Promise.resolve(new Response(JSON.stringify(value))):transport()(url,init)});
+  await auth.initialize();await auth.refreshEntitlements();assert.deepEqual(auth.snapshot().entitlements,value);assert.equal(auth.snapshot().importsStatus,'ready');assert.deepEqual(auth.snapshot().quota,quota);await auth.signOut();assert.equal(auth.snapshot().entitlements,null);auth.dispose();
+});
+
+test('older balance reads cannot overwrite a newer same-account balance',async()=>{
+  const fixture=sdkFixture(user('alice')),replies=[];
+  const auth=createStudyAuth({mockSDK:fixture.sdk,fetchImpl:(url,init)=>url.endsWith('/entitlements')?new Promise(resolve=>{replies.push(used=>resolve(new Response(JSON.stringify({schemaVersion:1,imports:{limit:10,used,remaining:10-used},starterPack:{available:false}}))));}):transport()(url,init)});
+  await auth.initialize();const first=auth.refreshEntitlements();await new Promise(resolve=>setImmediate(resolve));const second=auth.refreshEntitlements();await new Promise(resolve=>setImmediate(resolve));
+  replies[1](10);await second;replies[0](0);await first;assert.equal(auth.snapshot().entitlements.imports.remaining,0);auth.dispose();
+});

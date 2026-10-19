@@ -1,3 +1,4 @@
+import {importPayload,importReceipt} from '../../extension/import-contract.js';
 const safeError=()=>Error('Open this action again from the Delta extension. The website connection could not be verified.');
 export function parseExtensionBridgeLocation(location=globalThis.location){
   let url;try{url=new URL(typeof location==='string'?location:location.href);}catch{throw safeError();}
@@ -23,8 +24,8 @@ export function createExtensionBridge({location=globalThis.location,runtime=glob
       if(runtime.lastError||!response?.ok){reject(safeError());return;}resolve(response);
     });}catch{clearTimeout(timer);settled=true;reject(safeError());}
   });}
-  return {load:()=>send('DELTA_HOSTED_ACTION_GET'),complete:result=>send('DELTA_HOSTED_ACTION_RESULT',{result:classificationData(result)}),fail:(issue={})=>{
-    const status=[400,401,403,409,422,429,500,503,504].includes(issue.status)?issue.status:null;
-    return send('DELTA_HOSTED_ACTION_ERROR',{code:status===429?'QUOTA':[401,403].includes(status)?'AUTH_REQUIRED':'HOSTED_UNAVAILABLE',...(status?{status}:{})});
+  return {load:()=>send('DELTA_HOSTED_ACTION_GET'),completeImport:result=>send('DELTA_HOSTED_ACTION_RESULT',{result:importReceipt(result,importPayload(result))}),complete:result=>send('DELTA_HOSTED_ACTION_RESULT',{result:classificationData(result)}),fail:(issue={})=>{
+    const status=[400,401,402,403,409,422,429,500,503,504].includes(issue.status)?issue.status:null;
+    return send('DELTA_HOSTED_ACTION_ERROR',{code:[402,429].includes(status)?'QUOTA':[401,403].includes(status)?'AUTH_REQUIRED':'HOSTED_UNAVAILABLE',...(status?{status}:{})});
   }};
 }

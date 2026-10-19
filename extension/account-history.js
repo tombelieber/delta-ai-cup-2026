@@ -1,3 +1,4 @@
+import {admitImportBatch,importAdmissionMessage} from './import-admission.js';
 import { validVideoId } from './store.js';
 import { ACCOUNT_HISTORY_IMPORT_SCOPES, DEFAULT_ACCOUNT_HISTORY_RANGE, historyImportLimit } from './account-history-scope.js';
 
@@ -124,8 +125,8 @@ function normalizeSession(value) {
     availablePageEnd: value.availablePageEnd === true && value.reason === 'end' };
 }
 
-export function createAccountHistoryHandler({ api, panelSender, now = Date.now }) {
-  let writes = Promise.resolve();
+export function createAccountHistoryHandler({ api, panelSender, now = Date.now, admitImports }) {
+  let writes = Promise.resolve(), admission = null;
   const run = operation => { const result = writes.then(operation, operation); writes = result.catch(() => {}); return result; };
   const time = () => {
     const value = now();
@@ -185,6 +186,7 @@ export function createAccountHistoryHandler({ api, panelSender, now = Date.now }
     if (native ? !nativeSender(api, panelSender, sender) : !contentTypes.has(message?.type) || !contentSender(api, sender)) {
       fail('This YouTube history action is not available from this page.');
     }
+    if(native&&admission&&(message.type==='ACCOUNT_HISTORY_OPEN'||message.type==='ACCOUNT_HISTORY_PAUSE'&&message.jobId===admission.jobId||message.type==='ACCOUNT_HISTORY_CLEAR'&&message.accountKey===admission.accountKey))admission.controller.abort();
     return run(async () => {
       let session = null;
       let ownedRunningRequest = false;
@@ -328,9 +330,17 @@ export function createAccountHistoryHandler({ api, panelSender, now = Date.now }
           if (session.range !== 'all' && !bounded && (entry.date < session.startDate || entry.date > session.endDate)) { skippedOutOfRange++; continue; }
           candidates.push(entry);
         }
+        if(candidates.length){
+          const controller=new AbortController();admission={controller,tabId:session.tabId,jobId:session.id,accountKey:session.account.key};
+          try{await admitImportBatch(admitImports,session.id,candidates.map(value=>value.videoId),controller.signal);}
+          catch(error){fail(importAdmissionMessage(error));}
+          const current=await readSession(),identity=await probe(session);
+          if(current?.id!==session.id||current.phase!=='running'||identity.key!==session.account.key)fail('The visible account changed. Import stopped without mixing accounts.');
+        }
         const store = await readStore();
         const saved = store.accounts[session.account.key] || { account: session.account, entries: [], updatedAt: 0 };
         const entries = candidates.length ? mergeRows(saved.entries, candidates) : saved.entries;
+        if(admission?.controller.signal.aborted)fail('Import stopped. Your saved records are kept.');
         if (candidates.length && JSON.stringify(entries) !== JSON.stringify(saved.entries)) {
           store.activeAccountKey = session.account.key;
           store.accounts[session.account.key] = { account: session.account, entries, updatedAt: currentTime };
@@ -350,18 +360,18 @@ export function createAccountHistoryHandler({ api, panelSender, now = Date.now }
         }
         if (error instanceof AccountHistoryError) throw error;
         throw new AccountHistoryError('YouTube history import could not be completed. Earlier saved history is kept. Please try again.');
-      }
+      }finally{admission=null;}
     });
   };
-  handle.handleTabRemoved = tabId => run(async () => {
+  handle.handleTabRemoved = tabId => {if(admission?.tabId===tabId)admission.controller.abort();return run(async () => {
     const session = await readSession();
     if (session?.tabId === tabId && ['opening', 'confirm', 'running'].includes(session.phase)) await pause(session, 'The import tab was closed. Earlier saved history is kept.', 'navigation');
-  });
-  handle.handleTabUpdated = (tabId, url) => run(async () => {
+  });};
+  handle.handleTabUpdated = (tabId, url) => {if(admission?.tabId===tabId&&!historyUrl(url))admission.controller.abort();return run(async () => {
     const session = await readSession();
     if (session?.tabId === tabId && typeof url === 'string' && !historyUrl(url) && ['confirm', 'running'].includes(session.phase)) {
       await pause(session, 'The import tab left YouTube history. Earlier saved history is kept.', 'navigation');
     }
-  });
+  });};
   return handle;
 }

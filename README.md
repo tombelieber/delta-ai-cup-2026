@@ -1,5 +1,7 @@
 # Delta
 
+> **Latest source candidate:** ten lifetime history imports per verified account, shared by both native history import paths. The planned US$5 Starter Pack is not on sale yet. This source/package update has not been deployed or qualified in installed Chrome. See the [verification report and UI comparison](docs/verification/free-import-entitlements.md).
+
 **Learn it. Try it. Keep the evidence.** Delta turns a short captioned YouTube clip into a source-linked lesson, two application exercises, saved-source recall and an editable PowerPoint. A local topic map helps revisit video records.
 
 - [Get started and install the Chrome pilot](https://delta-511903.web.app)

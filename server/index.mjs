@@ -74,12 +74,12 @@ const boundedNumber = (value, fallback, min, max) => {
 
 export function createHandler({ service = createRecommendationService(), learningService = createLearningService(), studyService = null, distDir = path.join(ROOT, 'dist'),
   mapService = createMapClassificationService(), mapAccess = createMapAccess(),
-  studyAccounts = null, classificationService = null, studyAccessMode = studyService?.access?.mode || 'local',
+  studyAccounts = null, studyEntitlements = studyAccounts?.entitlements || null, classificationService = null, studyAccessMode = studyService?.access?.mode || 'local',
   allowedOrigins = '', allowChromeExtensions = false, now = Date.now, maxBodyBytes = 16384,
   requestsPerMinute = 30, onDiagnostic = writeStudyDiagnostic } = {}) {
   const origins = allowedOrigins instanceof Set ? allowedOrigins : originsFrom(allowedOrigins);
   const rates = new Map();
-  const studyRouter = createStudyRouter(studyService, { accounts: studyAccounts, classificationService, onDiagnostic });
+  const studyRouter = createStudyRouter(studyService, { accounts: studyAccounts, entitlements: studyEntitlements, classificationService, onDiagnostic });
   const securityHeaders = securityHeadersFor(studyAccounts);
   const authEnabled = studyAccounts?.config()?.enabled === true;
   function originAllowed(origin, request) {

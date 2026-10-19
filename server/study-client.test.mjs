@@ -103,3 +103,10 @@ test('captured lesson input keeps the selected clip and rejects mismatched or ov
   assert.throws(()=>validateStudyInitialSource({...source,start:60,end:361,transcript},source),/clip/i);
   assert.throws(()=>validateStudyInitialSource({...source,start:60,end:90,transcript:`Video ID: abcdefghijk\n${'字'.repeat(90000)}`},source),/250 KB/i);
 });
+
+test('import requests use the verified account token and validate bound receipts',async()=>{
+  const input={operationId:'preview-1',videoIds:['733mgqrzNKs']},receipt={...input,added:1,imports:{limit:10,used:1,remaining:9}},calls=[];
+  const client=createStudyClient({userId:'alice',getToken:async()=>'test-token',fetchImpl:async(url,init)=>{calls.push({url,init});return new Response(JSON.stringify(receipt));}});
+  assert.deepEqual(await client.registerImports(input),receipt);assert.equal(calls[0].url,'/api/study/registerImports');assert.equal(calls[0].init.headers.Authorization,'Bearer test-token');
+  const broken=createStudyClient({fetchImpl:async()=>new Response(JSON.stringify({...receipt,videoIds:['abcdefghijk']}))});await assert.rejects(broken.registerImports(input),/could not be verified/);
+});

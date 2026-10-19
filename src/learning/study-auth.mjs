@@ -23,8 +23,8 @@ export function createStudyAuth({endpoint='',fetchImpl=globalThis.fetch,mockSDK=
   const origin=endpoint.replace(/\/$/,''),listeners=new Set();
   const native=location?.protocol==='chrome-extension:'||(typeof __DELTA_EXTENSION__!=='undefined'&&__DELTA_EXTENSION__);
   let webUrl='';try{const url=new URL('/learn?study=1',origin||location?.origin),videoId=studyVideoId(sourceVideo);if(videoId)url.searchParams.set('videoId',videoId);if(['https:','http:'].includes(url.protocol))webUrl=url.href;}catch{}
-  let state={status:'loading',enabled:null,user:null,quota:null,limitUsd:null,error:'',webUrl,needsSignIn:false};
-  let initialization=null,sdk=null,firebaseAuth=null,stopObserver=null,revision=0,lifecycle=0,allowedUid='',sessionRequest=null;
+  let state={status:'loading',enabled:null,user:null,quota:null,limitUsd:null,error:'',webUrl,needsSignIn:false,entitlements:null,importsStatus:'idle'};
+  let initialization=null,sdk=null,firebaseAuth=null,stopObserver=null,revision=0,lifecycle=0,allowedUid='',sessionRequest=null,entitlementRevision=0;
   const publish=next=>{state={...state,...next};for(const listener of listeners)listener(state);};
   const failChanged=()=>Object.assign(Error('Your Google account changed. Sign in to continue.'),{code:'study_auth_required'});
 
@@ -56,9 +56,17 @@ export function createStudyAuth({endpoint='',fetchImpl=globalThis.fetch,mockSDK=
     })();
     sessionRequest={uid,revision:serial,promise};return promise;
   }
+  async function refreshEntitlements(){
+    const uid=allowedUid,serial=revision,request=++entitlementRevision;if(!uid)throw failChanged();
+    publish({entitlements:null,importsStatus:'loading'});
+    try{const client=createStudyClient({endpoint:origin,userId:uid,getToken:()=>getToken(uid),fetchImpl});
+      const result=await client.entitlements();if(serial!==revision||uid!==allowedUid||request!==entitlementRevision)return;
+      publish({entitlements:result,importsStatus:'ready'});return result;
+    }catch(error){if(serial===revision&&uid===allowedUid&&request===entitlementRevision)publish({entitlements:null,importsStatus:'unavailable'});throw error;}
+  }
   async function observeUser(user){
     const sameUser=user&&allowedUid===user.uid&&state.user?.uid===user.uid&&state.status==='signed-in';
-    revision++;sessionRequest=null;allowedUid=user?.uid||'';
+    revision++;sessionRequest=null;allowedUid=user?.uid||'';publish({entitlements:null,importsStatus:'idle'});
     if(!user){publish({status:'signed-out',user:null,quota:null,error:'',needsSignIn:false});return;}
     publish({...(sameUser?{}:{status:'verifying',user:null}),quota:null,error:'',needsSignIn:false});
     try{await refreshSession();}catch{}
@@ -88,7 +96,7 @@ export function createStudyAuth({endpoint='',fetchImpl=globalThis.fetch,mockSDK=
   return {
     snapshot:()=>state,
     subscribe(listener){listeners.add(listener);listener(state);return()=>listeners.delete(listener);},
-    initialize,refreshSession,getToken,
+    initialize,refreshSession,refreshEntitlements,getToken,
     async signIn(){
       await initialize();
       if(!sdk||state.status==='web-required')throw Error('Open the learning website to sign in with Google.');
@@ -97,7 +105,7 @@ export function createStudyAuth({endpoint='',fetchImpl=globalThis.fetch,mockSDK=
       if(allowedUid!==result.user.uid){await observeUser(result.user);return;}
       await refreshSession();
     },
-    async signOut(){revision++;allowedUid='';sessionRequest=null;publish({status:'signed-out',user:null,quota:null,error:'',needsSignIn:false});await sdk.signOut(firebaseAuth);},
-    dispose(){revision++;lifecycle++;allowedUid='';stopObserver?.();stopObserver=null;initialization=null;sessionRequest=null;state={...state,status:'loading',user:null,quota:null};},
+    async signOut(){publish({entitlements:null,importsStatus:'idle'});revision++;allowedUid='';sessionRequest=null;publish({status:'signed-out',user:null,quota:null,error:'',needsSignIn:false});await sdk.signOut(firebaseAuth);},
+    dispose(){revision++;lifecycle++;allowedUid='';stopObserver?.();stopObserver=null;initialization=null;sessionRequest=null;state={...state,status:'loading',user:null,quota:null,entitlements:null,importsStatus:'idle'};},
   };
 }

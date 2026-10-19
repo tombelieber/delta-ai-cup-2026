@@ -1,6 +1,6 @@
 // Explicit consent scopes shared by the native UI, service worker and reader.
 // The default is bounded; a full-history scan always requires choosing it.
-export const DEFAULT_ACCOUNT_HISTORY_RANGE = 'latest100';
+export const DEFAULT_ACCOUNT_HISTORY_RANGE = 'latest10';
 export const ACCOUNT_HISTORY_IMPORT_SCOPES = Object.freeze([
   { id: 'latest100', label: 'Latest videos · maximum 100' },
   { id: 'latest10', label: 'Latest 10 videos · no scrolling' },

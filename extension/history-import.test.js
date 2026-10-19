@@ -28,7 +28,7 @@ function storageArea() {
   };
 }
 
-function fixture({ permission = true, rows = [row()] } = {}) {
+function fixture({ permission = true, rows = [row()], admitImports = async input => ({...input,added:0,imports:{limit:10,used:0,remaining:10}}) } = {}) {
   const queries = [], permissionChecks = [], removedPermissions = [];
   let clock = time, access = permission, searchImpl = async ({ text }) => text === 'youtube.com' ? structuredClone(rows) : [];
   const api = {
@@ -46,7 +46,7 @@ function fixture({ permission = true, rows = [row()] } = {}) {
       onVisited: { addListener() { assert.fail('No ongoing history scan may be installed.'); } },
     },
   };
-  const makeHandler = () => createHistoryImportHandler({ api, panelSender: (sender) => sender.url === panel.url, now: () => clock });
+  const makeHandler = () => createHistoryImportHandler({ api, admitImports, panelSender: (sender) => sender.url === panel.url, now: () => clock });
   let handle = makeHandler();
   return { api, queries, permissionChecks, removedPermissions, send: (message, sender = panel) => handle(message, sender),
     advance: (ms) => { clock += ms; }, revoke: () => { access = false; }, restart: () => { handle = makeHandler(); },
@@ -266,4 +266,26 @@ test('permission revoked during a query prevents a preview token from being save
   await assert.rejects(f.send({ type: 'HISTORY_PREVIEW', days: 30 }), /access is off/);
   assert.deepEqual(f.api.storage.session.snapshot(), {});
   assert.deepEqual(f.api.storage.local.snapshot(), {});
+});
+
+
+test('Chrome history admission is required before any local history write',async()=>{
+  let requested;const f=fixture({admitImports:async input=>{requested=input;throw Object.assign(Error('Your ten free history imports are used.'),{code:'QUOTA'});}});
+  const preview=await f.send({type:'HISTORY_PREVIEW',days:30});
+  await assert.rejects(f.send({type:'HISTORY_IMPORT',token:preview.token,videoIds:[videoId]}),/free history imports/);
+  assert.deepEqual(requested.videoIds,[videoId]);assert.equal(f.api.storage.local.snapshot()[HISTORY_IMPORT_KEY],undefined);
+});
+test('revoked permission during hosted admission prevents local persistence',async()=>{
+  const f=fixture({admitImports:async input=>{f.revoke();return {...input,added:0,imports:{limit:10,used:0,remaining:10}};}});
+  const preview=await f.send({type:'HISTORY_PREVIEW',days:30});
+  await assert.rejects(f.send({type:'HISTORY_IMPORT',token:preview.token,videoIds:[videoId]}),/access is off/);
+  assert.equal(f.api.storage.local.snapshot()[HISTORY_IMPORT_KEY],undefined);
+});
+
+test('native cancel aborts hosted admission and clears the preview without persisting data',async()=>{
+  let began;const ready=new Promise(resolve=>{began=resolve;});
+  const f=fixture({admitImports:(_input,{signal})=>new Promise((resolve,reject)=>{began();signal.addEventListener('abort',()=>reject(Object.assign(Error('Import stopped. Your saved records are kept.'),{code:'CANCELLED'})),{once:true});})});
+  const preview=await f.send({type:'HISTORY_PREVIEW',days:30}),saving=f.send({type:'HISTORY_IMPORT',token:preview.token,videoIds:[videoId]});
+  const failed=assert.rejects(saving,/stopped/);await ready;await f.send({type:'HISTORY_CANCEL'});await failed;
+  assert.equal(f.api.storage.local.snapshot()[HISTORY_IMPORT_KEY],undefined);assert.equal(f.api.storage.session.snapshot()[HISTORY_PREVIEW_KEY],undefined);
 });
