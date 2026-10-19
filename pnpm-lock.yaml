@@ -30,6 +30,9 @@ importers:
       react-dom:
         specifier: 19.3.1
         version: 19.3.1(react@19.3.1)
+      stripe:
+        specifier: 23.0.0
+        version: 23.0.0(@types/node@22.20.5)
     devDependencies:
       '@tombelieber/app-canvas':
         specifier: github:tombelieber/app-canvas#v0.4.2
@@ -1450,6 +1453,15 @@ packages:
   strip-ansi@7.2.0:
     resolution: {integrity: sha512-yDPMNjp4WyfYBkHnjIRLfca1i6KMyGCtsVgoKe/z1+6vukgaENdgGBZt+ZmKPc4gavvEZ5OgHfHdrazhgNyG7w==}
     engines: {node: '>=12'}
+
+  stripe@23.0.0:
+    resolution: {integrity: sha512-MDE2A5ZVVluYURORaZEVghSmnLJc3w6aHAlZSxDQMsOjOb3V0O6ro/CiaeFlJS4N7uIVmsg98ocRsPmUK6YfyA==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@types/node': '>=20'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
 
   strnum@2.5.1:
     resolution: {integrity: sha512-UM4nTLWzQiDBseVxUGxN0wJzIk0UU89Qi7pKXz9qISo+lhviJikTuikBsK/oFRlpvYHvSdz0TVoLyQ+sEpYwxA==}
@@ -3128,6 +3140,10 @@ snapshots:
     dependencies:
       ansi-regex: 6.4.0
     optional: true
+
+  stripe@23.0.0(@types/node@22.20.5):
+    optionalDependencies:
+      '@types/node': 22.20.5
 
   strnum@2.5.1:
     dependencies:

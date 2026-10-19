@@ -20,7 +20,7 @@ const enums={
 const roots='supported|title|summary|concepts|slides|exercises|source|sources|citations|map|groups';
 const properties='title|label|explanation|anchorIds|anchorId|body|bullets|question|options|correctIndex|hint|anchors|digest|id|videoId|path|confidence|contentType|videoIds';
 const diagnosticPath=new RegExp(`^(?:${roots})(?:\\[\\d{1,3}\\])?(?:\\.(?:${properties})(?:\\[\\d{1,3}\\])?){0,5}$`,'u');
-const actions=new Set(['generate','answer','ask','pptx','preparePptx','inspect','classify','catalogue','session','download','entitlements','registerImports']);
+const actions=new Set(['generate','answer','ask','pptx','preparePptx','inspect','classify','catalogue','session','download','entitlements','registerImports','checkout','reconcilePurchase']);
 const codes=new Set(['authentication_required','invalid_provider_output','invalid_citation','unsupported_source','provider_unavailable','provider_temporarily_unavailable',
   'import_ledger_unavailable','import_allowance_exhausted','import_operation_conflict','import_registration_required','invalid_import_registration',
   'provider_not_configured','provider_billing_required','free_tier_quota_exhausted','free_route_not_verified','generation_disabled',
@@ -30,7 +30,7 @@ const codes=new Set(['authentication_required','invalid_provider_output','invali
   'invalid_task_id','invalid_request','source_unavailable','invalid_answer','invalid_question','invalid_source','invalid_transcript','invalid_clip',
   'source_identity','source_too_large','invalid_lesson_token','expired_lesson','lesson_access_denied','export_too_large','download_expired',
   'invalid_classification_input','classification_unavailable','classification_busy','invalid_usage','invalid_credit_amount','invalid_credit_operation',
-  'body_too_large','export_unavailable','study_unavailable']);
+  'body_too_large','export_unavailable','study_unavailable','invalid_funding','payments_unavailable','invalid_purchase','purchase_access_denied','billing_ledger_invalid','billing_configuration_invalid','billing_merchant_mismatch','billing_test_account_required','billing_unavailable','purchase_capacity','pack_capacity_unavailable','purchase_state_conflict','payment_mismatch','payment_provider_unavailable','payment_reconciliation_required','paid_session_busy','paid_allowance_exhausted','paid_capacity_exhausted','paid_followups_exhausted']);
 
 function own(value,key){
   if(!value||typeof value!=='object'||Array.isArray(value))return undefined;

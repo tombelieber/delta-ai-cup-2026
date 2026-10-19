@@ -118,7 +118,7 @@ export function createHostedActionBroker({api,readEndpoint,panelSender,now=Date.
       const result=pending.action==='imports'?importReceipt(message.result,pending.payload):validateMapAnalysisResponse(message.result,pending.payload.videos);await finish(state,pending,'complete',result);await persist(state);return {ok:true};
     }
     if(message.type==='DELTA_HOSTED_ACTION_ERROR'&&['classify','imports'].includes(pending.action)){
-      const messageText=pending.action==='imports'?(message.status===402?'This selection exceeds your remaining free history imports. Choose fewer videos; additional imports are not on sale yet. Saved records remain available.':'Import registration did not finish. Your saved records are kept. Return to Delta and try again.'):message.status===429?'Your free AI allowance or the model quota is unavailable. Your records are saved.':'Map analysis did not finish. Your records are saved. Return to Delta and try again.';
+      const messageText=pending.action==='imports'?(message.status===402?'This selection exceeds your remaining history allowance. Choose fewer videos; check Starter Pack availability in the Learning lab. Saved records remain available.':'Import registration did not finish. Your saved records are kept. Return to Delta and try again.'):message.status===429?'Your free AI allowance or the model quota is unavailable. Your records are saved.':'Map analysis did not finish. Your records are saved. Return to Delta and try again.';
       await finish(state,pending,'error',null,messageText,{status:message.status});await persist(state);return {ok:true};
     }
     fail();

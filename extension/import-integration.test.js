@@ -48,7 +48,7 @@ test('real background Chrome import -> hosted bridge -> HTTP ledger -> local per
   const first=await importSelection(Array.from({length:10},(_,n)=>video(n)));
   assert.equal(first.receipt.added,10);assert.equal((await first.outcome).value.visits.length,10);
   const repeated=await importSelection([video(0)]);assert.equal(repeated.receipt.added,0);assert.equal((await repeated.outcome).value.visits.length,10);
-  const denied=await importSelection([video(10)]);assert.equal(denied.receipt.status,402);assert.match((await denied.outcome).error.message,/free history imports/);
+  const denied=await importSelection([video(10)]);assert.equal(denied.receipt.status,402);assert.match((await denied.outcome).error.message,/remaining history allowance/);
   assert.equal(f.api.storage.local.snapshot()[HISTORY_IMPORT_KEY].visits.length,10);assert.deepEqual(f.api.storage.local.snapshot().savedLesson,{id:'legacy-do-not-touch'});
   assert.equal((await f.entitlements.forUser('alice').snapshot()).imports.remaining,0);assert.equal((await f.entitlements.forUser('bob').snapshot()).imports.remaining,10);
 });

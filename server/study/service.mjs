@@ -8,7 +8,7 @@ import {createStudyAccess,studySigningKey} from './access.mjs';
 import {sanitizeStudyDiagnostics} from './diagnostics.mjs';
 import {PROJECT_BUDGET_ENFORCED} from './project-budget.mjs';
 
-export function createStudyService({directory,sources=[],provider,userQuota,env=process.env,now=Date.now}={}){
+export function createStudyService({directory,sources=[],provider,userQuota,paidUsage,env=process.env,now=Date.now}={}){
   requireStudy(env.GEMINI_PAID_BUDGET_APPROVED !== 'true' || env.STUDY_ACCESS_MODE === 'google'
     && userQuota?.[PROJECT_BUDGET_ENFORCED] === true, 'project_budget_configuration_invalid',503,
   'Paid AI requires Google authentication and the durable project budget.');
@@ -23,8 +23,9 @@ export function createStudyService({directory,sources=[],provider,userQuota,env=
     return uid;
   }
   function openOwned(token,uid){return state.open(token,access.mode==='google'?{ownerUid:uid}:undefined);}
-  async function sessionCost(key,uid){
-    const account=userQuota.forUser(uid);
+  function fundingLedger(funding){requireStudy(funding==='free'||funding==='paid','invalid_funding');requireStudy(funding!=='paid'||access.mode==='google'&&paidUsage?.[PROJECT_BUDGET_ENFORCED]===true,'payments_unavailable',503);return funding==='paid'?paidUsage:userQuota;}
+  async function sessionCost(key,uid,funding='free'){
+    const account=fundingLedger(funding).forUser(uid);
     requireStudy(typeof account.session==='function','credit_ledger_unavailable',503);
     const session=await account.session(key);
     requireStudy(typeof session?.available==='boolean','credit_ledger_invalid',503);
@@ -37,20 +38,20 @@ export function createStudyService({directory,sources=[],provider,userQuota,env=
     requireStudy(!required||cost.available,'session_budget_unavailable',409,'This session’s cost history could not be verified. Saved lessons, practice and exports remain available.');
     requireStudy(!cost.available||cost.conservativeUsd<cost.limitUsd,'video_budget_exceeded',429,'This video has reached its US$0.10 generation budget. Saved results remain available.');
   }
-  function operationBudget(key,uid,{requireSession=false}={}){
+  function operationBudget(key,uid,{requireSession=false,funding='free',questionId=null}={}){
     const local=state.budget(key,{enforceLimit:access.mode!=='google'});
     if(access.mode!=='google')return {...local,preflight:async()=>{}};
-    const account=userQuota.forUser(uid),operationId=randomUUID();
+    const account=fundingLedger(funding).forUser(uid,{questionId}),operationId=randomUUID();
     return {...local,
-      async preflight(){requireAffordableSession(await sessionCost(key,uid),requireSession);await account.check();},
-      value:()=>sessionCost(key,uid),
+      async preflight(){requireAffordableSession(await sessionCost(key,uid,funding),requireSession);await account.check();},
+      value:()=>sessionCost(key,uid,funding),
       async reserve(amount){
         await local.check(amount);
         const reservation=await account.reserve({operationId,sessionId:key,amountUsd:amount});
         requireStudy(reservation?.created===true,'credit_operation_conflict',409);
         try{await local.reserve(amount);}catch(error){await account.settle({operationId,actualUsd:0});throw error;}
       },
-      async settle(amount,usage){await account.settle({operationId,actualUsd:amount,usage});await local.settle(amount,usage);requireAffordableSession(await sessionCost(key,uid),true);},
+      async settle(amount,usage){await account.settle({operationId,actualUsd:amount,usage});await local.settle(amount,usage);requireAffordableSession(await sessionCost(key,uid,funding),true);},
       async failure(diagnostics){try{await account.failure({operationId,diagnostics});}finally{await local.failure(diagnostics);}},
     };
   }
@@ -66,7 +67,7 @@ export function createStudyService({directory,sources=[],provider,userQuota,env=
     requireStudy(attempts.every(a=>a?.lessonId===lesson.id&&a.method==='ai-authored-key-match'&&lesson.exercises.some(e=>e.id===a.taskId)),'invalid_practice_evidence');
     return {...lesson,practiceEvidence:attempts};});}
   async function result(lesson,lessonToken,cached,uid){
-    const cost=access.mode==='google'?await sessionCost(lesson.costKey,uid):access.mode!=='local'&&!await state.read(lesson.costKey,'cost')?
+    const cost=access.mode==='google'?await sessionCost(lesson.costKey,uid,lesson.funding||'free'):access.mode!=='local'&&!await state.read(lesson.costKey,'cost')?
       {available:false,conservativeUsd:null,entries:[]}:await state.budget(lesson.costKey).value();
     return {lesson:visible(lesson),lessonToken,cached,cost};}
   function findTask(input,uid){const lesson=openOwned(input.lessonToken,uid),task=lesson.exercises.find(e=>e.id===input.taskId);requireStudy(task,'invalid_task_id');return {lesson,task};}
@@ -75,16 +76,18 @@ export function createStudyService({directory,sources=[],provider,userQuota,env=
     async catalogue(context){principalUid(context);return {sources:(await sourceList).map(publicSource),storage:'browser-local',model:env.GEMINI_MODEL,maxVideoUsd:.1};},
     async generate(input,context){
       const uid=principalUid(context);
-      requireStudy(input&&typeof input==='object','invalid_request');const profile=profileFor(input.profile);
+      requireStudy(input&&typeof input==='object','invalid_request');const funding=input.funding||'free';fundingLedger(funding);const profile=profileFor(input.profile);
       const source=input.transcript?parseStudySource({videoId:input.videoId,title:input.title,text:input.transcript,start:input.start,end:input.end}):(await sourceList).find(s=>s.videoId===input.videoId);
       requireStudy(source,'source_unavailable',422,'Import timestamped captions for this video before generating a lesson.');
       const prior=memoryLessons(input.memory,uid).flatMap(l=>l.concepts.map(c=>({id:c.id,label:c.label,explanation:c.explanation,
         status:l.practiceEvidence.some(a=>a.passed&&c.anchorIds.includes(l.exercises.find(e=>e.id===a.taskId)?.anchorId))?'exercise-key-matched-not-mastery':'previously-generated-not-mastery'}))).slice(-12);
-      const key=createHash('sha256').update(JSON.stringify({digest:source.digest,profile,prior,version:STUDY_PROMPT_VERSION,model:env.GEMINI_MODEL,...(uid?{ownerUid:uid}:{})})).digest('hex');
+      const key=createHash('sha256').update(JSON.stringify({digest:source.digest,profile,prior,version:STUDY_PROMPT_VERSION,model:env.GEMINI_MODEL,...(uid?{ownerUid:uid}:{}),...(funding==='paid'?{funding}:{} )})).digest('hex');
       return exclusive(key,async()=>{
-        const cached=await state.read(key,'lesson');
+        if(funding==='paid'){const paid=await paidUsage.begin(uid,key);if(paid.lessonToken)return result(openOwned(paid.lessonToken,uid),paid.lessonToken,true,uid);}
+        try{
+        const cached=funding==='free'?await state.read(key,'lesson'):null;
         if(cached){try{const lesson=openOwned(cached.lessonToken,uid);return result(lesson,cached.lessonToken,true,uid);}catch(e){if(e.code!=='expired_lesson')throw e;}}
-        const budget=operationBudget(key,uid);let generated;
+        const budget=operationBudget(key,uid,{funding});let generated;
         await budget.preflight();
         await state.write(key,'meta',{videoId:source.videoId,model:env.GEMINI_MODEL,sourceDigest:source.digest,promptVersion:STUDY_PROMPT_VERSION});
         // A format-only correction is deliberately not automatic in this
@@ -97,9 +100,10 @@ export function createStudyService({directory,sources=[],provider,userQuota,env=
           try{await budget.failure?.(sanitizeStudyDiagnostics(error?.diagnostics));}catch{}
           throw error;
         }
-        const lesson={...generated,id:randomUUID(),...(uid?{ownerUid:uid}:{}),source,profile,costKey:key,createdAt:new Date(now()).toISOString(),model:env.GEMINI_MODEL,
-          priorConcepts:prior.map(({id,label,status})=>({id,label,status})),assessment:'ai-authored-key-match',limitations:['Captions may contain errors; teaching material is AI-generated and not independently verified.','New exercise scenarios are created by Delta. Matching an AI-authored key does not establish mastery.','Saved learning stays in this browser. Only selected context is sent to Gemini; no cloud memory database is used.']};
-        const lessonToken=state.seal(lesson);await state.write(key,'lesson',{lessonToken});return result(lesson,lessonToken,false,uid);
+        const lesson={...generated,id:randomUUID(),...(uid?{ownerUid:uid}:{}),source,profile,...(funding==='paid'?{funding}:{}),costKey:key,createdAt:new Date(now()).toISOString(),model:env.GEMINI_MODEL,
+          priorConcepts:prior.map(({id,label,status})=>({id,label,status})),assessment:'ai-authored-key-match',limitations:['Captions may contain errors; teaching material is AI-generated and not independently verified.','New exercise scenarios are created by Delta. Matching an AI-authored key does not establish mastery.',funding==='paid'?'Your library stays in this browser. Encrypted paid-result receipts are retained on the server to recover purchased results; selected context is sent to Gemini.':'Saved learning stays in this browser. Only selected context is sent to Gemini; no cloud memory database is used.']};
+        const lessonToken=state.seal(lesson);if(funding==='paid')await paidUsage.finish(uid,key,lessonToken);await state.write(key,'lesson',{lessonToken});return result(lesson,lessonToken,false,uid);
+        }catch(error){if(funding==='paid'){try{await paidUsage.fail(uid,key);}catch{}}throw error;}
       });
     },
     async answer(input,context){const uid=principalUid(context),{lesson,task}=findTask(input,uid);requireStudy(Number.isInteger(input.choice)&&input.choice>=0&&input.choice<task.options.length,'invalid_answer');
@@ -119,13 +123,20 @@ export function createStudyService({directory,sources=[],provider,userQuota,env=
       return exclusive(primary.costKey,async()=>{
         requireStudy(access.mode!=='guarded'||await state.read(primary.costKey,'cost'),'session_budget_unavailable',409,
           'This session’s cost receipt is unavailable. Saved lessons, practice and exports remain available.');
-        const budget=operationBudget(primary.costKey,uid,{requireSession:true});await budget.preflight();
+        const funding=primary.funding||'free',questionId=funding==='paid'?paidUsage.questionKey(JSON.stringify({question:input.question.trim(),memories})):null;
+        if(questionId){const saved=await paidUsage.question(uid,primary.costKey,questionId);if(saved.answerToken){const savedAnswer=openOwned(saved.answerToken,uid).answer;return {...savedAnswer,cached:true,cost:await sessionCost(primary.costKey,uid,funding)};}}
+        try{
+        const budget=operationBudget(primary.costKey,uid,{requireSession:true,funding,questionId});await budget.preflight();
         const answer=await provider.ask({question:input.question.trim(),memories,budget});
         requireStudy(typeof answer?.answer==='string'&&answer.answer.trim()&&answer.answer.length<=3000,'invalid_provider_output',502);
         const allowed=new Set(memories.map(m=>`${m.videoId}:${m.anchorId}`));
         requireStudy(Array.isArray(answer.citations)&&answer.citations.every(c=>allowed.has(`${c.videoId}:${c.anchorId}`)),'invalid_citation',502);
         const citations=answer.citations.length?resolveStudyCitations(answer.citations,lessons.map(l=>l.source)):[];
-        return {answer:citations.length?answer.answer:'I could not find that in your saved learning sources.',citations,method:'local-caption-retrieval-gemini',cost:await budget.value()};});
+        const response={answer:citations.length?answer.answer:'I could not find that in your saved learning sources.',citations,method:'local-caption-retrieval-gemini',cost:await budget.value()};
+        if(questionId)await paidUsage.finishQuestion(uid,primary.costKey,questionId,state.seal({id:`answer:${randomUUID()}`,ownerUid:uid,answer:response}));
+        return response;
+        }catch(error){if(questionId){try{await paidUsage.failQuestion(uid,primary.costKey,questionId);}catch{}}throw error;}
+      });
     },
     async exportPptx(input,context){return studyPptx(openOwned(input.lessonToken,principalUid(context)));},
     async preparePptx(input,context){

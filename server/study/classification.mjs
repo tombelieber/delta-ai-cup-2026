@@ -18,7 +18,7 @@ const mapError = error => {
 
 // Metadata exists only in the active request. Cache keys are UID-bound hashes;
 // cached values contain the public classification result, never video titles.
-export function createStudyClassificationService({provider, accounts, env=process.env, now=Date.now}={}) {
+export function createStudyClassificationService({provider, accounts, paidAccounts, env=process.env, now=Date.now}={}) {
   requireStudy(env.GEMINI_PAID_BUDGET_APPROVED !== 'true' || env.STUDY_ACCESS_MODE === 'google'
     && accounts?.[PROJECT_BUDGET_ENFORCED] === true, 'project_budget_configuration_invalid',503);
   requireStudy(typeof accounts?.forUser === 'function' && typeof provider?.classifyMetadata === 'function',
@@ -39,12 +39,14 @@ export function createStudyClassificationService({provider, accounts, env=proces
   async function classify(input, context) {
     const uid = context?.principal?.uid;
     requireStudy(typeof uid==='string' && uid.length>0 && uid.length<=128,'authentication_required',401);
+    const funding=input?.funding||'free';requireStudy(['free','paid'].includes(funding),'invalid_funding');
+    requireStudy(funding!=='paid'||paidAccounts?.[PROJECT_BUDGET_ENFORCED]===true,'payments_unavailable',503);
     let normalized;
-    try {normalized=normalizeInput(input);} catch(error) {throw mapError(error);}
+    try {const {funding:_funding,...metadata}=input||{};normalized=normalizeInput(metadata);} catch(error) {throw mapError(error);}
     requireStudy(normalized.videos.length<=12,'invalid_classification_input',400);
     const canonical = {videos:[...normalized.videos].sort((a,b)=>a.videoId.localeCompare(b.videoId,'en')),
       existingPaths:normalized.existingPaths.map(path=>[...path]).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b),'en'))};
-    const key=hash({kind:VERSION,uid,model:env.GEMINI_MODEL,prompt:SYSTEM_INSTRUCTION,input:canonical});
+    const key=hash({kind:VERSION,uid,model:env.GEMINI_MODEL,prompt:SYSTEM_INSTRUCTION,input:canonical,...(funding==='paid'?{funding}:{})});
     prune();
     const saved=cache.get(key);
     if(saved) {
@@ -55,7 +57,7 @@ export function createStudyClassificationService({provider, accounts, env=proces
     if(active)return response(await active,normalized.videos,0);
     requireStudy(inflight.size<MAX_INFLIGHT,'classification_busy',429,'Map analysis is busy. Your saved map is kept.');
     const operation=(async()=>{
-      const account=accounts.forUser(uid),operationId=randomUUID();
+      const account=(funding==='paid'?paidAccounts:accounts).forUser(uid,{kind:'classification'}),operationId=randomUUID();
       await account.check();
       let reserved=false;
       const budget={

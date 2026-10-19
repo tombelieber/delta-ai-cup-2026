@@ -8,7 +8,7 @@ export function importPayload(value){
   return {operationId:value.operationId,videoIds:[...new Set(value.videoIds)]};
 }
 export function importBalance(value){
-  if(!object(value)||value.limit!==10||!integer(value.used)||value.used>value.limit||value.remaining!==value.limit-value.used)invalid();
+  if(!object(value)||(!Number.isSafeInteger(value.limit)||value.limit<10||value.limit>3210)||!integer(value.used)||value.used>value.limit||value.remaining!==value.limit-value.used)invalid();
   return {limit:value.limit,used:value.used,remaining:value.remaining};
 }
 export function importReceipt(value,expected){

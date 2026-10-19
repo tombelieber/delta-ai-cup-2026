@@ -19,29 +19,31 @@ export default function HostedActionWorkspace({endpoint='',authConfig}={}){
 }
 function HostedClassification({endpoint,authConfig,bridge,payload}){
   const auth=useMemo(()=>createStudyAuth({endpoint,authConfig}),[endpoint,authConfig]);
-  const [account,setAccount]=useState(()=>auth.snapshot()),[busy,setBusy]=useState(false),[error,setError]=useState(''),[complete,setComplete]=useState(false),[terminal,setTerminal]=useState(false);
+  const [account,setAccount]=useState(()=>auth.snapshot()),[busy,setBusy]=useState(false),[error,setError]=useState(''),[complete,setComplete]=useState(false),[terminal,setTerminal]=useState(false),[funding,setFunding]=useState('free');
+  const canClassify=funding==='paid'?account.entitlements?.paid?.classificationAvailable:account.quota?.remainingUsd>0;
   const operation=useRef(crypto.randomUUID());
   const running=useRef(false),alive=useRef(true);
   useEffect(()=>{alive.current=true;const unsubscribe=auth.subscribe(setAccount);void auth.initialize();return()=>{alive.current=false;unsubscribe();auth.dispose();};},[auth]);
   async function classify(){
-    if(running.current||complete||terminal||account.status!=='signed-in'||!account.quota?.remainingUsd)return;
+    if(running.current||complete||terminal||account.status!=='signed-in'||!canClassify)return;
     running.current=true;setBusy(true);setError('');const uid=account.user.uid;
     try{
       const client=createStudyClient({endpoint,userId:uid,getToken:()=>auth.getToken(uid)});
       await client.registerImports({operationId:operation.current,videoIds:payload.videos.map(video=>video.videoId)});
       if(!alive.current||auth.snapshot().user?.uid!==uid)throw Error('Your account changed. Open the map action again from Delta.');
-      const raw=await client.request('classify',payload);
+      const raw=await client.request('classify',{...payload,...(funding==='paid'?{funding}:{})});
       if(!alive.current||auth.snapshot().user?.uid!==uid)throw Error('Your account changed. Open the map action again from Delta.');
       const result=validateMapAnalysisResponse(raw,payload.videos);
       await bridge.complete(result);if(alive.current){setComplete(true);setTerminal(true);}
     }catch(value){if(alive.current){setError(value.status===429?'Your free allowance or the model quota is unavailable. Your local records are kept.':value.message||'Map analysis did not finish. Your local records are kept.');setTerminal(true);}await bridge.fail(value).catch(()=>{});
     }finally{running.current=false;if(alive.current)setBusy(false);void auth.refreshSession().catch(()=>{});void auth.refreshEntitlements().catch(()=>{});}
   }
-  return <section className="study-workspace"><StudyAccount auth={auth} state={account}/><header className="study-heading"><div><span className="study-kicker">DELTA · MY MAP</span><h1>Organise your selected videos.</h1><p>Only the selected public titles and channels are sent for AI classification. Your viewing times and account credentials stay out of the extension handoff.</p></div></header>
-    <p>{payload.videos.length} selected {payload.videos.length===1?'video':'videos'} · new videos use your ten lifetime free imports; classification also uses your remaining AI allowance.</p>
+  return <section className="study-workspace"><StudyAccount auth={auth} state={account} endpoint={endpoint}/><header className="study-heading"><div><span className="study-kicker">DELTA · MY MAP</span><h1>Organise your selected videos.</h1><p>Only the selected public titles and channels are sent for AI classification. Your viewing times and account credentials stay out of the extension handoff.</p></div></header>
+    <p>{payload.videos.length} selected {payload.videos.length===1?'video':'videos'} · new videos use your account import allowance; classification uses the allowance selected below.</p>
+    {account.entitlements?.paid?.classificationAvailable&&<label>Classification allowance<select disabled={busy||terminal} value={funding} onChange={event=>setFunding(event.target.value)}><option value="free">Use free AI credit</option><option value="paid">Use Starter Pack map allocation · no learning session used</option></select></label>}
     <ul>{payload.videos.map(video=><li key={video.videoId}>{video.title}{video.channel?` · ${video.channel}`:''}</li>)}</ul>
     {error&&<p className="study-error" role="alert">{error} Return to the extension to open a new action.</p>}
-    {complete?<p role="status">Your map results were returned to the Delta extension. You can close this tab.</p>:<button className="study-primary" type="button" disabled={busy||terminal||account.status!=='signed-in'||!account.quota?.remainingUsd} onClick={classify}>{busy?'Analysing selected metadata…':'Analyze selected videos'}</button>}
+    {complete?<p role="status">Your map results were returned to the Delta extension. You can close this tab.</p>:<button className="study-primary" type="button" disabled={busy||terminal||account.status!=='signed-in'||!canClassify} onClick={classify}>{busy?'Analysing selected metadata…':'Analyze selected videos'}</button>}
   </section>;
 }
 
@@ -60,7 +62,7 @@ function HostedImports({endpoint,authConfig,bridge,payload}){
     }catch(value){if(alive.current){setError(value.message||'Your import allowance could not be verified.');setTerminal(true);}await bridge.fail(value).catch(()=>{});
     }finally{running.current=false;if(alive.current)setBusy(false);void auth.refreshEntitlements().catch(()=>{});}
   }
-  return <section className="study-workspace"><StudyAccount auth={auth} state={account}/><header className="study-heading"><div><h1>Save your selected history.</h1><p>Confirm your Delta account to register {payload.videoIds.length} selected {payload.videoIds.length===1?'video':'videos'}.</p></div></header>
+  return <section className="study-workspace"><StudyAccount auth={auth} state={account} endpoint={endpoint}/><header className="study-heading"><div><h1>Save your selected history.</h1><p>Confirm your Delta account to register {payload.videoIds.length} selected {payload.videoIds.length===1?'video':'videos'}.</p></div></header>
     <p>Your first ten distinct videos are free across all imports and devices. Registering the same video again uses no additional import. This step uses no AI credit.</p>
     <p>Video IDs are verified here. Your history titles and viewing dates remain in the extension. The server keeps keyed identifiers and an allowance counter.</p>
     {error&&<p role="alert" className="study-error">{error} Return to Delta to try again.</p>}

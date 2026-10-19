@@ -49,7 +49,7 @@ function originsFrom(value = '') {
     try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) && url.origin === value; } catch { return false; }
   }));
 }
-function readBody(request, maxBytes) {
+function readBody(request, maxBytes, raw = false) {
   return new Promise((resolve, reject) => {
     let size = 0;
     const chunks = [];
@@ -61,7 +61,7 @@ function readBody(request, maxBytes) {
         const failure = new Error('body_too_large'); failure.status = 413; reject(failure);
       } else chunks.push(chunk);
     };
-    const end = () => { cleanup(); resolve(Buffer.concat(chunks).toString('utf8')); };
+    const end = () => { cleanup(); resolve(raw ? Buffer.concat(chunks) : Buffer.concat(chunks).toString('utf8')); };
     const error = () => { cleanup(); reject(new Error('invalid_body')); };
     const aborted = () => { cleanup(); reject(new Error('invalid_body')); };
     request.on('data', data); request.on('end', end); request.on('error', error); request.on('aborted', aborted);
@@ -74,12 +74,12 @@ const boundedNumber = (value, fallback, min, max) => {
 
 export function createHandler({ service = createRecommendationService(), learningService = createLearningService(), studyService = null, distDir = path.join(ROOT, 'dist'),
   mapService = createMapClassificationService(), mapAccess = createMapAccess(),
-  studyAccounts = null, studyEntitlements = studyAccounts?.entitlements || null, classificationService = null, studyAccessMode = studyService?.access?.mode || 'local',
+  studyAccounts = null, studyBilling = studyAccounts?.billing || null, studyEntitlements = studyAccounts?.entitlements || null, classificationService = null, studyAccessMode = studyService?.access?.mode || 'local',
   allowedOrigins = '', allowChromeExtensions = false, now = Date.now, maxBodyBytes = 16384,
   requestsPerMinute = 30, onDiagnostic = writeStudyDiagnostic } = {}) {
   const origins = allowedOrigins instanceof Set ? allowedOrigins : originsFrom(allowedOrigins);
   const rates = new Map();
-  const studyRouter = createStudyRouter(studyService, { accounts: studyAccounts, entitlements: studyEntitlements, classificationService, onDiagnostic });
+  const studyRouter = createStudyRouter(studyService, { accounts: studyAccounts, entitlements: studyEntitlements, billing: studyBilling, classificationService, onDiagnostic });
   const securityHeaders = securityHeadersFor(studyAccounts);
   const authEnabled = studyAccounts?.config()?.enabled === true;
   function originAllowed(origin, request) {
@@ -107,6 +107,13 @@ export function createHandler({ service = createRecommendationService(), learnin
     };
     let url;
     try { url = new URL(request.url, 'http://server.invalid'); } catch { return json(400, { error: 'invalid_request', message: '無效網址' }); }
+    if(url.pathname==='/api/billing/stripe-webhook'){
+      if(request.method!=='POST')return json(405,{error:'method_not_allowed'},{allow:'POST'});
+      if(!studyBilling)return json(503,{error:'payments_unavailable'});
+      if(request.headers['content-type']?.split(';')[0]?.trim()!=='application/json')return json(415,{error:'unsupported_media_type'});
+      try{return json(200,await studyBilling.webhook(await readBody(request,262144,true),request.headers['stripe-signature']));}
+      catch(error){const invalid=error instanceof StudyError&&['invalid_payment_signature','payment_mismatch'].includes(error.code);return json(error.status===413?413:invalid?400:503,{error:error.status===413?'body_too_large':invalid?error.code:'payment_event_unavailable'});}
+    }
     if (url.pathname.startsWith('/api/')) {
       const origin = request.headers.origin;
       if (!originAllowed(origin, request)) return json(403, { error: 'origin_not_allowed', message: '未允許此網頁或 extension 來源' });
@@ -218,10 +225,10 @@ export function startServer({ env = process.env, studyAccounts = null } = {}) {
   const studyProvider = createStudyProvider({env,generationGate});
   const studyService = env.STUDY_ENABLED === 'true' ? createStudyService({env,
     directory:env.STUDY_CACHE_DIR||path.join(ROOT,'artifacts/study/cache'),sources:loadStudySources(env.STUDY_SOURCE_DIR||path.join(ROOT,'artifacts/study/sources')),
-    userQuota:studyAccounts,
+    userQuota:studyAccounts,paidUsage:studyAccounts?.paidUsage,
     provider:studyProvider}) : null;
   const classificationService = studyService && env.STUDY_ACCESS_MODE === 'google'
-    ? createStudyClassificationService({provider:studyProvider,accounts:studyAccounts,env}) : null;
+    ? createStudyClassificationService({provider:studyProvider,accounts:studyAccounts,paidAccounts:studyAccounts?.paidUsage,env}) : null;
   const server = createServer({ service, learningService, studyService, studyAccounts, classificationService, studyAccessMode:env.STUDY_ACCESS_MODE??'local', mapService, mapAccess, allowedOrigins: env.ALLOWED_ORIGINS || '',
     allowChromeExtensions: env.ALLOW_CHROME_EXTENSIONS === 'true', distDir: path.join(ROOT, 'dist') });
   const port = boundedNumber(env.PORT, 8787, 1, 65535);

@@ -2,7 +2,7 @@ import {StudyError,requireStudy} from './source.mjs';
 import {createStudyAccess} from './access.mjs';
 import {createStudyFailureDiagnostic} from './diagnostics.mjs';
 
-const POST_ACTIONS=new Set(['generate','answer','ask','pptx','preparePptx','inspect','classify','registerImports']);
+const POST_ACTIONS=new Set(['generate','answer','ask','pptx','preparePptx','inspect','classify','registerImports','checkout','reconcilePurchase']);
 const DOWNLOAD=/^download\/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
 function createUidAdmission({requestsPerMinute=60,maxConcurrent=2,maxUsers=500}={},now=Date.now){
   for(const [value,max] of [[requestsPerMinute,6000],[maxConcurrent,32],[maxUsers,5000]]){
@@ -27,7 +27,7 @@ function createUidAdmission({requestsPerMinute=60,maxConcurrent=2,maxUsers=500}=
   };
 }
 
-export function createStudyRouter(service,{accounts,entitlements,classificationService,admission,now=Date.now,onDiagnostic}={}){
+export function createStudyRouter(service,{accounts,entitlements,billing=accounts?.billing,paidUsage=accounts?.paidUsage,classificationService,admission,now=Date.now,onDiagnostic}={}){
   const access=service?.access||createStudyAccess();
   requireStudy(access.mode!=='google'||['authenticate','config','forUser'].every(name=>typeof accounts?.[name]==='function'),
     'firebase_configuration_invalid',503);
@@ -61,7 +61,7 @@ export function createStudyRouter(service,{accounts,entitlements,classificationS
     };
     let principal,release;
     try{
-      if(access.mode==='google'||['session','entitlements','registerImports'].includes(action)){
+      if(access.mode==='google'||['session','entitlements','registerImports','checkout','reconcilePurchase'].includes(action)){
         try{
           requireStudy(typeof accounts?.authenticate==='function','authentication_required',401);
           principal=await accounts.authenticate(request);
@@ -79,7 +79,9 @@ export function createStudyRouter(service,{accounts,entitlements,classificationS
       if(action==='entitlements'){
         try{
           requireStudy(typeof entitlements?.forUser==='function','import_ledger_unavailable',503,'Import allowance is unavailable. Saved records remain available.');
-          json(200,await entitlements.forUser(principal.uid).snapshot());
+          const value=await entitlements.forUser(principal.uid).snapshot();
+          const paid=paidUsage?await paidUsage.snapshot(principal.uid):null;
+          json(200,{...value,starterPack:{...value.starterPack,available:Boolean(billing?.canPurchase?.(principal.uid)),...(billing?.canPurchase?.(principal.uid)?{mode:'sandbox'}:{})},...(paid?{paid}:{})});
         }catch(error){await actionFailure(error);}return true;
       }
       if(download){
@@ -92,7 +94,12 @@ export function createStudyRouter(service,{accounts,entitlements,classificationS
       if(request.headers['content-type']?.split(';')[0]?.trim()!=='application/json'){json(415,{error:'unsupported_media_type'});return true;}
       try{
         let input;try{input=JSON.parse(await readBody(request,action==='registerImports'?16384:350000));}catch(error){if(error.status===413)throw error;throw new StudyError('invalid_request');}
-        if(action==='registerImports'){
+        if(action==='checkout'||action==='reconcilePurchase'){
+          requireStudy(billing,'payments_unavailable',503,'Purchases are unavailable. Your saved work and existing allowance are kept.');
+          if(action==='checkout')json(200,await billing.checkout(principal.uid,input));
+          else{requireStudy(input&&Object.keys(input).length===1&&typeof input.orderId==='string','invalid_purchase');json(200,await billing.reconcile(input.orderId,principal.uid));}
+        }
+        else if(action==='registerImports'){
           requireStudy(typeof entitlements?.forUser==='function','import_ledger_unavailable',503,'Import allowance is unavailable. Saved records remain available.');
           json(200,await entitlements.forUser(principal.uid).register(input));
         }

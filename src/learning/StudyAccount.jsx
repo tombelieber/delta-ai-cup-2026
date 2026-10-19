@@ -1,8 +1,9 @@
 import React,{useState} from 'react';
 import StudyImportAllowance from './StudyImportAllowance.jsx';
+import StudyPurchase from './StudyPurchase.jsx';
 import {studyAuthMessage} from './study-auth.mjs';
 
-export default function StudyAccount({auth,state}){
+export default function StudyAccount({auth,state,endpoint=''}){
   const [working,setWorking]=useState(false),[error,setError]=useState('');
   if(state.status==='local')return null;
   async function perform(action){if(working)return;setWorking(true);setError('');try{await action();}catch(value){setError(studyAuthMessage(value));}finally{setWorking(false);}}
@@ -16,7 +17,7 @@ export default function StudyAccount({auth,state}){
       <div className="study-account-identity"><span className="study-account-avatar" aria-hidden="true">{(state.user.displayName||'Google').trim().slice(0,1).toUpperCase()}</span><span className="study-account-name"><strong>{state.user.displayName||'Signed in with Google'}</strong><small>Google account</small></span></div>
       <div className="study-account-budget">{quota?<><span>AI budget</span><strong>US${quota.remainingUsd.toFixed(4)}</strong><span>remaining</span></>:<span>AI budget unavailable</span>}</div>
       <details className="study-account-details"><summary>Budget details</summary><div><p>{quota?<>Estimated lifetime AI dispatch budget: <strong>US${quota.remainingUsd.toFixed(4)} remaining</strong> of US${quota.limitUsd.toFixed(2)}.</>:'The estimated AI budget is unavailable. Saved lessons, practice and exports remain available.'}</p><p>Conservative dispatch estimates, not a provider invoice. No daily reset. Each lesson is checked against US$0.10.</p><p>Your learning library stays on this device for your Google account.</p></div></details>
-      <StudyImportAllowance auth={auth} state={state}/>
+      <StudyImportAllowance auth={auth} state={state}/><StudyPurchase key={state.user.uid} auth={auth} state={state} endpoint={endpoint}/>
       <div className="study-account-actions">{!quota&&<button type="button" disabled={working} onClick={()=>perform(()=>state.needsSignIn?auth.signIn():auth.refreshSession())}>{state.needsSignIn?'Sign in again with Google':'Refresh account credit'}</button>}<button type="button" disabled={working} onClick={()=>perform(()=>auth.signOut())}>{working?'Signing out…':'Sign out'}</button></div>
     </>:<>
       <div className="study-welcome"><span className="study-account-eyebrow">LEARN IT. KEEP IT.</span><h1 className="study-welcome-title">Turn a video into something you can use.</h1><p className="study-welcome-copy">Create a source-linked lesson, put it into practice, recall what you saved and take a PowerPoint with you.</p><p className="study-welcome-outcomes">Lesson <span aria-hidden="true">→</span> Practice <span aria-hidden="true">→</span> Source recall <span aria-hidden="true">→</span> PPTX</p>

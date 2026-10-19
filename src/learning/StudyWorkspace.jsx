@@ -16,15 +16,16 @@ export default function StudyWorkspace(props){
   useEffect(()=>{const unsubscribe=auth.subscribe(state=>setSnapshot({auth,state}));void auth.initialize();return()=>{unsubscribe();auth.dispose();};},[auth]);
   const available=account.status==='local'||account.status==='signed-in',userId=account.user?.uid||'';
   const allowanceStatus=!account.enabled||account.quota?.remainingUsd>0?'available':account.quota?'exhausted':'unavailable';
-  return <><StudyAccount key={endpoint} auth={auth} state={account}/>{available&&<StudyContent key={`${endpoint}:${userId||'local'}`} {...props} initialSource={consumedInitial.current===props.initialSource?null:props.initialSource} onInitialSourceConsumed={()=>{consumedInitial.current=props.initialSource;}} auth={account.enabled?auth:null} userId={userId} canSpend={!account.enabled||Boolean(account.quota?.remainingUsd>0)} allowanceStatus={allowanceStatus}/>}</>;
+  return <><StudyAccount key={endpoint} auth={auth} state={account} endpoint={endpoint}/>{available&&<StudyContent key={`${endpoint}:${userId||'local'}`} {...props} initialSource={consumedInitial.current===props.initialSource?null:props.initialSource} onInitialSourceConsumed={()=>{consumedInitial.current=props.initialSource;}} auth={account.enabled?auth:null} userId={userId} canSpend={!account.enabled||Boolean(account.quota?.remainingUsd>0)} allowanceStatus={allowanceStatus} paidSessions={account.entitlements?.paid?.sessions.remaining||0}/>}</>;
 }
-function StudyContent({endpoint='',sourceVideo,initialSource,onInitialSourceConsumed,onAuthorize,auth=null,userId='',canSpend=true,allowanceStatus='available'}){
+function StudyContent({endpoint='',sourceVideo,initialSource,onInitialSourceConsumed,onAuthorize,auth=null,userId='',canSpend=true,allowanceStatus='available',paidSessions=0}){
   const client=useMemo(()=>createStudyClient({endpoint,userId,...(auth?{getToken:()=>auth.getToken(userId)}:{})}),[endpoint,userId,auth]);
   const [catalogue,setCatalogue]=useState([]),[library,setLibrary]=useState([]),[videoId,setVideoId]=useState('733mgqrzNKs');
   const [activeId,setActiveId]=useState(''),[profile,setProfile]=useState(initialProfile),[interest,setInterest]=useState('');
   const [busy,setBusy]=useState(''),[loading,setLoading]=useState(true),[error,setError]=useState(''),[slide,setSlide]=useState(0),[taskIndex,setTaskIndex]=useState(0),[choice,setChoice]=useState(null),[feedback,setFeedback]=useState(null);
   const [question,setQuestion]=useState(''),[answer,setAnswer]=useState(null),[upload,setUpload]=useState(null),[url,setUrl]=useState(''),[download,setDownload]=useState(null);
-  const [sourceIssue,setSourceIssue]=useState('');
+  const [sourceIssue,setSourceIssue]=useState(''),[funding,setFunding]=useState('free');
+  const canGenerate=funding==='paid'?paidSessions>0:canSpend;
   const [sidebarOpen,setSidebarOpen]=useState(false),[focusTarget,setFocusTarget]=useState('');
   const lessonHeading=useRef(null),taskHeading=useRef(null),downloadLink=useRef(null);
   const epoch=useRef(0),running=useRef(false),source=useRef(sourceVideo||initialSource),initialHandled=useRef(null);source.current=sourceVideo||initialSource;
@@ -40,12 +41,12 @@ function StudyContent({endpoint='',sourceVideo,initialSource,onInitialSourceCons
   useEffect(()=>{if(sourceVideo?.videoId||sourceVideo?.url||sourceVideo?.videoUrl){const restored=restoreStudySelection(library,sourceVideo);select(library.find(item=>item.lesson.id===restored.activeId),restored.videoId);}},[sourceVideo?.videoId,sourceVideo?.url,sourceVideo?.videoUrl]);
   useEffect(()=>{if(loading||!initialSource||initialHandled.current===initialSource)return;initialHandled.current=initialSource;onInitialSourceConsumed?.();try{const prepared=validateStudyInitialSource(initialSource,sourceVideo);select(undefined,prepared.videoId);setUpload(prepared);setUrl(prepared.url);}catch(value){setSourceIssue(value.message);setError(value.message);}},[loading,initialSource]);
   function select(item,requestedVideoId=''){const restored=restoreStudySelection(item?[item]:[],requestedVideoId);epoch.current++;running.current=false;setActiveId(restored.activeId);setVideoId(restored.videoId);setProfile(restored.profile);setInterest(restored.interest);setUpload(null);setUrl(restored.videoId?`https://www.youtube.com/watch?v=${restored.videoId}`:'');setSourceIssue('');setSlide(0);setTaskIndex(0);setChoice(null);setFeedback(null);setQuestion('');setAnswer(null);setDownload(null);setError('');setBusy('');setFocusTarget('');if(item)setSidebarOpen(false);}
-  async function run(name,action){if(running.current)return;running.current=true;const serial=++epoch.current;setBusy(name);setError('');try{await action(()=>serial===epoch.current);}catch(e){if(serial===epoch.current)setError(e.message);if(auth&&[401,403].includes(e.status))void auth.refreshSession().catch(()=>{});}finally{if(auth&&['generate','ask'].includes(name))void auth.refreshSession().catch(()=>{});if(serial===epoch.current){running.current=false;setBusy('');}}}
+  async function run(name,action){if(running.current)return;running.current=true;const serial=++epoch.current;setBusy(name);setError('');try{await action(()=>serial===epoch.current);}catch(e){if(serial===epoch.current)setError(e.message);if(auth&&[401,403].includes(e.status))void auth.refreshSession().catch(()=>{});}finally{if(auth&&['generate','ask'].includes(name))void Promise.allSettled([auth.refreshSession(),auth.refreshEntitlements()]);if(serial===epoch.current){running.current=false;setBusy('');}}}
   useEffect(()=>()=>{if(download?.href.startsWith('blob:'))URL.revokeObjectURL(download.href);},[download]);
   useEffect(()=>{if(!download?.expiresAt||download.expired)return;const timeout=setTimeout(()=>setDownload(value=>value===download?{...value,expired:true}:value),Math.max(0,download.expiresAt-Date.now()));return()=>clearTimeout(timeout);},[download]);
   function downloadBlob(blob,name){setDownload({href:URL.createObjectURL(blob),name});setFocusTarget('download');}
   async function generate(){await run('generate',async current=>{
-    const id=upload?.videoId||videoId;const result=await client.generate({videoId:id,profile:{...profile,interests:interest.split(',').map(x=>x.trim()).filter(Boolean).slice(0,5)},
+    const id=upload?.videoId||videoId;const result=await client.generate({videoId:id,...(funding==='paid'?{funding}:{}),profile:{...profile,interests:interest.split(',').map(x=>x.trim()).filter(Boolean).slice(0,5)},
       ...(upload?{transcript:upload.text,title:upload.title,start:upload.start,end:upload.end}:{}),memory:library.filter(x=>x.lesson.source.videoId!==id).slice(-4).map(memoryOf)});
     if(current()){await refresh(current);if(current()){setActiveId(result.lesson.id);setProfile(result.lesson.profile||initialProfile);setInterest((result.lesson.profile?.interests||[]).join(', '));setSlide(0);setTaskIndex(0);setChoice(null);setFeedback(null);setQuestion('');setAnswer(null);setDownload(null);setSidebarOpen(false);setFocusTarget('lesson');}}
   });}
@@ -99,9 +100,10 @@ function StudyContent({endpoint='',sourceVideo,initialSource,onInitialSourceCons
           <label>Experience<select disabled={pending} value={profile.level} onChange={event=>setProfile(value=>({...value,level:event.target.value}))}><option value="beginner">Beginner</option><option value="some-experience">Some experience</option></select></label>
         </details>
         {upload&&<p className="study-caption-ready" role="status">Captions ready · {stamp(upload.start)}–{stamp(upload.end)}. Choose Generate lesson to continue.</p>}
-        {!canSpend&&<p className="study-spend-notice" role="status">{allowanceStatus==='exhausted'?'Your AI allowance is used. Saved lessons, practice and downloads still work.':'Your AI allowance is unavailable. Saved lessons, practice and downloads still work.'}</p>}
-        <button className="study-primary" type="button" disabled={pending||!canSpend||Boolean(sourceIssue)||(!selected&&!upload)} onClick={generate}>{busy==='generate'?'Creating your lesson…':lesson?'Create another explanation':'Generate lesson'}</button>
-        <small className="study-budget-note">Uses Gemini and your AI allowance. Each generation must pass the US$0.10 session estimate.</small>
+        {paidSessions>0&&<label>Lesson allowance<select disabled={pending} value={funding} onChange={event=>setFunding(event.target.value)}><option value="free">Use free AI credit</option><option value="paid">Use 1 Starter Pack session · {paidSessions} left</option></select></label>}
+        {!canGenerate&&<p className="study-spend-notice" role="status">{allowanceStatus==='exhausted'?'Your AI allowance is used. Saved lessons, practice and downloads still work.':'Your AI allowance is unavailable. Saved lessons, practice and downloads still work.'}</p>}
+        <button className="study-primary" type="button" disabled={pending||!canGenerate||Boolean(sourceIssue)||(!selected&&!upload)} onClick={generate}>{busy==='generate'?'Creating your lesson…':lesson?'Create another explanation':'Generate lesson'}</button>
+        <small className="study-budget-note">{funding==='paid'?'Uses one purchased session on successful generation, with up to two follow-up answers.':'Uses Gemini and your free AI allowance.'} Each session must stay below the US$0.10 estimate.</small>
         {library.length>0&&<section className="study-library" aria-labelledby="study-library-title">
           <div className="study-sidebar-heading"><h2 id="study-library-title">Your saved learning</h2><span>{library.length}</span></div>
           {library.map(item=><button type="button" disabled={pending} key={item.lesson.id} aria-pressed={item.lesson.id===activeId} onClick={()=>{select(item);setSidebarOpen(false);setFocusTarget('lesson');}}>
@@ -155,7 +157,7 @@ function StudyContent({endpoint='',sourceVideo,initialSource,onInitialSourceCons
             <form className="study-memory-composer" onSubmit={ask}>
               <label htmlFor="study-question">Ask your learning memory</label>
               <textarea id="study-question" disabled={pending} value={question} maxLength={500} onChange={event=>{setQuestion(event.target.value);setAnswer(null);}} placeholder="Where did I learn why profit and cash are different?"/>
-              <button className="study-primary" type="submit" disabled={!canSpend||!question.trim()||pending}>{busy==='ask'?'Finding source evidence…':'Find it in my learning'}</button>
+              <button className="study-primary" type="submit" disabled={(!canSpend&&lesson.funding!=='paid')||!question.trim()||pending}>{busy==='ask'?'Finding source evidence…':'Find it in my learning'}</button>
             </form>
             {answer&&<div className="study-answer" role="status"><p>{answer.answer}</p>{answer.citations.map((citation,index)=><a key={index} href={citation.url} target="_blank" rel="noreferrer">{library.find(item=>item.lesson.source.videoId===citation.title)?.lesson.source.title||citation.title} · {stamp(citation.start)}–{stamp(citation.end)} ↗</a>)}</div>}
           </section>
