@@ -49,6 +49,14 @@ h1 > span { display: block; }
 .button-secondary { border-color: var(--line); background: transparent; }
 .button-secondary:hover { background: var(--mist); }
 .hero-detail { margin: 17px 0 0; color: var(--muted); font-size: .875rem; line-height: 1.6; }
+.demo-section { padding-block: 8px 64px; scroll-margin-top: 24px; }
+.demo-heading { margin-bottom: 24px; }
+.demo-heading h2 { margin-bottom: 10px; font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem); }
+.demo-heading p { margin-bottom: 0; color: var(--muted); font-size: 1.0625rem; }
+.demo-player { aspect-ratio: 16 / 9; background: #211a2b; }
+.demo-player iframe { display: block; width: 100%; height: 100%; border: 0; }
+.demo-caption { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 10px; margin: 14px 0 0; color: var(--muted); font-size: .875rem; }
+.demo-caption a { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); }
 .workspace-showcase { padding-bottom: 102px; }
 .product-figure { margin: 0; min-width: 0; }
 .screen-frame { overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 13px; box-shadow: 0 12px 36px -24px #47315538; }

@@ -1,8 +1,8 @@
 {
-  "version": "0.7.0",
-  "filename": "Delta-Chrome-MVP-0.7.0.zip",
+  "version": "0.7.1",
+  "filename": "Delta-Chrome-MVP-0.7.1.zip",
   "bytes": 1917583,
-  "sha256": "a77d8de508d5ae5a14eb6cff6d6aa475e5bc701ae936c4f9b91c36d61b895275",
+  "sha256": "c7116a0427ce50dacfcc500ab90ba431b4df7eda20cf0fc86fcbdca9eb5ffe55",
   "files": [
     {
       "path": "assets/panel-CqGWOJ-4.css",
@@ -52,7 +52,7 @@
     {
       "path": "manifest.json",
       "bytes": 1472,
-      "sha256": "f8e96e3ae4adf71c6ee6e465e37c0a19e1f47c7aa5531868e8f3f237ffb2842b"
+      "sha256": "59c2ea1d7872d7379cbc32516c4a6b73c9c5f2bc3162bca7f5fbd1c7bb381910"
     },
     {
       "path": "panel.html",

@@ -44,7 +44,15 @@ export async function packageExtension(root = process.cwd()) {
   await validateExtensionFiles(directory, manifest, files);
   verifyExtensionArchive(buffer, files);
   await mkdir(path.join(root, 'public/downloads'), { recursive: true });
-  await writeFile(path.join(root, 'public/downloads', filename), buffer);
+  const archivePath = path.join(root, 'public/downloads', filename);
+  try {
+    await writeFile(archivePath, buffer, { flag: 'wx' });
+  } catch (error) {
+    if (error.code !== 'EEXIST') throw error;
+    if (!(await readFile(archivePath)).equals(buffer)) {
+      throw new Error(`${filename} already exists with different bytes; bump extension/manifest.json version before packaging`);
+    }
+  }
   const receipt = { version: manifest.version, filename, bytes: buffer.length, sha256: createHash('sha256').update(buffer).digest('hex'), files };
   await writeFile(path.join(root, 'extension-package.json'), `${JSON.stringify(receipt, null, 2)}\n`);
   return receipt;

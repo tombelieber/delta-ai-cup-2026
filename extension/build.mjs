@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const outDir = path.join(root, 'extension-dist');
+const sourceManifest = JSON.parse(await readFile(path.join(root, 'extension/manifest.json'), 'utf8'));
 await build({ configFile: false, root, publicDir: false, define: { 'process.env.NODE_ENV': JSON.stringify('production'), __DELTA_EXTENSION__: 'true' }, build: { outDir, emptyOutDir: true, target: 'chrome116', minify: false,
   lib: { entry: path.join(root, 'extension/content-entry.js'), name: 'DeltaRecorder', formats: ['iife'], fileName: () => 'content.js' } } });
 await build({ configFile: false, root: path.join(root, 'extension'), publicDir: false, base: './', define: { __DELTA_EXTENSION__: 'true' }, build: { outDir, emptyOutDir: false, target: 'chrome116', minify: false,
@@ -15,7 +16,8 @@ await copyFile(path.join(root, 'extension/manifest.json'), path.join(outDir, 'ma
 await cp(path.join(root, 'extension/icons'), path.join(outDir, 'icons'), { recursive: true });
 const manifest = JSON.parse(await readFile(path.join(outDir, 'manifest.json'), 'utf8'));
 assert.equal(manifest.manifest_version, 3);
-assert.equal(manifest.version, '0.7.0');
+assert.equal(manifest.version, sourceManifest.version);
+assert.match(manifest.version, /^\d+\.\d+\.\d+$/, 'Expected a release manifest version');
 assert.deepEqual(manifest.permissions, ['storage', 'sidePanel']);
 assert.deepEqual(manifest.optional_permissions, ['history']);
 assert.deepEqual(manifest.host_permissions, ['https://www.youtube.com/*']);
@@ -48,5 +50,5 @@ assert.ok(panelCode.includes('Allow & import history') && panelCode.includes('AC
 assert.ok(!panelCode.includes('ORBIT_DEMO_RECORDS') && !panelCode.includes('DELTA_SAMPLE_VIDEOS') && !panelCode.includes('Try a larger history'), 'Native records must never include prototype sample data');
 assert.ok(panel.includes('lang="en"'), 'Native panel language must be English');
 assert.ok(panelCode.includes('Share my universe') && panelCode.includes('Map settings and backups'), 'Native panel must ship real-record maps, local backups and aggregate sharing');
-console.log('PASS: Delta 0.7.0 MV3, dynamic AI hierarchy, private analysis, aggregate sharing, real records and shared time range');
+console.log(`PASS: Delta ${manifest.version} MV3, dynamic AI hierarchy, private analysis, aggregate sharing, real records and shared time range`);
 console.log(`Load unpacked extension: ${outDir}`);

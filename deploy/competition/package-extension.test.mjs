@@ -52,6 +52,28 @@ test('MV3 package includes all declared icons and dynamic Vite chunks', async t 
   assert(receipt.files.some(file => file.path === 'chunks/hosted-actions-1234abcd.js'));
 });
 
+test('MV3 package permits an identical rebuild of a released version', async t => {
+  const { root } = await builtExtension(t);
+  const first = await packageExtension(root);
+  assert.deepEqual(await packageExtension(root), first);
+});
+
+test('MV3 package requires a new version for changed bytes and preserves the released archive', async t => {
+  const { root, directory, manifest } = await builtExtension(t);
+  const first = await packageExtension(root);
+  const archive = path.join(root, 'public/downloads', first.filename);
+  const original = await readFile(archive);
+  await writeFile(path.join(directory, 'panel.js'), '/* changed release */');
+  await assert.rejects(packageExtension(root), /already exists.*bump.*version/i);
+  assert.deepEqual(await readFile(archive), original);
+  assert.deepEqual(JSON.parse(await readFile(path.join(root, 'extension-package.json'), 'utf8')), first);
+  await writeFile(path.join(directory, 'manifest.json'), JSON.stringify({ ...manifest, version: '0.7.1' }));
+  const next = await packageExtension(root);
+  assert.equal(next.filename, 'Delta-Chrome-MVP-0.7.1.zip');
+  assert.notEqual(next.sha256, first.sha256);
+  assert.deepEqual(await readFile(archive), original);
+});
+
 test('MV3 package rejects a missing manifest icon', async t => {
   const { root, directory } = await builtExtension(t);
   await rm(path.join(directory, 'icons/icon-48.png'));
