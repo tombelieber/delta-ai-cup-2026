@@ -32,6 +32,8 @@ Proposed full description:
 > Local viewing records are stored in this Chrome profile. Only content needed for an AI feature you request is sent for that feature. Google authentication and numeric allowance accounting use Firebase; AI generation uses the Gemini Developer API. Read the privacy notice before supplying captions, questions or explanation context.
 >
 > Ten distinct-video history imports are included per account for its lifetime. When available, the optional one-time US$5 Starter Pack adds 100 imports and 20 bounded learning sessions. The account screen identifies live or Sandbox mode; Sandbox is a test and does not charge real money. Payment is not required to try the free learning flow. Shared limits can pause new AI requests; saved lessons, checked practice and exports remain available.
+>
+> Delta is intended for adults aged 18 and over in regions supported by the Gemini API. It is not directed at children.
 
 Remove draft blockquotes when copying into the dashboard; keep all scope and privacy disclosures.
 
@@ -44,15 +46,31 @@ Remove draft blockquotes when copying into the dashboard; keep all scope and pri
 | `https://www.youtube.com/*` | Observe YouTube video metadata/playback and read explicitly confirmed history/transcript content for the visible user-facing features. Does not permit unrelated sites. |
 | Optional `history` | The separate Chrome page-visit importer requests permission from the user's action, previews filtered YouTube links and imports only confirmed selections. Learning does not require it. |
 | Optional hosted Delta origin | Call the exact hosted service when the user requests learning or topic analysis. |
-| Optional `http://localhost/*` and `http://127.0.0.1/*` | Explicit local development services. A store submission should remove these if the published product no longer exposes local development settings. |
+| Optional `http://localhost/*` and `http://127.0.0.1/*` | Support the existing user-selected local development service setting. Access is requested only for the selected origin; the default production flow does not require it. |
 | `externally_connectable.matches` | Only the exact hosted Delta website may request the supported data-only extension bridge. Validate sender origin and each message in the actual handler. No tokens, arbitrary URL fetching, executable code or general storage access belong in this bridge. |
-| Remote code | None in the extension. Executable JavaScript is bundled. Website Firebase sign-in runs on the website and does not load remote Firebase scripts into MV3. Verify the final packaged files before certifying this field. |
+| Remote code | No. All executable extension JavaScript is bundled in the uploaded package. The extension receives data responses and opens Delta's hosted learning website. Firebase sign-in executes on that separate website, not as remotely hosted extension code. |
 
 The shipped manifest narrows optional hosts to the hosted Delta origin and loopback development hosts. It deliberately does not support arbitrary custom HTTPS service URLs. The settings UI must reflect this boundary; a rejected permission request must not be described as a supported custom backend.
 
 ## Data disclosures to reconcile before submission
 
 The privacy form must reflect actual handling of browsing activity, website content, user-supplied learning context and Google sign-in. Local-only handling still requires disclosure. Do not select “no user data” because the viewing library is local. Firebase's identity records and a numeric hashed-identity credit ledger are separate from the locally saved learning library. Generated lessons/source context may also be present in the encrypted private runtime cache.
+
+For the qualified 0.7.3 extension and its integrated hosted learning/payment flow, use the following handling disclosures. Google can change field labels; match the displayed definition as well as the name. These choices do not mean that every local record is transmitted.
+
+| Dashboard data category | Selection and factual reason |
+| --- | --- |
+| Personally identifiable information | Select. Google sign-in processes account identity, email and display name. |
+| Authentication information | Select. Firebase identity tokens and authenticated sessions are processed; Delta does not receive the Google password. |
+| Financial and payment information | Select. The optional Stripe flow processes purchase references, payment state and entitlements. Stripe collects card details on hosted Checkout; Delta does not store card numbers. |
+| Web history | Select. Local YouTube links, viewing records and optional selected history imports support the library and map. |
+| User activity | Select. Observed playback times, ranges and status support the visible viewing record. |
+| Website content | Select. Video titles, readable caption excerpts, source context and user-entered learning questions support requested learning features. |
+| Location | Select for IP-address operational metadata handled by hosting/authentication providers. Delta does not request GPS or use a location-tracking feature. |
+| Health information | Do not select for this release. Delta does not request health records or provide a health feature. Users are told to avoid sensitive AI inputs. |
+| Personal communications | Do not select for this release. Delta does not access email, SMS or third-party private messages. Learning questions are disclosed under website/user-supplied content. |
+
+Before accepting Google's data-use certifications, confirm that the exact submitted package and its providers still match the privacy notice. The notice contains an explicit Limited Use disclosure covering feature use, restricted transfers, advertising and human-access limits. No sale of user data, unrelated transfer or use for creditworthiness/lending decisions is permitted. This preparation is not a substitute for the publisher's truthful final certification.
 
 The existing Gemini Cloud project was observed with active billing on 20 October 2026. Google's current Paid Services terms say prompts and responses are not used to improve its products; limited safety, abuse-prevention and legally required retention remains. Do not certify a no-human-access or no-retention statement. Recheck the actual data flow, active billing and current provider terms before store submission. Avoid sensitive, confidential or personal information in AI input. Google's terms still restrict age and API-client regions; worldwide store distribution is **not qualified** by this preparation. No billing or model setting was changed for this documentation correction.
 
@@ -77,6 +95,8 @@ On 21 October 2026, the operator reported creating a Chrome developer account an
 Normal Windows and macOS users directly install Chrome Web Store-hosted and signed extensions. The ZIP remains a developer/test artifact requiring extraction and Developer mode's Load unpacked flow. Do not describe dragging a ZIP as a general public installation route. Do not modify enterprise policies or bypass Chrome security warnings.
 
 Public, unlisted and private visibility all have the same policy requirements and review process. Unlisted means anyone with the store URL can install after publication; it is not a way around review. Google's guidance says most reviews complete within a few days, but reviews may take weeks. An immediate approval date is not guaranteed. This is an external dependency and must remain explicit in launch status.
+
+**Region and age checks before submission:** business registration country is separate from service eligibility. Google's [Gemini API terms](https://ai.google.dev/gemini-api/terms) restrict API-client availability to [supported regions](https://ai.google.dev/gemini-api/docs/available-regions) and prohibit clients directed at, or likely to be accessed by, people under 18. The official region list checked on 21 October 2026 does not include Hong Kong; do not choose Hong Kong or worldwide distribution simply because the publisher is a Hong Kong company or the backend runs in the US. Review the actual intended audience and territory choices against these terms before submission. This documentation does not change the provider, account, model, billing or runtime access controls.
 
 ## Official references
 
