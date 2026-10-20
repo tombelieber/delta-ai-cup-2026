@@ -18,6 +18,8 @@ Dates use Asia/Hong_Kong. This records actual native dashboard setup and readbac
 
 The three formal data-use certifications remain unchecked pending explicit publisher confirmation: no sale/transfer outside approved use cases, no unrelated use/transfer, and no creditworthiness/lending use. They were not accepted merely to satisfy the dashboard.
 
+The dashboard's **Why can't I submit?** check displayed one required action: certify data usage on the Privacy practices tab. This is the observed form-validation result, not a qualification of service eligibility, worldwide distribution or Google approval.
+
 ## Exact package and asset checks
 
 Uploaded ZIP: `Delta-Chrome-MVP-0.7.3.zip`, 12 files, 1,917,583 bytes, SHA256 `afdad40573e91ba62d67bebd9ea49b76af923179497cd9477c79c5faa48888fb`. The archive was not rebuilt or modified for the draft.
