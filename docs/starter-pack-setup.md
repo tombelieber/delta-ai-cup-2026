@@ -13,3 +13,5 @@ To pause new sales, set `DELTA_STRIPE_SALES_PAUSED=true` while preserving the de
 Paid recovery content is retained encrypted beyond seven days under the owner-approved policy, separately from numeric accounting. It is not a Google Drive integration. The account library is still browser-local; a full cross-device cloud-library UI is outside this payment increment. Back up the stable encryption/signing secret using the operator's existing secret process; changing it without migration would invalidate saved capabilities and keyed identities.
 
 See [local verification and screenshots](verification/starter-pack-payments.md) for tested boundaries and known gaps. Restrict Sandbox sales to the named test users: publicly usable test cards must not unlock real AI capacity for arbitrary accounts. Public users retain the existing free allowance and saved-content paths.
+
+See the [20 October deployed Sandbox qualification](verification/starter-pack-sandbox-2026-10-20.md) for the exact image, real Checkout/webhook results, paid-session cost and remaining qualification limits.
