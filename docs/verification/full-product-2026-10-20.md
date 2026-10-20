@@ -1,6 +1,6 @@
 # Delta product qualification — 20 October 2026 (Hong Kong)
 
-Status: the public Sandbox pilot is available. This is not an all-features or commercial-launch clearance. Native installed-extension completion and intermittent sign-in reports remain explicitly unqualified below. The user subsequently confirmed successful native PPTX download and opening; this is user-assisted evidence, distinct from automated filesystem capture.
+Status: the public Sandbox pilot is available. This is not all-features or commercial-launch clearance. The later [Computer-native verification](native-extension-pptx-2026-10-20.md) completed side-panel → selected-video website → sign-in → saved lesson → actual PPTX save/open. Automatic YouTube caption capture, final installed-version reload and intermittent fresh sign-in reliability remain unqualified.
 
 The later [UI readability release](ui-readability-2026-10-20.md) is the current website/ZIP distribution. The candidate below is the retained functional baseline, not the current image or ZIP.
 
@@ -25,8 +25,8 @@ The later [UI readability release](ui-readability-2026-10-20.md) is the current 
 | Sandbox purchase | Actual hosted Checkout cancel, decline, successful test card, signed webhook grant and duplicate reconciliation | Passed in `vic-ai-mvp Sandbox`; see the linked payment report. Real-money payments remain disabled |
 | Learning/practice | Existing four-topic real-AI results retained; an actual generated SUMIF exercise returns matching-key feedback through the deployed UI | Passed for these sources; answer-key agreement is not independent accuracy or learning-effectiveness evidence |
 | Source recall | Live saved-source question returns 200 and two timestamped source links | Passed for the sampled question; selected source context is sent to Gemini |
-| PPTX | Authenticated preparation/binary response return 200 with the PowerPoint MIME type; the user subsequently confirmed downloading and opening the prepared file | User-assisted native save/open passed. Automated Blob download capture and independent location/inspection of the newly saved file remain unavailable |
-| Extension | Exact hosted ZIP passes CRC, manifest and digest checks. The previously used unpacked folder had stale background/panel files despite the same 0.7.0 version; it was backed up and replaced with the exact 12-file qualified ZIP at the same path | Package files now match. Chrome Reload, confirmation of the active loaded path, native side-panel completion and caption handoff still need native observation. Earlier in-page entry evidence does not prove the updated package is running |
+| PPTX | Computer completed Chrome Save As, verified a 101,330-byte / seven-slide PPTX on disk, then opened it in Keynote | Native save/open passed; see the newer native report and rendered capture |
+| Extension | Computer operated the native side panel and opened the correct selected-video website; the current 0.7.1 files were staged and verified | Native handoff passed with an explicit missing-captions fallback. Successful caption ingestion and final 0.7.1 reload remain unobserved |
 | Anonymous and hostile access | Anonymous session/entitlements return 401; private environment/source paths return 404; cross-origin and invalid ownership/signature cases covered by container and server tests | Observed and deterministic boundary checks passed; not a claim of exhaustive penetration testing |
 
 ## Fixes shipped during verification
@@ -57,6 +57,8 @@ The server inputs are byte-identical to the previously qualified payment candida
 
 ## Native verification follow-up — 20 October, 13:34 Hong Kong
 
+This is retained historical evidence; its pending native steps are superseded where explicitly proved in the [later Computer-native report](native-extension-pptx-2026-10-20.md).
+
 The historical unpacked installation folder did not match the published ZIP, even though both manifests said 0.7.0. Its old background omitted the import-admission dependency passed to both history handlers in the qualified source. This was functional package drift, not merely styling. The complete previous folder was backed up, the same folder path was retained, and all 12 replacement files were verified against ZIP SHA-256 `6a0e12e3192495f10968d1f3705016887837b53aecf5777f3bd9b2062e2289e6`. No Chrome profile, library, history, quota or account data was modified. The historical path is not itself proof of the path Chrome currently loads; native Reload and path confirmation are still pending.
 
 A read-only source review found no deterministic PPTX Blob-link defect. Four focused offline contract checks passed for bearer-authenticated Blob bytes, ticket expiry/binary output, native caption handoff and the website nonce bridge. A successful transport or mocked contract remains distinct from an actual OS save/open. The signed-in existing SUMIF lesson exposed its ready Save link without another AI request. The user then explicitly reported successful download and opening. The default Downloads filename scan did not locate a new file, so native completion is recorded as user-assisted acceptance rather than independent automated file inspection; a historical demo artifact with the same filename was excluded from current evidence.
@@ -66,7 +68,7 @@ The learning suggestion is intentionally hidden for dismissed/enrolled videos (`
 ## Remaining launch qualifications
 
 1. Reproduce or resolve the reported intermittent Google spinner in the affected user's browser; two successful final runs establish recovery, not a proven root-cause fix.
-2. Reload the prepared exact extension package, confirm Chrome uses that path, and complete native YouTube → side panel → learning → export. The old generated folder was backed up and updated without touching browser-local data. Browser automation policy blocks privileged extension management, so file proof does not substitute for Reload and native observation.
+2. Observe the final 0.7.1 reload and active path, then qualify actual YouTube caption capture. Native side-panel → website → sign-in → saved lesson → PPTX save/open is now proved, but the sampled transcript stayed on a YouTube spinner. Computer could operate native Chrome controls; its final manager observation timed out. Do not describe the browser-only control limitation as a blanket Computer prohibition.
 3. Live billing and extension-store distribution are not enabled or qualified. Sandbox results must not be presented as real-money readiness or store approval.
 4. Cloud Monitoring currently has no configured uptime checks or alert policies. The thread's sampled availability monitor is separate; full product telemetry is unqualified.
 
