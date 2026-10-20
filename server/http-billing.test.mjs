@@ -4,10 +4,10 @@ import {createServer} from './index.mjs';
 import {createStripeProvider} from './billing/stripe.mjs';
 import {StudyError} from './study/source.mjs';
 const id='00000000-0000-4000-8000-000000000001';
-async function fixture(t,{enabled=true,mode='google'}={}){
+async function fixture(t,{enabled=true,mode='google',billingMode='sandbox'}={}){
   const calls=[],sdk=new Stripe('rk_test_fixture'),provider=createStripeProvider({apiKey:'rk_test_fixture',webhookSecret:'whsec_fixture'},{client:sdk});
   const accounts={config:()=>({enabled:false}),forUser:()=>({snapshot:async()=>({limitUsd:.5,remainingUsd:0,spentUsd:.5,reservedUsd:0})}),authenticate:async req=>{if(!req.headers.authorization)throw new StudyError('authentication_required',401);return {uid:req.headers.authorization.slice(7)};},paidUsage:{snapshot:async()=>({sessions:{limit:20,used:0,reserved:0,remaining:20},classificationAvailable:true})}};
-  const billing={checkout:async(uid,body)=>{calls.push({uid,body});return {id,status:'created',granted:false,mode:'sandbox',priceUsd:5};},reconcile:async(order,uid)=>{if(uid!=='alice')throw new StudyError('purchase_access_denied',403);return {id:order,status:'granted',granted:true,mode:'sandbox',priceUsd:5};},webhook:async(raw,signature)=>{const event=provider.event(raw,signature);calls.push({raw:Buffer.isBuffer(raw),eventId:event.id});return {received:true};}};
+  const billing={mode:billingMode,canPurchase:uid=>uid==='alice',checkout:async(uid,body)=>{calls.push({uid,body});return {id,status:'created',granted:false,mode:billingMode,priceUsd:5};},reconcile:async(order,uid)=>{if(uid!=='alice')throw new StudyError('purchase_access_denied',403);return {id:order,status:'granted',granted:true,mode:'sandbox',priceUsd:5};},webhook:async(raw,signature)=>{const event=provider.event(raw,signature);calls.push({raw:Buffer.isBuffer(raw),eventId:event.id});return {received:true};}};
   const server=createServer({studyService:{access:{mode,check:()=>null},inspect:async()=>({saved:true})},studyAccounts:accounts,studyBilling:enabled?billing:null,studyEntitlements:{forUser:()=>({snapshot:async()=>({schemaVersion:1,imports:{limit:110,used:0,remaining:110},starterPack:{available:false}})})},requestsPerMinute:200,onDiagnostic:()=>{}});
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));t.after(()=>new Promise(resolve=>server.close(resolve)));
   const base=`http://127.0.0.1:${server.address().port}`;
@@ -25,4 +25,13 @@ test('signed webhook bypasses browser-origin checks only for its own path and re
 });
 test('missing payment config disables new sales while saved content, account credit and purchased allowance remain available',async t=>{
   const f=await fixture(t,{enabled:false});assert.equal((await f.request('checkout',{requestId:id})).status,503);assert.equal((await f.request('inspect',{})).body.saved,true);assert.equal((await f.request('session')).body.quota.limitUsd,.5);const e=await f.request('entitlements');assert.equal(e.body.starterPack.available,false);assert.equal(e.body.paid.sessions.remaining,20);
+});
+test('HTTP entitlements expose only the verified current mode and preserve the original reconciled purchase mode',async t=>{
+  for(const billingMode of ['sandbox','live']){const f=await fixture(t,{billingMode});
+    const offered=await f.request('entitlements');assert.equal(offered.body.starterPack.available,true);assert.equal(offered.body.starterPack.mode,billingMode);
+    const denied=await f.request('entitlements',undefined,'bob');assert.equal(denied.body.starterPack.available,false);assert.equal(denied.body.starterPack.mode,undefined);
+    assert.equal((await f.request('reconcilePurchase',{orderId:id})).body.mode,'sandbox');
+    await f.request('checkout',{orderId:id});assert.deepEqual(f.calls[0],{uid:'alice',body:{orderId:id}});
+  }
+  const invalid=await fixture(t,{billingMode:'unknown'});assert.equal((await invalid.request('entitlements')).body.starterPack.available,false);
 });

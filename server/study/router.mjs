@@ -81,7 +81,8 @@ export function createStudyRouter(service,{accounts,entitlements,billing=account
           requireStudy(typeof entitlements?.forUser==='function','import_ledger_unavailable',503,'Import allowance is unavailable. Saved records remain available.');
           const value=await entitlements.forUser(principal.uid).snapshot();
           const paid=paidUsage?await paidUsage.snapshot(principal.uid):null;
-          json(200,{...value,starterPack:{...value.starterPack,available:Boolean(billing?.canPurchase?.(principal.uid)),...(billing?.canPurchase?.(principal.uid)?{mode:'sandbox'}:{})},...(paid?{paid}:{})});
+          const available=Boolean(billing?.canPurchase?.(principal.uid))&&['sandbox','live'].includes(billing?.mode);
+          json(200,{...value,starterPack:{...value.starterPack,available,...(available?{mode:billing.mode}:{})},...(paid?{paid}:{})});
         }catch(error){await actionFailure(error);}return true;
       }
       if(download){

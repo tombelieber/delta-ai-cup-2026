@@ -52,9 +52,10 @@ export function createStudyClient({endpoint='',fetchImpl=globalThis.fetch,storag
     catalogue:()=>request('catalogue'),
     session:()=>request('session'),
     async entitlements(){const value=await request('entitlements');
-      if(value?.schemaVersion!==1||typeof value.starterPack?.available!=='boolean'||value.starterPack.available&&value.starterPack.mode!=='sandbox')throw Error('The import allowance response could not be verified.');
+      const mode=value?.starterPack?.mode;
+      if(value?.schemaVersion!==1||typeof value.starterPack?.available!=='boolean'||value.starterPack.available&&!['sandbox','live'].includes(mode)||mode!==undefined&&!['sandbox','live'].includes(mode))throw Error('The import allowance response could not be verified.');
       if(value.paid){const s=value.paid.sessions;if(!s||!['limit','used','reserved','remaining'].every(k=>Number.isSafeInteger(s[k])&&s[k]>=0)||s.limit!==s.used+s.reserved+s.remaining||s.limit>640||typeof value.paid.classificationAvailable!=='boolean')throw Error('Purchased allowance could not be verified.');}
-      return {schemaVersion:1,imports:importBalance(value.imports),starterPack:{priceUsd:5,additionalImports:100,studySessions:20,available:value.starterPack.available,...(value.starterPack.available?{mode:'sandbox'}:{})},...(value.paid?{paid:{sessions:value.paid.sessions,classificationAvailable:value.paid.classificationAvailable}}:{})};},
+      return {schemaVersion:1,imports:importBalance(value.imports),starterPack:{priceUsd:5,additionalImports:100,studySessions:20,available:value.starterPack.available,...(mode?{mode}:{})},...(value.paid?{paid:{sessions:value.paid.sessions,classificationAvailable:value.paid.classificationAvailable}}:{})};},
     async registerImports(input){const payload=importPayload(input);return importReceipt(await request('registerImports',payload),payload);},
     async generate(input){const before=await library();if(before.items.length>=100)throw Error('Your local library is full. Export a backup before adding another lesson.');const result=await request('generate',input);validateResult(result);
       await change(value=>{const existing=value.items.find(x=>x.lesson.id===result.lesson.id);

@@ -14,10 +14,11 @@ import {firestoreStore} from './billing-test-support.mjs';
 const key=Buffer.alloc(32,19),id='00000000-0000-4000-8000-000000000001';
 const source=parseStudySource({videoId:'abcdefghijk',title:'Synthetic teaching source',start:0,end:60,text:'Video ID: abcdefghijk\nCaptions: authored\n[0:00] Compare alternatives on the same date.\n[0:20] A hypothetical ten percent rate makes 100 become 110.\n[0:40] Timing changes the comparison.\n[1:00] End.'});
 const lesson=s=>({supported:true,title:'Compare dates',summary:'A synthetic lesson.',concepts:[{label:'Timing',explanation:'Use the same date.',anchorIds:[s.anchors[0].id]}],slides:[0,1,2,3].map(i=>({title:`Step ${i+1}`,body:'Use the same date.',bullets:['Compare timing.'],anchorId:s.anchors[0].id})),exercises:[0,1].map(i=>({question:`Apply timing ${i}`,options:['Same date','Different dates','Never compare'],correctIndex:0,explanation:'Compare on one date.',hint:'Consider the date.',anchorId:s.anchors[0].id}))});
-async function fixture(){
+async function fixture({legacy=false}={}){
   const {firestore,records}=firestoreStore(new Map([[STUDY_PROJECT_BUDGET_PATH,{schemaVersion:1,limitMicros:10000000,reservedMicros:0,spentMicros:0}]]));
   const store=createBillingStore(firestore),ledger=createPurchaseLedger({store,key,merchantId:'acct_fixture',newId:()=>id}),usage=createPaidUsage({store,key});
-  await ledger.open('alice',id);await ledger.attach(id,{id:'cs_test_fixture',url:'https://checkout.stripe.com/c/pay/cs_test_fixture',expiresAt:2000});await ledger.reserveCapacity(id,'pi_fixture');await ledger.grant(id,'pi_fixture');
+  await ledger.open('alice',id);if(legacy)records.get(`studyPurchases/${id}`).schemaVersion=1;
+  await ledger.attach(id,{id:'cs_test_fixture',url:'https://checkout.stripe.com/c/pay/cs_test_fixture',expiresAt:2000});await ledger.reserveCapacity(id,'pi_fixture');await ledger.grant(id,'pi_fixture');
   return {records,firestore,store,ledger,usage,entitlements:createStudyEntitlements({store:createFirestoreEntitlementStore(firestore,{paidEnabled:true}),key})};
 }
 test('actual Firestore adapters combine free and paid imports atomically, preserve registrations after refund, and never alter free AI accounts',async()=>{
@@ -31,8 +32,8 @@ test('actual Firestore adapters combine free and paid imports atomically, preser
   await f.ledger.revoke(id,{refunded:true});await user.assertRegistered(videos.slice(0,12));assert.equal((await user.snapshot()).imports.used,110);
   assert.equal([...f.records.keys()].some(p=>p.startsWith('studyAccounts/')),false);
 });
-test('paid user with exhausted free credit completes generation, two answers, real practice/export, and restores encrypted result after runtime loss',async t=>{
-  const f=await fixture(),directory=await mkdtemp(path.join(os.tmpdir(),'delta-paid-integration-'));t.after(()=>rm(directory,{recursive:true,force:true}));
+for(const legacy of [false,true])test(`paid v${legacy?1:2} user with exhausted free credit completes generation, two answers, real practice/export, and restores encrypted result after runtime loss`,async t=>{
+  const f=await fixture({legacy}),directory=await mkdtemp(path.join(os.tmpdir(),'delta-paid-integration-'));t.after(()=>rm(directory,{recursive:true,force:true}));
   let generations=0,questions=0;
   const env={STUDY_ACCESS_MODE:'google',STUDY_ORIGIN:'http://127.0.0.1',LEARNING_SIGNING_KEY_BASE64:key.toString('base64'),GEMINI_MODEL:'gemini-3.8-flash',GEMINI_PAID_BUDGET_APPROVED:'true'};
   const userQuota={[PROJECT_BUDGET_ENFORCED]:true,forUser(){throw Error('paid use must not touch exhausted free credit');}};

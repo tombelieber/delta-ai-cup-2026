@@ -74,6 +74,14 @@ test('authenticated libraries are isolated by endpoint and user while local stor
   assert.equal((await alice.library()).items.length,1);assert.equal((await local.library()).items.length,1);
   assert.ok([...entries.values()].every(value=>!value.includes('alice-id-token')&&!value.includes('bob-id-token')));
 });
+test('Starter Pack entitlements preserve the actual checkout mode and fail closed on unknown modes',async()=>{
+  let body={schemaVersion:1,imports:{limit:10,used:0,remaining:10},starterPack:{available:true,mode:'sandbox'}};
+  const client=createStudyClient({userId:'alice',getToken:async()=>'synthetic-token',fetchImpl:async()=>new Response(JSON.stringify(body))});
+  for(const mode of ['sandbox','live']){body.starterPack={available:true,mode};assert.equal((await client.entitlements()).starterPack.mode,mode);}
+  for(const mode of [undefined,null,'test','production','LIVE']){body.starterPack={available:true,mode};await assert.rejects(client.entitlements(),/could not be verified/);}
+  body.starterPack={available:false,mode:'unknown'};await assert.rejects(client.entitlements(),/could not be verified/);
+  body.starterPack={available:false};assert.equal((await client.entitlements()).starterPack.available,false);
+});
 test('authenticated PowerPoint downloads fetch with a fresh bearer token and expose only a local Blob link',async()=>{
   const requests=[];let tokens=0;
   const client=createStudyClient({userId:'alice',storage:storage(),getToken:async()=>`firebase-id-${++tokens}`,fetchImpl:async(url,init)=>{

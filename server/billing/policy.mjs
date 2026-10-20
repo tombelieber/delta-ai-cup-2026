@@ -14,6 +14,8 @@ export function billingKeys(key){
 export const walletPath=user=>`studyPaidWallets/${user}`;
 export function checkoutUrl(value,id){try{const u=new URL(value);return typeof value==='string'&&value.length<=8192&&u.origin==='https://checkout.stripe.com'&&!u.username&&!u.password&&u.pathname===`/c/pay/${id}`;}catch{return false;}}
 export const orderPath=id=>`studyPurchases/${id}`;
+export const paymentTarget=o=>`${o.merchantId}:${o.livemode?'live':'sandbox'}`;
+export const checkoutIdValid=(id,livemode)=>typeof id==='string'&&(livemode?/^cs_live_[A-Za-z0-9]+$/:/^cs_test_[A-Za-z0-9]+$/).test(id);
 export function walletState(value){
   if(value===null)return {schemaVersion:1,orderIds:[],activeOrderId:null};
   check(object(value)&&value.schemaVersion===1&&Object.keys(value).length===3&&Array.isArray(value.orderIds)&&value.orderIds.length<=32
@@ -21,14 +23,14 @@ export function walletState(value){
   return structuredClone(value);
 }
 export function orderState(value){
-  check(object(value)&&value.schemaVersion===1&&validId(value.id)&&/^[a-f0-9]{64}$/.test(value.userKey)&&value.livemode===false
+  check(object(value)&&(value.schemaVersion===1&&value.livemode===false||value.schemaVersion===2&&typeof value.livemode==='boolean')&&validId(value.id)&&/^[a-f0-9]{64}$/.test(value.userKey)
     &&/^acct_[A-Za-z0-9]+$/.test(value.merchantId)&&['created','capacity_reserved','granted','canceled','refunded','reconciliation_required'].includes(value.status)
     &&typeof value.granted==='boolean'&&typeof value.capacityReserved==='boolean'&&integer(value.importsUsed)&&value.importsUsed<=100
     &&integer(value.sessionsUsed)&&integer(value.sessionsHeld)&&value.sessionsUsed+value.sessionsHeld<=20&&integer(value.createdAt)&&integer(value.updatedAt));
   for(const name of ['available','held','spent'])check(object(value[name])&&Object.keys(value[name]).length===3&&Object.keys(CAPACITY).every(k=>integer(value[name][k])));
   check(!value.granted||value.capacityReserved);
   if(value.status==='granted'){check(value.granted&&value.capacityReserved&&value.checkoutId&&value.paymentIntentId);for(const k of Object.keys(CAPACITY))check(value.available[k]+value.held[k]+value.spent[k]===CAPACITY[k]);}
-  check(value.checkoutId===null||/^cs_test_[A-Za-z0-9]+$/.test(value.checkoutId));
+  check(value.checkoutId===null||checkoutIdValid(value.checkoutId,value.livemode));
   check(value.paymentIntentId===null||/^pi_[A-Za-z0-9]+$/.test(value.paymentIntentId));
   check(integer(value.expiresAt)&&(value.checkoutUrl===null||checkoutUrl(value.checkoutUrl,value.checkoutId)));
   return structuredClone(value);
