@@ -36,6 +36,16 @@ Chrome's native manager showed Delta **0.7.0** before the final reload check. Th
 
 The previously used unpacked directory was updated in place and all twelve files match the public 0.7.1 ZIP. Existing builds were backed up; no Chrome profile storage was edited. The initial Details/Reload observation could not finish because Computer access timed out, including a subsequent lightweight inventory attempt. **Later confirmation:** the user supplied a screenshot dated 20 October, 16:12 Hong Kong, showing the Chrome extension card as **Delta 0.7.1** with its toggle enabled. This confirms Chrome loaded the new version and supersedes the earlier unobserved-version limit. The screenshot does not show the Details installation path; that path was previously user-confirmed and its files were hash-verified, rather than independently captured in this screenshot. The supplied screenshot is retained privately with its digest; it is not redistributed here.
 
+## Native follow-up — 20 October, 16:25 Hong Kong
+
+After the user's 0.7.1 reload confirmation, Computer control recovered without a browser, provider or credential configuration change. It operated the real personal-Chrome Delta side panel on public accounting video `DiVPAjgmnj0`, chose **Learning lab → Learn current video**, and opened the matching hosted learning page.
+
+One additional fresh Google sign-in completed after native selection of the authorized test account. An automatic Picture-in-Picture window took focus after account selection; pausing and closing that video window exposed the signed-in learning page, its account-credit controls and the existing saved accounting lesson. No new AI generation, source question, purchase or history import was requested. This is another observed recovery, not a demonstrated fix for the earlier intermittent auth failures.
+
+YouTube's own **Show transcript** panel for the accounting video stayed on a loading indicator without timestamped rows. Cancelling the browser debugger and reloading the same page did not qualify a clean isolation: its debugging banner reappeared after the transcript interaction. Delta's capture finished with the explicit missing-captions notice and preserved the selected video. The earlier Khan Academy navigation showed its caption control as unavailable, but its transcript-panel action was not completed, so that navigation is not counted as a completed capture attempt.
+
+A read-only review confirmed the installed reader expects visible `ytd-transcript-renderer` / `ytd-transcript-segment-renderer` rows. The 28 focused transcript and hosted-action tests passed. Those mocked contracts do not establish current YouTube markup compatibility, and a panel with zero rows does not prove selector drift. No runtime fix was made on that assumption. The actual PPTX save/open evidence above remains applicable and was not repeated.
+
 ## Remaining acceptance
 
 1. Qualify one actual timestamped-caption capture from YouTube through the native entry; the sampled SUMIF transcript did not load.
