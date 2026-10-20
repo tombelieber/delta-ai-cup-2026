@@ -1,6 +1,6 @@
 # Delta
 
-> **Current qualification:** the US$5 Starter Pack Sandbox flow is deployed and has passed actual hosted Checkout, signed-webhook grant, duplicate reconciliation and paid-learning checks. Two final fresh Google logins passed after earlier popup/spinner failures; their root cause remains unconfirmed. Native installed-extension completion and the OS-native PPTX save/open step are still unqualified. Real-money payments and Store distribution are not enabled. See [full product qualification](docs/verification/full-product-2026-10-20.md), [Sandbox payment evidence](docs/verification/starter-pack-sandbox-2026-10-20.md) and [setup](docs/starter-pack-setup.md).
+> **Current qualification, 21 October 2026:** the website pilot and independent Delta LIVE storefront are deployed. Actual Sandbox cancellation, decline, capture, once-only grant and refund withdrawal passed. A native-caption learning case and an actual seven-slide PPTX save/open passed; these do not establish universal YouTube support or store installation. LIVE expiration delivery is verified, while actual LIVE capture/paid fulfilment remains unobserved. Chrome Web Store publication is pending. See [current launch status](docs/submission/launch-status.md), [payment evidence](docs/submission/payments.md) and [operator setup](docs/starter-pack-setup.md).
 
 **Learn it. Try it. Keep the evidence.** Delta turns a short captioned YouTube clip into a source-linked lesson, two application exercises, saved-source recall and an editable PowerPoint. A local topic map helps revisit video records.
 
@@ -13,7 +13,7 @@
 
 1. Install the unpacked Chrome pilot using the onboarding instructions, or use the website directly. This source does not assert Chrome Web Store approval or a one-click Store install.
 2. Sign in with Google on the website. Ordinary accounts have **US$0.50 lifetime estimated AI allowance**, with a separate strict **less-than-US$0.10 estimated session allowance**. It is not a cash balance and does not reset daily.
-3. Choose an available prepared excerpt or supply matching timestamped captions. The implemented extension Learn handoff reads ordinary visible YouTube transcript content; captions may be unavailable, and the installed handoff is not fully qualified by the source snapshot.
+3. Choose an available prepared excerpt or supply matching timestamped captions. The implemented extension Learn handoff reads ordinary visible YouTube transcript content; captions may be unavailable, and a supported native-caption case was qualified, rather than every YouTube video.
 4. Request teaching, practise against an AI-authored key, ask about saved sources and export a seven-slide PPTX. Watching or matching a key does not prove mastery, factual accuracy or an exam score.
 5. Website My map accepts local metadata and meters requested classifications. A model's high-confidence label is not calibrated accuracy. Website and extension libraries remain separate.
 
