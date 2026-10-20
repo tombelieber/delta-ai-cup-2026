@@ -1,6 +1,6 @@
 # Delta learning architecture
 
-**Current release, 21 October 2026:** see [verified launch status](launch-status.md). Cloud Run `delta-assistant-support-a064ba8` serves the website/API; the shared US$10 project guard is active and the storefront uses the independent Delta LIVE account. Store distribution and actual LIVE capture remain unqualified.
+**Current release, 21 October 2026:** see [verified launch status](launch-status.md). Cloud Run `delta-assistant-privacy-f98a9f1` serves the website/API; the shared US$10 project guard is active and the storefront uses the independent Delta LIVE account. Store distribution and actual LIVE capture remain unqualified.
 
 ```mermaid
 flowchart LR

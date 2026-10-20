@@ -5,7 +5,7 @@ Dates use Asia/Hong_Kong. This page supersedes older availability snapshots; his
 | Surface | Verified state |
 | --- | --- |
 | Public entry | [Firebase onboarding](https://delta-511903.web.app/) and [learning website](https://delta-assistant-613646062582.us-central1.run.app/learn?study=1) are available. Both Firebase Hosting domains link to the canonical support page. |
-| Runtime | Cloud Run `delta-assistant-support-a064ba8`, 100% traffic, image `sha256:1793f91f5614b6e0b534d801608d58d57cdb4531b2784629f9bc43bd0222d049`. Public source candidate `a48cd33` corresponds to private candidate `a064ba8`. |
+| Runtime | Cloud Run `delta-assistant-privacy-f98a9f1`, 100% traffic, image `sha256:1d1144e19f11c827830fde916f5909ec5acf9cf68a46b8a2c5742568edd749fa`. Public source candidate `d02386f` corresponds to private candidate `f98a9f1`. |
 | Support and privacy | [Help](https://delta-assistant-613646062582.us-central1.run.app/support.html) and [privacy notice](https://delta-assistant-613646062582.us-central1.run.app/privacy.html) publish [info@vickyai.io](mailto:info@vickyai.io). The operator adopted this address and confirmed receipt; Chrome Web Store contact verification is separate. |
 | Payment | The storefront uses Delta's independent LIVE merchant. Actual Sandbox cancellation, decline, capture, once-only grant and refund withdrawal passed. An actual LIVE expiration event returned HTTP200; no real-card payment was used. Actual LIVE capture and paid fulfilment remain unobserved. See the [payment contract and evidence](payments.md). |
 | Distribution | Downloadable Chrome 0.7.3 remains an unpacked pilot, not a published/signed Chrome Web Store listing. Publisher/contact verification, dashboard completion, submission, Google review and store installation remain pending. |
@@ -13,9 +13,9 @@ Dates use Asia/Hong_Kong. This page supersedes older availability snapshots; his
 ## Release checks and compatibility
 
 - **818 tests passed**, zero failed/skipped: 479 server, 310 extension, 15 website and 14 package checks. Frozen Web/MV3 builds and the non-root, network-disabled exact-image smoke passed without provider calls.
-- Compared 132 actual application/release files with the previously qualified payment image. Only `dist/support.html` and `dist/privacy.html` changed. Payment, authentication, learning, quota and extension executables remain byte-identical. The 0.7.3 ZIP remains 1,917,583 bytes / 12 files, SHA256 `afdad40573e91ba62d67bebd9ea49b76af923179497cd9477c79c5faa48888fb`.
-- Both changed pages were verified byte-for-byte on the candidate hostname and canonical public hostname. Canonical auth configuration returned HTTP200; anonymous entitlement access returned HTTP401 and unsigned payment events HTTP400. Preview Study access remains closed by the canonical-origin guard.
-- The runtime principal, all environment/secret references, three payment targets, Google/Firebase configuration, Gemini route, existing ledgers, project cap and infrastructure sizing were preserved. No new lesson, history import, real payment or billing change occurred for this contact update.
+- Compared 132 actual application/release files with the previously qualified contact-update image. Only `dist/privacy.html` changed, adding explicit Limited Use commitments. Payment, authentication, learning, quota, support and extension executables remain byte-identical. The 0.7.3 ZIP remains 1,917,583 bytes / 12 files, SHA256 `afdad40573e91ba62d67bebd9ea49b76af923179497cd9477c79c5faa48888fb`.
+- Privacy and support were verified byte-for-byte on the candidate hostname and canonical public hostname. Canonical auth configuration returned HTTP200; anonymous entitlement access returned HTTP401 and unsigned payment events HTTP400. Preview Study access remains closed by the canonical-origin guard. See the [21 October store-preparation receipt](../verification/store-preparation-2026-10-21.md).
+- The runtime principal, all environment/secret references, three payment targets, Google/Firebase configuration, Gemini route, existing ledgers, project cap and infrastructure sizing were preserved. No new lesson, history import, real payment or billing change occurred for this policy update.
 - Previous native-caption learning and actual seven-slide PPTX save/open evidence remain applicable to the unchanged application files. They establish supported cases, not every YouTube video, future uptime, model accuracy or learning effectiveness.
 
 ## Operating limits
@@ -29,5 +29,7 @@ Three Google Cloud uptime checks and an enabled alert policy are configured for 
 ## Remaining owner and external steps
 
 Chrome Web Store registration/contact/legal steps may require the account holder; Google approval and a genuine signed-store installation are external qualification steps. Automatic browser control rejected opening the publisher console during this run. The operator subsequently reported creating a developer account and supplied the Trader/Non-Trader declaration screen; trader/contact verification and listing creation remain pending. Prepared [listing copy/assets](store-listing.md) and [reviewer instructions](reviewer-instructions.md) are available.
+
+Audience and distribution choices must also be reconciled with Gemini's current API-client region and age restrictions before submission. Hong Kong is not listed as a supported region in the official list checked on 21 October. The company can truthfully retain its Hong Kong identity; this does not qualify Hong Kong or worldwide service availability. The current runtime has not gained a new age/territory gate in this documentation release.
 
 A legitimate customer purchase is the opportunity to observe actual LIVE capture and once-only fulfilment. The agent did not manufacture a sale, self-charge or automatic refund. This pending observation must not be represented as a completed real-money payment test.
