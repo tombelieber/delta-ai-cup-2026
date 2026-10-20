@@ -75,4 +75,4 @@ The user confirmed downloading and opening the prepared PPTX in the functional f
 - **`typography`**: I used rem sizes, unitless line heights, bounded paragraphs and deliberate heading wrapping, then checked 200% text resizing: “Support user zoom preferences”.
 
 
-Latest functional follow-up: [Computer-native extension and actual PPTX save/open](native-extension-pptx-2026-10-20.md). It supersedes the earlier user-assisted-only PPTX limit, while retaining the explicit caption, installed-reload and intermittent-sign-in limits.
+Latest functional follow-up: [Computer-native extension and actual PPTX save/open](native-extension-pptx-2026-10-20.md). It supersedes the earlier user-assisted-only PPTX limit. The user's later 20 October, 16:12 Hong Kong screenshot confirms Delta 0.7.1 loaded and enabled in Chrome; the caption-ingestion and intermittent-sign-in limits remain.

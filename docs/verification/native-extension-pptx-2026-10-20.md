@@ -34,12 +34,11 @@ This capture contains the public teaching example, not a personal history or acc
 
 Chrome's native manager showed Delta **0.7.0** before the final reload check. The current public **0.7.1** ZIP was separately downloaded from Firebase Hosting and verified: 1,917,583 bytes, SHA-256 `c7116a0427ce50dacfcc500ab90ba431b4df7eda20cf0fc86fcbdca9eb5ffe55`. Its only difference from the UI 0.7.0 package used for this functional path is the manifest version; its other eleven files are identical. Permissions are unchanged.
 
-The previously used unpacked directory was updated in place and all twelve files match the public 0.7.1 ZIP. Existing builds were backed up; no Chrome profile storage was edited. The final Details/Reload observation could not finish because Computer access timed out, including a subsequent lightweight inventory attempt. Therefore **Chrome's actual reload into 0.7.1 remains unobserved**; file equivalence is not presented as an installed-version receipt.
+The previously used unpacked directory was updated in place and all twelve files match the public 0.7.1 ZIP. Existing builds were backed up; no Chrome profile storage was edited. The initial Details/Reload observation could not finish because Computer access timed out, including a subsequent lightweight inventory attempt. **Later confirmation:** the user supplied a screenshot dated 20 October, 16:12 Hong Kong, showing the Chrome extension card as **Delta 0.7.1** with its toggle enabled. This confirms Chrome loaded the new version and supersedes the earlier unobserved-version limit. The screenshot does not show the Details installation path; that path was previously user-confirmed and its files were hash-verified, rather than independently captured in this screenshot. The supplied screenshot is retained privately with its digest; it is not redistributed here.
 
 ## Remaining acceptance
 
-1. Observe Chrome reload the prepared 0.7.1 package and its active installation path.
-2. Qualify one actual timestamped-caption capture from YouTube through the native entry; the sampled SUMIF transcript did not load.
-3. Resolve or isolate intermittent fresh Google sign-in failures before claiming reliable new-user onboarding.
+1. Qualify one actual timestamped-caption capture from YouTube through the native entry; the sampled SUMIF transcript did not load.
+2. Resolve or isolate intermittent fresh Google sign-in failures before claiming reliable new-user onboarding.
 
 Store distribution, live billing and monitoring are separate retained launch limits in the [full product report](full-product-2026-10-20.md). This run changed no runtime code, so the applicable existing deterministic and image gates were retained rather than rerun as a substitute for native proof.
