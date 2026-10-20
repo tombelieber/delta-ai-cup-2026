@@ -37,8 +37,8 @@ function WebMapContent({auth,account,uid,endpoint}){
     }catch(issue){if(serial===lifetime.current)setError(issue instanceof SyntaxError?'Choose a valid Delta metadata JSON file. Nothing was imported.':issue.message||'The file could not be imported. Saved records are kept.');}
     finally{input.value='';if(serial===lifetime.current)setImporting(false);}
   }
-  return <div style={{maxWidth:560,margin:'0 auto'}}>
-    <p className="study-kicker">DELTA · WEBSITE MAP</p>
+  return <div className="study-web-map">
+    <p className="study-kicker">Your website map</p>
     <p>Import a private video metadata file from your YouTube history. Website records stay in this browser for your Google account. The website and extension libraries are separate; they do not sync automatically.</p>
     <label className="dpu-import">Import up to 100 video records<input type="file" accept=".json,application/json" onChange={importRecords} disabled={importing||!connection.client}/></label>
     <p>Your first 10 distinct imports are free. Additional imports require a purchased pack; re-importing the same video uses no additional slot. Only video IDs are sent to verify this allowance.</p>

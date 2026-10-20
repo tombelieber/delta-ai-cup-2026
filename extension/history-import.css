@@ -1,42 +1,42 @@
-.delta-history{box-sizing:border-box;margin-block:20px;padding:18px;border:1px solid #dce3ee;border-radius:16px;background:#f8faff;color:#233349;font:14px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-width:0;overflow-wrap:anywhere}
+.delta-history{box-sizing:border-box;margin-block:20px;padding:18px;border:1px solid #dce3ee;border-radius:16px;background:#f8faff;color:#233349;font:1rem/1.7 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-width:0;overflow-wrap:anywhere}
 .delta-history *{box-sizing:border-box}
-.delta-history h2{margin:6px 0 8px;font-size:20px;line-height:1.25;letter-spacing:-.025em;color:#1d2e44}
-.delta-history h3{font-size:15px;margin:20px 0 3px}
+.delta-history h2{margin:6px 0 8px;font-size: 1.375rem;line-height:1.25;letter-spacing:-.025em;color:#1d2e44}
+.delta-history h3{font-size: 1.0625rem;margin:20px 0 3px}
 .delta-history p{margin:8px 0 14px}
 .delta-history a{color:#075fc4;text-underline-offset:3px}
-.delta-history-optional{font-size:10px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:#687c96}
+.delta-history-optional{font-size: .8125rem;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:#687c96}
 .delta-history button,.delta-history input{font:inherit}
 .delta-history-button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;max-width:100%;margin:4px 6px 4px 0;padding:10px 13px;border:1px solid #cbd8e7;border-radius:10px;background:#fff;color:#25446a;font-weight:650;line-height:1.35;text-align:start;cursor:pointer}
 .delta-history-primary{width:100%;background:#0869e8;border-color:#0869e8;color:#fff}
 .delta-history button:disabled{opacity:.58;cursor:wait}
 .delta-history button:focus-visible,.delta-history a:focus-visible,.delta-history summary:focus-visible,.delta-history input:focus-visible{outline:3px solid #186ee0;outline-offset:3px}
 .delta-history h2:focus,.delta-history-error:focus{outline:none}
-.delta-history-back,.delta-history-text-button{min-height:44px;padding:8px 0;border:0;background:transparent;color:#075fc4;font-size:13px;line-height:1.5;text-align:start;cursor:pointer}
+.delta-history-back,.delta-history-text-button{min-height:44px;padding:8px 0;border:0;background:transparent;color:#075fc4;font-size: .9375rem;line-height:1.5;text-align:start;cursor:pointer}
 .delta-history-back{margin-block:0 9px}
 .delta-history-text-button{display:block;text-decoration:underline;text-underline-offset:3px}
 .delta-history-scope{margin:18px 0}
 .delta-history-scope div{margin-block:0 15px}
 .delta-history-scope dt{font-weight:700;color:#263e5c}
-.delta-history-scope dd{margin:3px 0 0;color:#5b6e86;font-size:13px}
+.delta-history-scope dd{margin:3px 0 0;color:#5b6e86;font-size: .9375rem}
 .delta-history-range,.delta-history-review fieldset{min-width:0;margin:15px 0;padding:0;border:0}
 .delta-history-range legend,.delta-history-review legend{font-weight:700;margin-block-end:5px}
 .delta-history-range label{display:inline-flex;align-items:center;gap:7px;min-height:44px;margin-inline-end:13px;cursor:pointer}
 .delta-history input{accent-color:#0869e8;flex-shrink:0;width:17px;height:17px;margin:0}
-.delta-history-note{color:#667991;font-size:12px}
-.delta-history-disclosure{padding-block:11px;border-block:1px solid #dce4ef;font-size:12px;margin:15px 0}
-.delta-history-disclosure summary{min-height:30px;cursor:pointer;font-weight:650;color:#35577e}
+.delta-history-note{color:#667991;font-size: .875rem}
+.delta-history-disclosure{padding-block:11px;border-block:1px solid #dce4ef;font-size: .875rem;margin:15px 0}
+.delta-history-disclosure summary{min-height:44px;cursor:pointer;font-weight:650;color:#35577e}
 .delta-history-disclosure p{margin:6px 0 10px}
 .delta-history-visits{list-style:none;margin:8px 0;padding:0;max-height:330px;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
 .delta-history-visits li{padding:11px 0;border-block-end:1px solid #dce4ef}
-.delta-history-visits small{display:block;font-size:11px;color:#6b7d94;margin-block-start:4px}
+.delta-history-visits small{display:block;font-size: .875rem;color:#6b7d94;margin-block-start:4px}
 .delta-history-selection li{padding:0 0 10px}
-.delta-history-selection label{display:flex;align-items:flex-start;gap:10px;min-height:44px;padding-block:11px 5px;cursor:pointer;font-size:13px;font-weight:600}
+.delta-history-selection label{display:flex;align-items:flex-start;gap:10px;min-height:44px;padding-block:11px 5px;cursor:pointer;font-size: .9375rem;font-weight:600}
 .delta-history-selection input{margin-block-start:2px}
-.delta-history-selection a{display:inline-block;min-height:32px;margin-inline-start:27px;padding-block:5px;font-size:11px}
+.delta-history-selection a{display:inline-block;min-height:44px;margin-inline-start:27px;padding-block:5px;font-size: .875rem}
 .delta-history-continue{width:100%;margin-block:12px 0}
-.delta-history-error{padding:10px 12px;border:1px solid #e3b9b6;border-radius:9px;background:#fff5f3;color:#843c33;font-size:13px}
+.delta-history-error{padding:10px 12px;border:1px solid #e3b9b6;border-radius:9px;background:#fff5f3;color:#843c33;font-size: .9375rem}
 .delta-history-status:empty{display:none}
-.delta-history-status{color:#206747;font-size:13px}
+.delta-history-status{color:#206747;font-size: .9375rem}
 .delta-history-manage{margin-block-start:17px;padding-block-start:10px;border-block-start:1px solid #dce4ef}
 .delta-history-confirm{padding:10px;border-radius:10px;background:#fff}
 @media(max-width:360px){.delta-history{padding:14px}.delta-history-range label{margin-inline-end:10px}.delta-history-button{width:100%}}
