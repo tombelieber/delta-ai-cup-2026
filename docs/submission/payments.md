@@ -6,7 +6,7 @@ The Starter Pack is a **one-time US$5 purchase**, with 100 additional distinct-v
 
 The account screen is authoritative about availability and labels **Sandbox** or **live**. Code supporting live mode is not proof that a merchant has been activated or a real payment has passed qualification. Sandbox purchases remain restricted to approved test accounts, even when a live merchant is configured. No test payment is treated as a real payment.
 
-**Qualification status, 20 October 2026:** the isolated payment patch is source-tested and packaged, and the public pilot download is 0.7.3. The new merchant's activation, runtime credentials and real-provider payment/event qualification remain pending; the payment patch has not been promoted to the hosted backend. The public download alone does not establish live sales or Chrome Web Store distribution.
+**Qualification status, 20 October 2026:** the isolated payment patch is source-tested and packaged, and the public pilot download is 0.7.3. The account holder completed the new merchant's Dashboard activation. Runtime credentials and real-provider payment/event qualification remain pending; the payment patch has not been promoted to the hosted backend. Dashboard activation alone does not establish API charging/payout readiness, live sales or Chrome Web Store distribution.
 
 ## Payment and delivery
 
@@ -30,6 +30,8 @@ Keep credentials in server-side secret storage, never in the extension, browser,
 | `DELTA_STRIPE_SALES_PAUSED` | Stops new sales while keeping existing reconciliation and delivery |
 
 When switching merchants, retain the original configuration under the corresponding `DELTA_STRIPE_LEGACY_*` names until its in-flight orders are resolved. The legacy configuration is for existing purchases, not another public storefront. Keep the existing HMAC/signing key, account IDs and paid-delivery storage stable. Missing payment configuration must not disable sign-in or existing purchased allowance.
+
+An additional `DELTA_STRIPE_VERIFICATION_*` configuration can retain the new merchant's Sandbox receipts after the live cutover. It accepts Sandbox only and never provides a second storefront. The gateway permits at most three distinct account/mode targets, each with its own signing secret. Do not configure the same target as both current and retained: duplicate targets fail closed. During Sandbox qualification, use it as current; move its configuration to `VERIFICATION` in the same update that makes the live merchant current.
 
 The signed endpoint is `/api/billing/stripe-webhook`. Subscribe only to the Checkout, PaymentIntent, refund and dispute events handled in `server/billing/service.mjs`; each account/mode has its own endpoint secret. Live Checkout/capture requires the exact account and mode plus `charges_enabled` and `payouts_enabled`. Never reuse another product's key merely because it shares a legal entity.
 

@@ -5,7 +5,7 @@ import {billingKeys,check,orderPath,orderState,paymentTarget,validId} from './po
 // original provider, signing secret and mode, including interrupted captures.
 export function createBillingGateway({store,key,current=null,legacy=[]}){
   const keys=billingKeys(key),entries=[current,...legacy].filter(Boolean),targets=new Map();
-  check(entries.length<=2);
+  check(entries.length<=3);
   for(const entry of entries){const target=paymentTarget(entry.ledger);check(!targets.has(target));targets.set(target,entry);}
   async function purchase(id,uid){
     requireStudy(validId(id),'invalid_purchase',400);
