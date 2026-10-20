@@ -1,6 +1,6 @@
 # Delta Chrome Web Store preparation
 
-**Status: submission materials prepared for pilot 0.7.3; not submitted or published.** Publisher registration, verified contact, listing ID and Google review remain unverified. The qualified developer ZIP is not proof of a normal-user extension launch. The [reviewer instructions](reviewer-instructions.md) and [three required image assets](store-assets/README.md) are prepared below.
+**Status: 0.7.3 uploaded and saved as Chrome Web Store draft `kdbehbeeeknnpalapjplhindhepagdoe`; not submitted or published.** The organization/trader account and `info@vickyai.io` contact email are verified. Listing text, three image assets, permission/data disclosures, reviewer instructions and the in-app-purchase classification are saved. Three formal data-use certifications remain unchecked pending the publisher's confirmation; audience/territory qualification remains unresolved. See the [actual dashboard receipt](../verification/store-draft-2026-10-21.md). A draft and qualified developer ZIP are not proof of a normal-user store installation.
 
 Package baseline: `Delta-Chrome-MVP-0.7.3.zip`, 12 files, 1,917,583 bytes, SHA-256 `afdad40573e91ba62d67bebd9ea49b76af923179497cd9477c79c5faa48888fb`. The live pilot and source qualification are recorded in the [20 October hardening report](../verification/launch-hardening-2026-10-20.md). If a newer package is submitted, refresh this identity and repeat the applicable package/control-path checks first.
 
@@ -16,10 +16,11 @@ Package baseline: `Delta-Chrome-MVP-0.7.3.zip`, 12 files, 1,917,583 bytes, SHA-2
 | Homepage | `https://delta-511903.web.app/` |
 | Privacy URL | `https://delta-assistant-613646062582.us-central1.run.app/privacy.html` |
 | Support URL | `https://delta-assistant-613646062582.us-central1.run.app/support.html` |
-| Support / privacy email | `info@vickyai.io` — adopted by the operator, who confirmed receipt on 21 October 2026; store verification remains separate |
+| Support / privacy email | `info@vickyai.io` — verified in Chrome Web Store on 21 October 2026 |
 | Price | Free installation; up to US$0.50 lifetime estimated AI allowance per verified account, subject to shared provider availability |
+| Distribution → Payments | Contains in-app purchases: the optional US$5 Starter Pack; installation and the free allowance do not require a purchase |
 
-Proposed full description:
+Saved full description:
 
 > From watching to remembering. Turn a learning video into something you can practise and revisit. Delta creates a short source-linked lesson, two application exercises and an editable PowerPoint you can keep. Ask follow-up questions using the saved sources you choose.
 >
@@ -35,7 +36,7 @@ Proposed full description:
 >
 > Delta is intended for adults aged 18 and over in regions supported by the Gemini API. It is not directed at children.
 
-Remove draft blockquotes when copying into the dashboard; keep all scope and privacy disclosures.
+The dashboard contains the plain text without Markdown blockquotes. It was read back after saving; keep all scope and privacy disclosures when editing.
 
 ## Permission and remote-message justifications
 
@@ -76,19 +77,19 @@ The existing Gemini Cloud project was observed with active billing on 20 October
 
 ## Artifact checklist
 
-1. **Prepared:** [128×128 PNG icon](store-assets/icon-128.png), identical to the packaged icon. The ZIP also contains 16, 32 and 48 pixel versions. Manifest description is 129 characters, under the 132-character limit; `manifest.json` is at the ZIP root.
-2. **Prepared:** [440×280 promotional image](store-assets/promo-440x280.png), using the existing Delta brand and theme. This is brand artwork, not a screenshot or functional proof.
-3. **Prepared:** [1280×800 actual product screenshot](store-assets/screenshot-recall-1280x800.png). It crops and resizes the deployed, source-linked accounting recall capture; no interface, result or timestamp was invented. Its [provenance](store-assets/README.md) identifies the source. No private identity or personal viewing history appears.
-4. **Prepared:** [reviewer walkthrough](reviewer-instructions.md), public privacy/support pages, qualified 0.7.3 package identity and deployed-flow evidence. The walkthrough uses the reviewer's own Google sign-in and does not require a purchase or maintainer credentials. Reconcile the privacy form with the exact final package before certifying it.
-5. **Still required:** publisher/account and store-contact verification, final dashboard fields and supported-region choice, submission, Google approval and actual signed-store installation. No claim of store publication is made by preparing these assets.
+1. **Uploaded and saved:** [128×128 PNG icon](store-assets/icon-128.png), identical to the packaged icon. The ZIP also contains 16, 32 and 48 pixel versions. Manifest description is 129 characters, under the 132-character limit; `manifest.json` is at the ZIP root.
+2. **Uploaded and saved:** [440×280 promotional image](store-assets/promo-440x280.png), using the existing Delta brand and theme. It is a 24-bit RGB PNG with no alpha, normalized without changing visible pixels. This is brand artwork, not a screenshot or functional proof.
+3. **Uploaded and saved:** [1280×800 actual product screenshot](store-assets/screenshot-recall-1280x800.png). It crops and resizes the deployed, source-linked accounting recall capture; no interface, result or timestamp was invented. Its [provenance](store-assets/README.md) identifies the source. No private identity or personal viewing history appears.
+4. **Saved:** [reviewer walkthrough](reviewer-instructions.md) in the dashboard's 500-character test field, linking to the full instructions. It uses the reviewer's own Google sign-in and does not require a purchase or maintainer credentials. Permission/data disclosures and the public privacy URL are also saved; the three formal certifications are not yet accepted.
+5. **Still required:** formal data-use confirmation, supported audience/territory qualification, submission, Google approval and actual signed-store installation. The unpublished draft's Public/all-regions defaults were not changed and are not a qualified worldwide release decision.
 
 The [official image requirements](https://developer.chrome.com/docs/webstore/images), checked on 20 October 2026, require a 128×128 PNG icon, a 440×280 small promotional image and at least one 1280×800 or 640×400 full-bleed screenshot. All three minimum image types are now present; a marquee image is optional.
 
 ## Contact and publisher completion
 
-The operator adopted `info@vickyai.io` for Delta support and privacy requests and confirmed they can receive mail there on 21 October 2026. Public support/privacy pages use this address. This confirmation does not complete Chrome Web Store's separate contact-email verification, prove incident-alert delivery or promise a support response SLA. Do not substitute a private test mailbox or another company's contact.
+The operator adopted `info@vickyai.io` for Delta support and privacy requests and confirmed they can receive mail there on 21 October 2026. Public support/privacy pages use this address. Chrome Web Store's separate contact-email verification subsequently completed successfully; the dashboard read back a verified email address. This does not prove incident-alert delivery or promise a support response SLA. Do not substitute a private test mailbox or another company's contact.
 
-On 21 October 2026, the operator reported creating a Chrome developer account and supplied the Trader/Non-Trader declaration screen. Account creation does not complete trader/contact verification or publish a listing. The operator must make the truthful legal declaration; Google states that verified trader name, address and phone are publicly displayed. See the [official Trader FAQ](https://developer.chrome.com/docs/webstore/program-policies/trader-verification-faq). If the account requires registration payment, identity/contact verification or two-step verification, the account holder must complete those steps. Record the assigned listing ID after the dashboard creates it. Use the assigned public key only if aligning later unpacked development IDs; changing an extension ID does not migrate the old installation's local learning records.
+On 21 October 2026, the native dashboard showed successful organization/trader verification for VickyAI Limited and a verified account in Settings. The assigned draft item ID is `kdbehbeeeknnpalapjplhindhepagdoe`. Corporate proof documents, identifiers and verification links remain outside this repository and the uploaded ZIP. Google states that verified trader name, address and phone are publicly displayed; see the [official Trader FAQ](https://developer.chrome.com/docs/webstore/program-policies/trader-verification-faq). Browser scripting could not operate the publisher console, but supported native Computer interaction completed the verified setup and draft upload. Google review and signed-store installation have not occurred. Changing an extension ID does not migrate the old unpacked installation's local learning records.
 
 ## Distribution and timing
 
@@ -97,6 +98,8 @@ Normal Windows and macOS users directly install Chrome Web Store-hosted and sign
 Public, unlisted and private visibility all have the same policy requirements and review process. Unlisted means anyone with the store URL can install after publication; it is not a way around review. Google's guidance says most reviews complete within a few days, but reviews may take weeks. An immediate approval date is not guaranteed. This is an external dependency and must remain explicit in launch status.
 
 **Region and age checks before submission:** business registration country is separate from service eligibility. Google's [Gemini API terms](https://ai.google.dev/gemini-api/terms) restrict API-client availability to [supported regions](https://ai.google.dev/gemini-api/docs/available-regions) and prohibit clients directed at, or likely to be accessed by, people under 18. The official region list checked on 21 October 2026 does not include Hong Kong; do not choose Hong Kong or worldwide distribution simply because the publisher is a Hong Kong company or the backend runs in the US. Review the actual intended audience and territory choices against these terms before submission. This documentation does not change the provider, account, model, billing or runtime access controls.
+
+The official region page points users in unlisted regions to [Gemini API in Gemini Enterprise Agent Platform](https://docs.cloud.google.com/gemini-enterprise-agent-platform). This is a candidate Cloud route, not proof that Delta's current Developer API key, identity, billing, request contract or costs are compatible. Store geography alone cannot restrict the public learning website, and the mature-content checkbox is a content rating rather than an age-access gate. No provider migration or new runtime gate was made as part of saving this draft.
 
 ## Official references
 

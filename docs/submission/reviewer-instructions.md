@@ -34,7 +34,13 @@ Playback records are saved locally while recording is on; **Watching records & s
 
 No purchase is required for the core review above. The optional US$5 Starter Pack screen identifies LIVE or Sandbox mode; LIVE charges real money. Skip paid Checkout during review. Use official test cards only in an explicitly enabled Sandbox workflow, never in LIVE Checkout. Sandbox results do not establish real-money settlement readiness. Do not use a real card or maintainer account for the review.
 
-Privacy: <https://delta-assistant-613646062582.us-central1.run.app/privacy.html>. Help: <https://delta-assistant-613646062582.us-central1.run.app/support.html>. Support and privacy requests: <info@vickyai.io>, adopted and receipt confirmed by the operator on 21 October 2026. Chrome Web Store's separate publisher/contact verification remains pending. Do not send account tokens, browser cookies, caption backups or private viewing records in a support request.
+Privacy: <https://delta-assistant-613646062582.us-central1.run.app/privacy.html>. Help: <https://delta-assistant-613646062582.us-central1.run.app/support.html>. Support and privacy requests: <info@vickyai.io>, verified in Chrome Web Store on 21 October 2026. Organization/trader verification also completed; this is separate from item review and publication. Do not send account tokens, browser cookies, caption backups or private viewing records in a support request.
+
+## Saved dashboard summary
+
+The dashboard's Test instructions field permits 500 characters. The following 421-character summary is saved there, linking to this full walkthrough; username and password fields are blank:
+
+> Use your own eligible 18+ Google account; no shared password or purchase. Chrome 116+: YouTube DiVPAjgmnj0 > Show transcript > Delta > Learning lab > Learn current video > sign in > Generate lesson > Practice > Recall > Download PPT + exercises > Save .pptx. Missing captions: choose a prepared source. Full steps/limits: https://github.com/tombelieber/delta-ai-cup-2026/blob/main/docs/submission/reviewer-instructions.md
 
 ## Package and evidence
 

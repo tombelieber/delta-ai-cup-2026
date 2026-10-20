@@ -28,7 +28,9 @@ Firebase onboarding was separately sampled at HTTP200, with the qualified final 
 
 ## Submission remains pending
 
-The browser provider returned “The extensions gallery cannot be scripted” for the publisher console. No alternate interface was used to bypass this restriction. Email/SMS verification, truthful legal certification, dashboard upload and submission therefore remain manual; Google review and an actual signed-store installation remain unqualified.
+**Later update:** the [native dashboard receipt](store-draft-2026-10-21.md) supersedes this section's earlier manual-only blocker. Supported native Computer interaction completed organization/contact verification and saved the 0.7.3 draft with the required assets and disclosures. Submission, formal certification, audience/territory qualification, Google review and signed-store installation remain pending.
+
+At the earlier preparation checkpoint, browser scripting returned “The extensions gallery cannot be scripted” for the publisher console, and no native operation had yet completed. That was evidence about the scripting path, not a general prohibition on native UI interaction. The 818-test/runtime evidence above belongs to that earlier policy release and was not rerun or relabeled as a new native-installation test.
 
 Corporate country and service availability are separate. On 21 October, Google's [Gemini API region list](https://ai.google.dev/gemini-api/docs/available-regions) did not list Hong Kong. Its [terms](https://ai.google.dev/gemini-api/terms) also restrict API clients directed at, or likely to be accessed by, people under 18. Intended audience and distribution choices must be reconciled before submission; this release does not implement a new age/territory access gate or change the provider. Worldwide distribution is not qualified.
 
