@@ -1,5 +1,7 @@
 # Starter Pack Sandbox candidate — 20 October 2026
 
+> **Current qualification:** this earlier implementation snapshot is superseded by [20 October product qualification](full-product-2026-10-20.md) and [real Sandbox Checkout verification](starter-pack-sandbox-2026-10-20.md). Historical results below are retained as dated evidence.
+
 Status: implemented and locally verified; **not deployed, not a live payment launch, and not app-to-Stripe end-to-end qualified**. New sales are disabled by default. The merchant selected by the owner is the vic-ai-mvp Sandbox. There is no live-mode enable path in this candidate.
 
 ## Product and compatibility
@@ -43,7 +45,7 @@ The connected Stripe tool created one unpaid Sandbox Checkout Session with the f
 
 ### Paired visual evidence
 
-Same synthetic account, data, locale and expanded offer; before is public source `8275bf22`, after is this candidate. These images show UI only, not an actual purchase. No private history, identity or credential appears.
+Same synthetic account, data, locale and expanded offer; before is source `731dff6`, after is this candidate. These images show UI only, not an actual purchase. No private history, identity or credential appears.
 
 | View | Before | After |
 |---|---|---|

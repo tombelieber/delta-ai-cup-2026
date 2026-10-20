@@ -1,6 +1,6 @@
 # Delta
 
-> **Latest source candidate:** ten free lifetime imports plus a US$5 Starter Pack Sandbox flow (+100 imports / +20 bounded learning sessions). Test sales are restricted to configured test accounts and disabled without runtime secrets. This source has **not been deployed or qualified through real app Checkout**. See [verification and UI evidence](docs/verification/starter-pack-payments.md) and [Sandbox setup](docs/starter-pack-setup.md).
+> **Current qualification:** the US$5 Starter Pack Sandbox flow is deployed and has passed actual hosted Checkout, signed-webhook grant, duplicate reconciliation and paid-learning checks. Two final fresh Google logins passed after earlier popup/spinner failures; their root cause remains unconfirmed. Native installed-extension completion and the OS-native PPTX save/open step are still unqualified. Real-money payments and Store distribution are not enabled. See [full product qualification](docs/verification/full-product-2026-10-20.md), [Sandbox payment evidence](docs/verification/starter-pack-sandbox-2026-10-20.md) and [setup](docs/starter-pack-setup.md).
 
 **Learn it. Try it. Keep the evidence.** Delta turns a short captioned YouTube clip into a source-linked lesson, two application exercises, saved-source recall and an editable PowerPoint. A local topic map helps revisit video records.
 
@@ -27,8 +27,7 @@ Node.js 24+ and pnpm 11.25.0 are required.
 corepack enable
 corepack prepare pnpm@11.25.0 --activate
 pnpm install --frozen-lockfile
-pnpm test:server
-pnpm test:extension
+pnpm test
 pnpm build
 pnpm build:extension
 cp .env.example .env.local
