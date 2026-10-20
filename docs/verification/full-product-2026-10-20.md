@@ -74,4 +74,4 @@ The learning suggestion is intentionally hidden for dismissed/enrolled videos (`
 
 The bounded source-security review covered authentication, ownership, metering, import admission, Stripe reconciliation and untrusted-source/output boundaries. It recorded no confirmed exploitable finding in those reviewed paths, but coverage was partial: remaining legacy provider implementations and all test fixtures were not exhaustively reviewed. Do not describe it as a complete security audit.
 
-References: [Sandbox payment qualification](starter-pack-sandbox-2026-10-20.md), [four-video study evidence](../verification-four-video-study-2026-10-18.md), [Starter Pack setup](../starter-pack-setup.md).
+References: [Sandbox payment qualification](starter-pack-sandbox-2026-10-20.md), [published performance report](../submission/performance.md), [Starter Pack setup](../starter-pack-setup.md).
