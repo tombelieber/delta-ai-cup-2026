@@ -6,6 +6,8 @@ The Starter Pack is a **one-time US$5 purchase**, with 100 additional distinct-v
 
 The account screen is authoritative about availability and labels **Sandbox** or **live**. Code supporting live mode is not proof that a merchant has been activated or a real payment has passed qualification. Sandbox purchases remain restricted to approved test accounts, even when a live merchant is configured. No test payment is treated as a real payment.
 
+**Qualification status, 20 October 2026:** the isolated payment patch is source-tested and packaged, and the public pilot download is 0.7.3. The new merchant's activation, runtime credentials and real-provider payment/event qualification remain pending; the payment patch has not been promoted to the hosted backend. The public download alone does not establish live sales or Chrome Web Store distribution.
+
 ## Payment and delivery
 
 1. Firebase verifies the signed-in account before Checkout or purchase-status access. The server owns the USD500-cent amount, product, quantity, order and user binding.
