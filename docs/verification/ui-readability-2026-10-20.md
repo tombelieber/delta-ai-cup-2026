@@ -9,6 +9,8 @@ The typography and responsive UI update is live at [Delta](https://delta-assista
 - Candidate input: `18b7a2d9df36dbf1d257bbecdd416ad425b74b04cff03bf766d51c625f21dda5`. Local image: `sha256:6b1aa6bc2c08b7edde6ff8da7cae23d06ffcbe76523e3ec811ed7a060257f288`.
 - [MV3 ZIP 0.7.0](https://delta-assistant-613646062582.us-central1.run.app/downloads/Delta-Chrome-MVP-0.7.0.zip): 12 files, **1,917,583 bytes**, SHA-256 `a77d8de508d5ae5a14eb6cff6d6aa475e5bc701ae936c4f9b91c36d61b895275`. Version 0.7.0 alone does not identify the build; use this digest.
 
+The tracked ZIP and `extension-package.json` match this live distribution. The public `source-manifest.json` remains the provenance record for the original sanitized export; subsequent changes are recorded by Git.
+
 The complete runtime container configuration, secret references, service identity, model/provider, auth, quotas, resource limits and Sandbox billing settings were preserved. Only the image and the intended traffic destination changed. Hosting deployment changed only the existing static site. Both Hosting domains and their reserved `/__/auth/handler` returned 200 afterward.
 
 ## What changed

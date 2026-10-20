@@ -1,23 +1,23 @@
 {
   "version": "0.7.0",
   "filename": "Delta-Chrome-MVP-0.7.0.zip",
-  "bytes": 1909544,
-  "sha256": "74b070473eeca9f90337cc332dffe7943e91441890f45a1e673d853053008f7c",
+  "bytes": 1917583,
+  "sha256": "a77d8de508d5ae5a14eb6cff6d6aa475e5bc701ae936c4f9b91c36d61b895275",
   "files": [
     {
-      "path": "assets/panel-C-4Wv8th.css",
-      "bytes": 118456,
-      "sha256": "c1174659d73896d0f6bd4c31701a2212bd7b785f67db8e81a0d004655c947e37"
+      "path": "assets/panel-CqGWOJ-4.css",
+      "bytes": 125922,
+      "sha256": "8341759ea4560dbc4aaab4bfdf8f85b104adefe2753d5b20539560cfb92c85bf"
     },
     {
       "path": "background.js",
       "bytes": 13084,
-      "sha256": "75149d02a4c3a7086a7027f4517775542a3dca1a526b06dfcdc0ccaa815dde68"
+      "sha256": "b2afc014bf7d2e47fca0bb71c17d6f08f6e04e87b8b91ed4ce04045514498af7"
     },
     {
-      "path": "chunks/learning-protocol-3J8FiqjE.js",
-      "bytes": 151448,
-      "sha256": "8258bf153a8952998c2f709c4ad78fe78855b706c83892b442f55d64d4149540"
+      "path": "chunks/learning-protocol-CZonfKCH.js",
+      "bytes": 151548,
+      "sha256": "d2317b67825b2c9e0bea3e531afb096167ff1d88ad49a0093ffbe61243e78624"
     },
     {
       "path": "content.js",
@@ -57,12 +57,12 @@
     {
       "path": "panel.html",
       "bytes": 440,
-      "sha256": "46e1afb13b89e9d4a74fccdc14a9c55ee42a083a7d38a266b85f5cd762a69ea4"
+      "sha256": "989c4bb221aa60e26b542010207700fb504e0eb709cf2c09a5f2aaf7b5c2b932"
     },
     {
       "path": "panel.js",
-      "bytes": 885063,
-      "sha256": "cccdb5f91711389ac47f6350ce1d69313bfc844215ddce27dbeccafe30588cbc"
+      "bytes": 885536,
+      "sha256": "f80a7cbbcaa4c23315e7e4558b063ed5acd5daf4f83233b59b843915932e81e4"
     }
   ]
 }
