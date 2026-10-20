@@ -2,7 +2,7 @@
 
 Status: the public Sandbox pilot is available. This is not all-features or commercial-launch clearance. The later [Computer-native verification](native-extension-pptx-2026-10-20.md) completed side-panel → selected-video website → sign-in → saved lesson → actual PPTX save/open. The user's later screenshot confirms 0.7.1 enabled in Chrome. The later accounting run qualified actual native caption capture, new generation, two exercise checks, sourced recall and a fresh PPTX save/open. Earlier intermittent sign-in failures remain unexplained, and one broader recall question returned no sources.
 
-The later [UI readability release](ui-readability-2026-10-20.md) is the current website/ZIP distribution. The candidate below is the retained functional baseline, not the current image or ZIP.
+The later [sign-in, recall and monitoring hardening](launch-hardening-2026-10-20.md) is the current website/0.7.2 ZIP distribution, following the [UI readability release](ui-readability-2026-10-20.md). The candidate below is the retained functional baseline, not the current image or ZIP.
 
 ## Exact candidate — functional baseline
 
@@ -67,12 +67,12 @@ The learning suggestion is intentionally hidden for dismissed/enrolled videos (`
 
 ## Remaining launch qualifications
 
-1. Reproduce or resolve the reported intermittent Google spinner in the affected user's browser; two successful final runs establish recovery, not a proven root-cause fix.
+1. The later hardening patch fixed reproducible unbounded auth waits and lifecycle races, and a fresh ordinary-tab sign-in passed. The cause of every earlier Google popup failure is still not established; provider failures remain possible and must end visibly.
 2. Live billing and extension-store distribution are not enabled or qualified. Sandbox results must not be presented as real-money readiness or store approval.
-3. Cloud Monitoring currently has no configured uptime checks or alert policies. The thread's sampled availability monitor is separate; full product telemetry is unqualified.
+3. Cloud Monitoring now has three uptime checks and one enabled email alert policy, with all nine latest regional series passing. Actual email delivery and full product telemetry remain unqualified. The thread's sampled availability observer remains separate.
 
 The 16:37 native accounting follow-up resolved the pending actual-caption qualification for one real source. Its generation estimate was US$0.0142; the cumulative session estimate was US$0.0221 after two questions, including the no-source result. Reopening retained the new lesson and both exercise-key matches. This does not establish all-video compatibility or universal answer quality; captions and the five-minute excerpt limit remain required.
 
 The bounded source-security review covered authentication, ownership, metering, import admission, Stripe reconciliation and untrusted-source/output boundaries. It recorded no confirmed exploitable finding in those reviewed paths, but coverage was partial: remaining legacy provider implementations and all test fixtures were not exhaustively reviewed. Do not describe it as a complete security audit.
 
-References: [Sandbox payment qualification](starter-pack-sandbox-2026-10-20.md), [published performance report](../submission/performance.md), [Starter Pack setup](../starter-pack-setup.md).
+References: [Sandbox payment qualification](starter-pack-sandbox-2026-10-20.md), [four-video study evidence](../verification-four-video-study-2026-10-18.md), [Starter Pack setup](../starter-pack-setup.md).
