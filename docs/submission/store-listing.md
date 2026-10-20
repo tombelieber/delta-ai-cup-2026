@@ -14,8 +14,9 @@ Package baseline: `Delta-Chrome-MVP-0.7.3.zip`, 12 files, 1,917,583 bytes, SHA-2
 | Category | Education |
 | Language | English |
 | Homepage | `https://delta-511903.web.app/` |
-| Privacy URL | `https://delta-assistant-613646062582.us-central1.run.app/privacy.html` — deployed; operational request contact remains pending |
-| Support URL | `https://delta-assistant-613646062582.us-central1.run.app/support.html` — deployed; operational support contact remains pending |
+| Privacy URL | `https://delta-assistant-613646062582.us-central1.run.app/privacy.html` |
+| Support URL | `https://delta-assistant-613646062582.us-central1.run.app/support.html` |
+| Support / privacy email | `info@vickyai.io` — adopted by the operator, who confirmed receipt on 21 October 2026; store verification remains separate |
 | Price | Free installation; up to US$0.50 lifetime estimated AI allowance per verified account, subject to shared provider availability |
 
 Proposed full description:
@@ -30,7 +31,7 @@ Proposed full description:
 >
 > Local viewing records are stored in this Chrome profile. Only content needed for an AI feature you request is sent for that feature. Google authentication and numeric allowance accounting use Firebase; AI generation uses the Gemini Developer API. Read the privacy notice before supplying captions, questions or explanation context.
 >
-> Ten distinct-video history imports are included per account for its lifetime. Optional Starter Pack checkout is currently Sandbox-only and does not charge real money. Payment is not required to try the free learning flow. Shared limits can pause new AI requests; saved lessons, checked practice and exports remain available.
+> Ten distinct-video history imports are included per account for its lifetime. When available, the optional one-time US$5 Starter Pack adds 100 imports and 20 bounded learning sessions. The account screen identifies live or Sandbox mode; Sandbox is a test and does not charge real money. Payment is not required to try the free learning flow. Shared limits can pause new AI requests; saved lessons, checked practice and exports remain available.
 
 Remove draft blockquotes when copying into the dashboard; keep all scope and privacy disclosures.
 
@@ -61,13 +62,13 @@ The existing Gemini Cloud project was observed with active billing on 20 October
 2. **Prepared:** [440×280 promotional image](store-assets/promo-440x280.png), using the existing Delta brand and theme. This is brand artwork, not a screenshot or functional proof.
 3. **Prepared:** [1280×800 actual product screenshot](store-assets/screenshot-recall-1280x800.png). It crops and resizes the deployed, source-linked accounting recall capture; no interface, result or timestamp was invented. Its [provenance](store-assets/README.md) identifies the source. No private identity or personal viewing history appears.
 4. **Prepared:** [reviewer walkthrough](reviewer-instructions.md), public privacy/support pages, qualified 0.7.3 package identity and deployed-flow evidence. The walkthrough uses the reviewer's own Google sign-in and does not require a purchase or maintainer credentials. Reconcile the privacy form with the exact final package before certifying it.
-5. **Still required:** publisher/account verification, an operational public support/privacy contact, final dashboard fields and supported-region choice, submission, Google approval and actual signed-store installation. No claim of store publication is made by preparing these assets.
+5. **Still required:** publisher/account and store-contact verification, final dashboard fields and supported-region choice, submission, Google approval and actual signed-store installation. No claim of store publication is made by preparing these assets.
 
 The [official image requirements](https://developer.chrome.com/docs/webstore/images), checked on 20 October 2026, require a 128×128 PNG icon, a 440×280 small promotional image and at least one 1280×800 or 640×400 full-bleed screenshot. All three minimum image types are now present; a marquee image is optional.
 
 ## Contact and publisher completion
 
-The company website [VickyAI](https://www.vickyai.io/) publicly lists `info@vickyai.io` as a business contact. This is a **candidate only** for Delta: receipt, ongoing support handling and privacy-request handling have not been verified. Do not copy it into the listing as a confirmed operational channel until the operator adopts and checks it. Do not substitute a private test mailbox or an unrelated similarly named company's contact.
+The operator adopted `info@vickyai.io` for Delta support and privacy requests and confirmed they can receive mail there on 21 October 2026. Public support/privacy pages use this address. This confirmation does not complete Chrome Web Store's separate contact-email verification, prove incident-alert delivery or promise a support response SLA. Do not substitute a private test mailbox or another company's contact.
 
 Publisher registration and dashboard access have not been established by these files. If the account requires registration payment, identity/contact verification or two-step verification, the account holder must complete those steps. Record the assigned listing ID after the dashboard creates it. Use the assigned public key only if aligning later unpacked development IDs; changing an extension ID does not migrate the old installation's local learning records.
 

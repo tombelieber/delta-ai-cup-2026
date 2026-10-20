@@ -13,7 +13,7 @@
 <main>
   <nav aria-label="Delta"><a href="/">Delta</a><a href="/learn?study=1">Learning lab</a><a href="/support.html">Help</a></nav>
   <h1>Your learning, with clear boundaries.</h1>
-  <p class="meta">Delta privacy notice · Updated 18 October 2026</p>
+  <p class="meta">Delta privacy notice · Updated 21 October 2026</p>
   <p>Delta helps you learn from YouTube content, practise and return to source-linked material. This notice covers the Delta website and Chrome extension.</p>
   <p class="note"><strong>Local records do not mean all processing is local.</strong> Viewing records and your saved learning library stay in this browser profile. When you request AI help, selected content is processed by Delta's backend and Google's Gemini API. Google sign-in and an account credit ledger use Firebase.</p>
 
@@ -34,7 +34,7 @@
 
   <p>For history-import allowance checks, the website receives the selected YouTube video IDs and a bounded operation identifier. A separate Firestore ledger keeps per-account keyed identifiers, numeric import totals and registration timestamps. It does not keep imported titles, viewing dates or captions. Your account includes ten lifetime distinct-video import registrations. Removing a local copy does not delete the allowance ledger or restore used imports.</p>
   <h2>Starter Pack payments and purchased-result recovery</h2>
-  <p>The current Starter Pack flow is Sandbox-only: test payments do not charge real money. When available, the one-time US$5 test offer adds 100 distinct-video import registrations and 20 bounded learning sessions. Free estimated AI credit remains separate. The backend verifies the Stripe merchant, test mode, amount and payment state before granting allowance. Returning from Checkout does not itself grant anything.</p>
+  <p>The optional one-time US$5 Starter Pack adds 100 distinct-video import registrations and 20 bounded learning sessions when purchases are available. The account screen identifies the payment mode: live Checkout charges US$5 once; Sandbox Checkout is a test and charges no real money. Free estimated AI credit remains separate. The backend verifies the Stripe merchant, Sandbox or live mode, amount, payment state and account ownership before granting allowance. Returning from Checkout does not itself grant anything.</p>
   <p>Stripe handles payment details on its hosted checkout page. Delta stores keyed account identifiers, purchase/provider identifiers, payment state, numeric entitlements and capacity/usage accounting. Card numbers and payment credentials are not stored by Delta. Refunds or disputes suspend unused purchased allowance; saved local results remain accessible.</p>
   <p>With the operator-approved paid recovery design, a separate Firestore collection stores encrypted paid lesson/source and follow-up result capabilities. These account-bound recovery copies persist beyond seven days, until removed through an account-data request or the service is retired. They support recovery of an identical purchased request after a lost response or server restart. This is not a Google Drive integration or automatic cross-device library synchronisation. Free-result content continues to use the temporary runtime cache described below. Numerical accounting can remain after content deletion to prevent duplicate fulfilment or allowance resets.</p>
   <h2>Backend processing and retention</h2>
@@ -48,7 +48,7 @@
     <li>Export a private local backup or PowerPoint before clearing site or extension data. Clearing that data removes local records and can be irreversible.</li>
     <li>Sign out to stop using the website under the current Google account. This does not reset used or reserved credit.</li>
   </ul>
-  <p>For account-data or privacy requests, contact the Delta operator through the channel that supplied this build. A public support contact and store listing have not yet been configured; do not send passwords, API keys, identity tokens or private learning backups. See <a href="/support.html">Help</a> for safe troubleshooting.</p>
+  <p>For privacy or account-data requests, email the Delta operator at <a href="mailto:info@vickyai.io">info@vickyai.io</a>. Identify the request and the account involved without sending passwords, API keys, identity tokens, card details or private learning backups. We may need to verify account ownership before acting on a request. Chrome Web Store distribution remains pending. See <a href="/support.html">Help</a> for safe troubleshooting.</p>
   <footer><a href="/support.html">Help and limitations</a><a href="https://policies.google.com/privacy" rel="noreferrer">Google Privacy Policy</a></footer>
 </main>
 </body>

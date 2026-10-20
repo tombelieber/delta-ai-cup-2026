@@ -32,9 +32,9 @@ Playback records are saved locally while recording is on; **Watching records & s
 
 **My map** groups selected video metadata. These title-based groups are not proof that the system has indexed full video content, that an imported video was watched in full, or that a skill was mastered. AI analysis is separately requested and can consume allowance.
 
-The optional Starter Pack checkout is **Sandbox-only in this pilot**. No purchase is required for the core review above, and Sandbox results do not establish real-money payment readiness. Do not use a real card or maintainer account for the review.
+No purchase is required for the core review above. The optional US$5 Starter Pack screen identifies LIVE or Sandbox mode; LIVE charges real money. Skip paid Checkout during review. Use official test cards only in an explicitly enabled Sandbox workflow, never in LIVE Checkout. Sandbox results do not establish real-money settlement readiness. Do not use a real card or maintainer account for the review.
 
-Privacy: <https://delta-assistant-613646062582.us-central1.run.app/privacy.html>. Help: <https://delta-assistant-613646062582.us-central1.run.app/support.html>. The operator must finalize the operational public support/privacy contact before submitting the listing. Do not send account tokens, browser cookies, caption backups or private viewing records in a support request.
+Privacy: <https://delta-assistant-613646062582.us-central1.run.app/privacy.html>. Help: <https://delta-assistant-613646062582.us-central1.run.app/support.html>. Support and privacy requests: <info@vickyai.io>, adopted and receipt confirmed by the operator on 21 October 2026. Chrome Web Store's separate publisher/contact verification remains pending. Do not send account tokens, browser cookies, caption backups or private viewing records in a support request.
 
 ## Package and evidence
 
