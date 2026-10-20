@@ -2,6 +2,8 @@
 
 Dates use Asia/Hong_Kong. This records actual native dashboard setup and readback, not submission, approval or a signed-store installation. It supersedes the earlier scripting-only blocker in the [preparation report](store-preparation-2026-10-21.md).
 
+**Later checkpoint:** all three certifications were saved and the item was submitted with automatic publication disabled. Google now shows Pending review; see the [submission receipt](store-submission-2026-10-21.md). The draft-only observations below are preserved as the earlier checkpoint.
+
 ## Verified dashboard state
 
 | Area | Saved or observed result |

@@ -2,6 +2,8 @@
 
 Prepared for pilot **0.7.3**, 20 October 2026. These instructions describe the actual native-extension and hosted-learning path; they do not assert that a listing has been approved. No maintainer password, token, API key, private history or payment is required.
 
+Store item `kdbehbeeeknnpalapjplhindhepagdoe` was submitted on 21 October and is Pending review, with automatic publication disabled. See the [submission receipt](../verification/store-submission-2026-10-21.md); approval and signed-store installation remain separate steps.
+
 ## Entry and account
 
 Product homepage: <https://delta-511903.web.app/>. Learning website: <https://delta-assistant-613646062582.us-central1.run.app/learn?study=1>.
