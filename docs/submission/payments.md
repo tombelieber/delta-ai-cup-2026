@@ -6,7 +6,11 @@ The Starter Pack is a **one-time US$5 purchase**, with 100 additional distinct-v
 
 The account screen is authoritative about availability and labels **Sandbox** or **live**. Code supporting live mode is not proof that a merchant has been activated or a real payment has passed qualification. Sandbox purchases remain restricted to approved test accounts, even when a live merchant is configured. No test payment is treated as a real payment.
 
-**Qualification status, 20 October 2026:** the isolated payment patch is source-tested and packaged, and the public pilot download is 0.7.3. The account holder completed the new merchant's Dashboard activation. Runtime credentials and real-provider payment/event qualification remain pending; the payment patch has not been promoted to the hosted backend. Dashboard activation alone does not establish API charging/payout readiness, live sales or Chrome Web Store distribution.
+**Qualification status, 20 October 2026 (Asia/Hong_Kong):** the payment runtime is deployed and the storefront uses the independent Delta LIVE merchant. Its own restricted key verified the exact merchant, live mode, charging and payout readiness. One unpaid LIVE Checkout was opened through the normal product entry point and independently verified as exactly USD500 cents, with no payment or charge. Existing purchased allowance, a retained Sandbox receipt and native PPTX download/open remained usable after cutover.
+
+The approved test account completed an actual Stripe Sandbox cancel/return, a declined payment and a successful manual capture. The successful order added exactly 100 imports and 20 sessions once; repeated reconciliation did not add more. Four Stripe-origin Sandbox events returned HTTP200. A misplaced Sandbox signing secret was corrected and the incorrect version disabled.
+
+**Actual LIVE capture, Stripe-origin LIVE delivery, live grant and refund/dispute outcomes remain unqualified until a legitimate transaction.** No real card or real payment was used in this verification. Sandbox results and synthetic signature-wiring checks are not represented as live settlement evidence. The downloadable extension remains an unpacked 0.7.3 pilot; it is not Chrome Web Store approval.
 
 ## Payment and delivery
 
