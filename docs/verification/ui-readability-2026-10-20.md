@@ -66,13 +66,13 @@ Before: implementation `358b905`, preceding the typography change. After: UI `b8
 
 ## Retained limits
 
-This updates the live website and published ZIP. It does not replace or reload an existing unpacked Chrome installation. The earlier native verification used the previous exact ZIP; the new ZIP has not been qualified as an installed native extension. No Chrome profile, local history or library was changed here. Native caption handoff remains under the separate functional verification task.
+The initial UI deployment updated the live website and published ZIP; it did not reload an existing unpacked Chrome installation. The later 0.7.1 manifest-version release retained the same eleven runtime/asset files, and its loaded version was confirmed by the user's Chrome screenshot. The [16:37 native accounting-path qualification](native-extension-pptx-2026-10-20.md#actual-caption-recovery-and-complete-accounting-path--20-october-1637-hong-kong) subsequently passed actual caption handoff through a newly generated lesson, exercise checks, a supported source answer, fresh PPTX save/open and reload persistence. This supersedes the earlier installed-extension/caption-pending limit for that sampled path. No Chrome profile storage was edited by this UI release.
 
-The user confirmed downloading and opening the prepared PPTX in the functional follow-up; that is user-assisted acceptance, not independent automated file inspection. Earlier intermittent Google sign-in reports remain unresolved at root-cause level. Real-money billing and Chrome Web Store approval are not enabled or claimed.
+The initial prepared-PPTX result was user-assisted acceptance. Later native verification independently checked the new 102,072-byte, seven-slide accounting deck's hash/CRC and actual Keynote opening. Earlier intermittent Google sign-in failures remain unresolved at root-cause level, and one broader source question returned a no-source fallback. Real-money billing, Chrome Web Store approval and production monitoring remain unqualified.
 
 ### Modern Web Guidance
 
 - **`typography`**: I used rem sizes, unitless line heights, bounded paragraphs and deliberate heading wrapping, then checked 200% text resizing: “Support user zoom preferences”.
 
 
-Latest functional follow-up: [Computer-native extension and actual PPTX save/open](native-extension-pptx-2026-10-20.md). It supersedes the earlier user-assisted-only PPTX limit. The user's later 20 October, 16:12 Hong Kong screenshot confirms Delta 0.7.1 loaded and enabled in Chrome; the caption-ingestion and intermittent-sign-in limits remain.
+Latest functional follow-up: [actual native captions through new PPTX output](native-extension-pptx-2026-10-20.md#actual-caption-recovery-and-complete-accounting-path--20-october-1637-hong-kong). Installed 0.7.1 passed the complete sampled accounting path. The earlier source-recall miss and unexplained intermittent sign-in failures remain; this is not universal video/model compatibility or commercial-launch clearance.
