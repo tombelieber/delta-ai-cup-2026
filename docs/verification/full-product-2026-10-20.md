@@ -1,8 +1,10 @@
 # Delta product qualification — 20 October 2026 (Hong Kong)
 
-Status: the public Sandbox pilot is available. This is not an all-features or commercial-launch clearance. Native installed-extension completion, the OS-native PPTX save/open step and intermittent sign-in reports remain explicitly unqualified below.
+Status: the public Sandbox pilot is available. This is not an all-features or commercial-launch clearance. Native installed-extension completion and intermittent sign-in reports remain explicitly unqualified below. The user subsequently confirmed successful native PPTX download and opening; this is user-assisted evidence, distinct from automated filesystem capture.
 
-## Exact candidate
+The later [UI readability release](ui-readability-2026-10-20.md) is the current website/ZIP distribution. The candidate below is the retained functional baseline, not the current image or ZIP.
+
+## Exact candidate — functional baseline
 
 - Implementation: `2b9a38e7638965161e10508305285ff0cc1261d6`; public source equivalent: `33e8e65`.
 - Cloud Run: `delta-assistant-verify-final-2b9a`, 100% traffic, no test tags.
@@ -23,8 +25,8 @@ Status: the public Sandbox pilot is available. This is not an all-features or co
 | Sandbox purchase | Actual hosted Checkout cancel, decline, successful test card, signed webhook grant and duplicate reconciliation | Passed in `vic-ai-mvp Sandbox`; see the linked payment report. Real-money payments remain disabled |
 | Learning/practice | Existing four-topic real-AI results retained; an actual generated SUMIF exercise returns matching-key feedback through the deployed UI | Passed for these sources; answer-key agreement is not independent accuracy or learning-effectiveness evidence |
 | Source recall | Live saved-source question returns 200 and two timestamped source links | Passed for the sampled question; selected source context is sent to Gemini |
-| PPTX | Authenticated preparation and binary response return 200 with the PowerPoint MIME type | Transport passed. Browser automation did not expose a completed Blob download and no matching native Downloads file was found; OS save/open remains unqualified |
-| Extension | Exact hosted ZIP passes CRC, manifest and digest checks; real YouTube shows the installed Learn with Delta entry | Package/entry proved. Current exact package reload, native side-panel completion and native caption handoff are not qualified by this run |
+| PPTX | Authenticated preparation/binary response return 200 with the PowerPoint MIME type; the user subsequently confirmed downloading and opening the prepared file | User-assisted native save/open passed. Automated Blob download capture and independent location/inspection of the newly saved file remain unavailable |
+| Extension | Exact hosted ZIP passes CRC, manifest and digest checks. The previously used unpacked folder had stale background/panel files despite the same 0.7.0 version; it was backed up and replaced with the exact 12-file qualified ZIP at the same path | Package files now match. Chrome Reload, confirmation of the active loaded path, native side-panel completion and caption handoff still need native observation. Earlier in-page entry evidence does not prove the updated package is running |
 | Anonymous and hostile access | Anonymous session/entitlements return 401; private environment/source paths return 404; cross-origin and invalid ownership/signature cases covered by container and server tests | Observed and deterministic boundary checks passed; not a claim of exhaustive penetration testing |
 
 ## Fixes shipped during verification
@@ -53,13 +55,20 @@ The previous test commands omitted the website Map adapter suite. `pnpm test` no
 
 The server inputs are byte-identical to the previously qualified payment candidate. Existing real Sandbox payment and four-topic generation receipts remain applicable; this run did not create another purchase just to repeat those results. The new UI and Map wiring were separately tested on the canonical live origin.
 
+## Native verification follow-up — 20 October, 13:34 Hong Kong
+
+The historical unpacked installation folder did not match the published ZIP, even though both manifests said 0.7.0. Its old background omitted the import-admission dependency passed to both history handlers in the qualified source. This was functional package drift, not merely styling. The complete previous folder was backed up, the same folder path was retained, and all 12 replacement files were verified against ZIP SHA-256 `6a0e12e3192495f10968d1f3705016887837b53aecf5777f3bd9b2062e2289e6`. No Chrome profile, library, history, quota or account data was modified. The historical path is not itself proof of the path Chrome currently loads; native Reload and path confirmation are still pending.
+
+A read-only source review found no deterministic PPTX Blob-link defect. Four focused offline contract checks passed for bearer-authenticated Blob bytes, ticket expiry/binary output, native caption handoff and the website nonce bridge. A successful transport or mocked contract remains distinct from an actual OS save/open. The signed-in existing SUMIF lesson exposed its ready Save link without another AI request. The user then explicitly reported successful download and opening. The default Downloads filename scan did not locate a new file, so native completion is recorded as user-assisted acceptance rather than independent automated file inspection; a historical demo artifact with the same filename was excluded from current evidence.
+
+The learning suggestion is intentionally hidden for dismissed/enrolled videos (`extension/contextual-learning.js`); its absence on an already-used YouTube source is not sufficient evidence that the extension failed to load. The toolbar side-panel entry remains the required control for that case. The user confirmed that the reloaded native side panel opens, but the hosted learning handoff has not yet completed; the next control is Learning lab → Learn current video. Hosted lessons are saved in the website library; automatic synchronization back to the extension library is not implemented and must not be claimed.
+
 ## Remaining launch qualifications
 
 1. Reproduce or resolve the reported intermittent Google spinner in the affected user's browser; two successful final runs establish recovery, not a proven root-cause fix.
-2. Load the exact latest extension package and complete native YouTube → side panel → learning → export. Browser automation policy blocks privileged extension management, so package proof does not substitute for this check.
-3. Save and open an actual PPTX with the native browser. A successful API transfer is insufficient proof of the final file operation.
-4. Live billing and extension-store distribution are not enabled or qualified. Sandbox results must not be presented as real-money readiness or store approval.
-5. Cloud Monitoring currently has no configured uptime checks or alert policies. The thread's sampled availability monitor is separate; full product telemetry is unqualified.
+2. Reload the prepared exact extension package, confirm Chrome uses that path, and complete native YouTube → side panel → learning → export. The old generated folder was backed up and updated without touching browser-local data. Browser automation policy blocks privileged extension management, so file proof does not substitute for Reload and native observation.
+3. Live billing and extension-store distribution are not enabled or qualified. Sandbox results must not be presented as real-money readiness or store approval.
+4. Cloud Monitoring currently has no configured uptime checks or alert policies. The thread's sampled availability monitor is separate; full product telemetry is unqualified.
 
 The bounded source-security review covered authentication, ownership, metering, import admission, Stripe reconciliation and untrusted-source/output boundaries. It recorded no confirmed exploitable finding in those reviewed paths, but coverage was partial: remaining legacy provider implementations and all test fixtures were not exhaustively reviewed. Do not describe it as a complete security audit.
 
