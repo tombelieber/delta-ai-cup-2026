@@ -30,7 +30,7 @@ export default function StudyPurchase({auth,state,endpoint=''}){
     <p className="study-budget-note">Paid lesson and follow-up recovery copies are encrypted on the server and retained for your account beyond seven days. Your browser library stays on this device. See <a href="/privacy.html" target="_blank" rel="noreferrer">privacy and data controls</a>.</p>
     <p className="study-budget-note">Capacity is checked before capture. Failed generation restores the session unit; provider costs still count. Saved results, practice and exports remain available after allowance runs out.</p>
     {enabled&&<button type="button" disabled={busy} onClick={()=>perform(false)}>{busy?'Checking purchase…':purchase?.status==='created'?'Continue Sandbox checkout':purchase?.status==='granted'?'Buy another Sandbox pack':'Try US$5 Sandbox checkout'}</button>}
-    {orderId&&<button type="button" disabled={busy||!enabled} onClick={()=>perform(true)}>Check this purchase</button>}
+    {orderId&&<button type="button" disabled={busy} onClick={()=>perform(true)}>Check this purchase</button>}
     {(purchase||returned)&&<p role="status">{purchase?.status==='granted'?'Payment verified. Your purchased allowance is ready.':purchase?.status==='refunded'?'Refund or dispute confirmed. Unused purchased allowance is suspended.':purchase?.status==='canceled'?'This purchase was canceled. No allowance was added.':'Purchase confirmation pending. Returning from checkout alone does not add allowance.'}</p>}
     {error&&<p role="alert" className="study-account-error">{error}</p>}
   </details>;
