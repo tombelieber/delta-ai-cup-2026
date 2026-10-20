@@ -1,6 +1,6 @@
 # Delta product qualification — 20 October 2026 (Hong Kong)
 
-Status: the public Sandbox pilot is available. This is not all-features or commercial-launch clearance. The later [Computer-native verification](native-extension-pptx-2026-10-20.md) completed side-panel → selected-video website → sign-in → saved lesson → actual PPTX save/open. The user's later screenshot confirms 0.7.1 enabled in Chrome. Automatic YouTube caption capture and intermittent fresh sign-in reliability remain unqualified.
+Status: the public Sandbox pilot is available. This is not all-features or commercial-launch clearance. The later [Computer-native verification](native-extension-pptx-2026-10-20.md) completed side-panel → selected-video website → sign-in → saved lesson → actual PPTX save/open. The user's later screenshot confirms 0.7.1 enabled in Chrome. The later accounting run qualified actual native caption capture, new generation, two exercise checks, sourced recall and a fresh PPTX save/open. Earlier intermittent sign-in failures remain unexplained, and one broader recall question returned no sources.
 
 The later [UI readability release](ui-readability-2026-10-20.md) is the current website/ZIP distribution. The candidate below is the retained functional baseline, not the current image or ZIP.
 
@@ -24,9 +24,9 @@ The later [UI readability release](ui-readability-2026-10-20.md) is the current 
 | Map persistence/navigation | Reload preserves records and reviewed state; topic list renders 12 rows, expands to 24, resets to 12 on sort change; selected SUMIF record routes to its learning page | Live controls passed; no new personal history was imported for this check |
 | Sandbox purchase | Actual hosted Checkout cancel, decline, successful test card, signed webhook grant and duplicate reconciliation | Passed in `vic-ai-mvp Sandbox`; see the linked payment report. Real-money payments remain disabled |
 | Learning/practice | Existing four-topic real-AI results retained; an actual generated SUMIF exercise returns matching-key feedback through the deployed UI | Passed for these sources; answer-key agreement is not independent accuracy or learning-effectiveness evidence |
-| Source recall | Live saved-source question returns 200 and two timestamped source links | Passed for the sampled question; selected source context is sent to Gemini |
-| PPTX | Computer completed Chrome Save As, verified a 101,330-byte / seven-slide PPTX on disk, then opened it in Keynote | Native save/open passed; see the newer native report and rendered capture |
-| Extension | Computer operated the native side panel and opened the correct selected-video website; the current 0.7.1 files were staged and verified | Native handoff passed with an explicit missing-captions fallback. The user's later screenshot confirms 0.7.1 loaded and enabled; successful caption ingestion remains unobserved |
+| Source recall | Earlier saved-source check passed; the later native accounting lesson returned no sources for one broader question, then answered a narrower comparison with two timestamped links | Sampled supported answer passed; retain the first miss as a quality limit, not a successful answer |
+| PPTX | Computer saved/opened the earlier 101,330-byte SUMIF deck and a fresh 102,072-byte native-caption accounting deck; both contain seven slides and passed ZIP checks | Native save/open passed for both actual files; reviewed Keynote captures are in the native report |
+| Extension | Installed 0.7.1 opened the correct accounting-video website with actual 0:00–5:00 captions, fresh Google sign-in and a new Gemini lesson | The sampled native caption/generation/practice/recall/export path passed; earlier caption-loading fallbacks are retained as historical evidence |
 | Anonymous and hostile access | Anonymous session/entitlements return 401; private environment/source paths return 404; cross-origin and invalid ownership/signature cases covered by container and server tests | Observed and deterministic boundary checks passed; not a claim of exhaustive penetration testing |
 
 ## Fixes shipped during verification
@@ -68,9 +68,10 @@ The learning suggestion is intentionally hidden for dismissed/enrolled videos (`
 ## Remaining launch qualifications
 
 1. Reproduce or resolve the reported intermittent Google spinner in the affected user's browser; two successful final runs establish recovery, not a proven root-cause fix.
-2. Qualify actual YouTube caption capture. The user's later screenshot confirms Chrome loaded 0.7.1 with its toggle enabled. Native side-panel → website → sign-in → saved lesson → PPTX save/open is proved, but the sampled transcript stayed on a YouTube spinner. Computer could operate native Chrome controls; its initial final-manager observation timed out, and the later user screenshot resolves the installed-version limit.
-3. Live billing and extension-store distribution are not enabled or qualified. Sandbox results must not be presented as real-money readiness or store approval.
-4. Cloud Monitoring currently has no configured uptime checks or alert policies. The thread's sampled availability monitor is separate; full product telemetry is unqualified.
+2. Live billing and extension-store distribution are not enabled or qualified. Sandbox results must not be presented as real-money readiness or store approval.
+3. Cloud Monitoring currently has no configured uptime checks or alert policies. The thread's sampled availability monitor is separate; full product telemetry is unqualified.
+
+The 16:37 native accounting follow-up resolved the pending actual-caption qualification for one real source. Its generation estimate was US$0.0142; the cumulative session estimate was US$0.0221 after two questions, including the no-source result. Reopening retained the new lesson and both exercise-key matches. This does not establish all-video compatibility or universal answer quality; captions and the five-minute excerpt limit remain required.
 
 The bounded source-security review covered authentication, ownership, metering, import admission, Stripe reconciliation and untrusted-source/output boundaries. It recorded no confirmed exploitable finding in those reviewed paths, but coverage was partial: remaining legacy provider implementations and all test fixtures were not exhaustively reviewed. Do not describe it as a complete security audit.
 
