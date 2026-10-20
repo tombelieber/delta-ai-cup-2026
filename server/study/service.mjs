@@ -7,6 +7,7 @@ import {studyPptx} from './pptx.mjs';
 import {createStudyAccess,studySigningKey} from './access.mjs';
 import {sanitizeStudyDiagnostics} from './diagnostics.mjs';
 import {PROJECT_BUDGET_ENFORCED} from './project-budget.mjs';
+import {retrieveStudyContext} from './retrieval.mjs';
 
 export function createStudyService({directory,sources=[],provider,userQuota,paidUsage,env=process.env,now=Date.now}={}){
   requireStudy(env.GEMINI_PAID_BUDGET_APPROVED !== 'true' || env.STUDY_ACCESS_MODE === 'google'
@@ -111,15 +112,10 @@ export function createStudyService({directory,sources=[],provider,userQuota,paid
         sourceUrl:`${lesson.source.videoUrl}&t=${task.sourceTime}s`,method:'ai-authored-key-match',checkedAt:new Date(now()).toISOString()};
       return {...feedback,feedbackToken:state.seal({id:`attempt:${randomUUID()}`,...(uid?{ownerUid:uid}:{}),feedback})};},
     async ask(input,context){const uid=principalUid(context),primary=openOwned(input.lessonToken,uid);requireStudy(typeof input.question==='string'&&input.question.trim()&&input.question.length<=500,'invalid_question');
-      const lessons=[primary,...memoryLessons(input.memory,uid)].filter((l,i,all)=>all.findIndex(x=>x.id===l.id)===i);
       // Retrieval happens over the caller's supplied saved capabilities. There
-      // is no server-wide private library or caller-chosen cloud store.
-      const terms=input.question.toLocaleLowerCase().match(/[\p{L}\p{N}]{2,}/gu)||[];
-      const ranked=lessons.flatMap(l=>l.source.anchors.map(a=>({videoId:l.source.videoId,title:l.source.title,...a,
-        score:terms.filter(t=>`${a.text} ${l.concepts.map(c=>c.label).join(' ')}`.toLocaleLowerCase().includes(t)).length})))
-        .sort((a,b)=>b.score-a.score||a.videoId.localeCompare(b.videoId)||a.start-b.start);
-      const memories=[];let size=0;
-      for(const a of ranked){if(memories.length>=16||size+a.text.length>14000)continue;memories.push({videoId:a.videoId,title:a.title,anchorId:a.id,text:a.text});size+=a.text.length;}
+      // is no server-wide private library or caller-chosen cloud store. Resolve
+      // citations against the same canonical versions used for caption recall.
+      const {memories,sources:recallSources}=retrieveStudyContext({question:input.question,primary,memory:memoryLessons(input.memory,uid)});
       return exclusive(primary.costKey,async()=>{
         requireStudy(access.mode!=='guarded'||await state.read(primary.costKey,'cost'),'session_budget_unavailable',409,
           'This session’s cost receipt is unavailable. Saved lessons, practice and exports remain available.');
@@ -131,7 +127,7 @@ export function createStudyService({directory,sources=[],provider,userQuota,paid
         requireStudy(typeof answer?.answer==='string'&&answer.answer.trim()&&answer.answer.length<=3000,'invalid_provider_output',502);
         const allowed=new Set(memories.map(m=>`${m.videoId}:${m.anchorId}`));
         requireStudy(Array.isArray(answer.citations)&&answer.citations.every(c=>allowed.has(`${c.videoId}:${c.anchorId}`)),'invalid_citation',502);
-        const citations=answer.citations.length?resolveStudyCitations(answer.citations,lessons.map(l=>l.source)):[];
+        const citations=answer.citations.length?resolveStudyCitations(answer.citations,recallSources):[];
         const response={answer:citations.length?answer.answer:'I could not find that in your saved learning sources.',citations,method:'local-caption-retrieval-gemini',cost:await budget.value()};
         if(questionId)await paidUsage.finishQuestion(uid,primary.costKey,questionId,state.seal({id:`answer:${randomUUID()}`,ownerUid:uid,answer:response}));
         return response;

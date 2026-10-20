@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useEffect,useState} from 'react';
 import StudyImportAllowance from './StudyImportAllowance.jsx';
 import StudyPurchase from './StudyPurchase.jsx';
 import {studyAuthMessage} from './study-auth.mjs';
@@ -6,6 +6,9 @@ import {purchaseFromSearch} from './study-purchase.mjs';
 
 export default function StudyAccount({auth,state,endpoint=''}){
   const [working,setWorking]=useState(false),[error,setError]=useState('');
+  // A late, server-verified SDK completion can recover after the popup deadline.
+  // Do not leave the old attempt's timeout over the recovered account.
+  useEffect(()=>{if(state.status==='signed-in'&&state.quota)setError('');},[state.status,state.quota,state.user?.uid]);
   if(state.status==='local')return null;
   async function perform(action){if(working)return;setWorking(true);setError('');try{await action();}catch(value){setError(studyAuthMessage(value));}finally{setWorking(false);}}
   const loading=['loading','verifying'].includes(state.status),quota=state.quota;
