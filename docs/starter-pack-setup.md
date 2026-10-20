@@ -15,3 +15,10 @@ Paid recovery content is retained encrypted beyond seven days under the owner-ap
 See [local verification and screenshots](verification/starter-pack-payments.md) for tested boundaries and known gaps. Restrict Sandbox sales to the named test users: publicly usable test cards must not unlock real AI capacity for arbitrary accounts. Public users retain the existing free allowance and saved-content paths.
 
 See the [20 October deployed Sandbox qualification](verification/starter-pack-sandbox-2026-10-20.md) for the exact image, real Checkout/webhook results, paid-session cost and remaining qualification limits.
+
+
+### Web Map verification gate
+
+Run `pnpm test` (server, extension, Web Map adapter and packaging tests), then `pnpm build` and `pnpm build:extension` before preparing a release candidate. `test:server` alone does not exercise the website Map adapter.
+
+Website imports register selected video IDs against the authenticated import allowance before committing new local metadata. Analyze also registers older local records before classification. Metadata files remain limited to 100 records per import; the local accumulated library uses the existing server entitlement ceiling of 3,210 records. A purchased account can explicitly select its Starter Pack classification allocation without spending a learning session. Account changes and failed admission must preserve previous local records.
