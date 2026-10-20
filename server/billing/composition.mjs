@@ -13,7 +13,7 @@ export function attachStudyBilling(accounts,{firestore,key,env,now=Date.now}){
   accounts.paidUsage=createPaidUsage({store,key,now});
   try{
     const config=stripeSandboxConfig(env);
-    if(config)accounts.billing=createStarterPackService({testUids:config.testUids,ledger:createPurchaseLedger({store,key,merchantId:config.merchantId,now}),provider:createStripeProvider(config)});
+    if(config)accounts.billing=createStarterPackService({testUids:config.testUids,salesPaused:config.salesPaused,ledger:createPurchaseLedger({store,key,merchantId:config.merchantId,now}),provider:createStripeProvider(config)});
   }catch{accounts.billing=null;}
   return accounts;
 }

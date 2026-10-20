@@ -33,3 +33,10 @@ test('provider failures retain safe correlation and type without exposing keys, 
   await assert.rejects(provider.createCheckout({}),e=>e.code==='payment_provider_unavailable'&&!e.message.includes('DO_NOT_DISCLOSE'));
   assert.deepEqual(diagnostics,[{event:'delta_payment_provider_failure',step:'readiness',type:'StripeAuthenticationError',code:'account_invalid',httpStatus:401,requestId:'req_fixture'}]);
 });
+
+
+test('sales pause keeps valid provider configuration instead of disabling in-flight fulfillment',()=>{
+  const env={DELTA_STRIPE_ENABLED:'sandbox',DELTA_STRIPE_TEST_UIDS:'alice',DELTA_STRIPE_ACCOUNT_ID:'acct_1SRumIK2shGNs8tz',DELTA_STRIPE_RESTRICTED_KEY:'rk_test_fixture',DELTA_STRIPE_WEBHOOK_SECRET:'whsec_fixture',STUDY_ORIGIN:config.origin};
+  assert.equal(stripeSandboxConfig(env).salesPaused,false);
+  assert.equal(stripeSandboxConfig({...env,DELTA_STRIPE_SALES_PAUSED:'true'}).salesPaused,true);
+});

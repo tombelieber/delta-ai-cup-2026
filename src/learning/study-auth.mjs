@@ -1,4 +1,5 @@
 import {createStudyClient,studyVideoId} from './study-client.mjs';
+import {readStudyAuthConfig} from './study-auth-config.mjs';
 
 async function loadFirebaseSDK(){
   // The extension build removes this branch and the web-only popup SDK entirely.
@@ -24,7 +25,7 @@ export function createStudyAuth({endpoint='',fetchImpl=globalThis.fetch,mockSDK=
   const native=location?.protocol==='chrome-extension:'||(typeof __DELTA_EXTENSION__!=='undefined'&&__DELTA_EXTENSION__);
   let webUrl='';try{const url=new URL('/learn?study=1',origin||location?.origin),videoId=studyVideoId(sourceVideo);if(videoId)url.searchParams.set('videoId',videoId);if(['https:','http:'].includes(url.protocol))webUrl=url.href;}catch{}
   let state={status:'loading',enabled:null,user:null,quota:null,limitUsd:null,error:'',webUrl,needsSignIn:false,entitlements:null,importsStatus:'idle'};
-  let initialization=null,sdk=null,firebaseAuth=null,stopObserver=null,revision=0,lifecycle=0,allowedUid='',sessionRequest=null,entitlementRevision=0;
+  let initialization=null,configurationController=null,sdk=null,firebaseAuth=null,stopObserver=null,revision=0,lifecycle=0,allowedUid='',sessionRequest=null,entitlementRevision=0;
   const publish=next=>{state={...state,...next};for(const listener of listeners)listener(state);};
   const failChanged=()=>Object.assign(Error('Your Google account changed. Sign in to continue.'),{code:'study_auth_required'});
 
@@ -75,10 +76,10 @@ export function createStudyAuth({endpoint='',fetchImpl=globalThis.fetch,mockSDK=
     if(initialization)return initialization;
     const serial=++revision,instance=++lifecycle;publish({status:'loading',user:null,quota:null,error:'',needsSignIn:false});
     const promise=(async()=>{
+      const controller=new AbortController();configurationController=controller;
       try{
         let config=authConfig;
-        if(!config){const response=await fetchImpl(`${origin}/api/study/auth-config`,{method:'GET',credentials:'omit',redirect:'error',cache:'no-store',signal:AbortSignal.timeout(15000)});
-          if(!response.ok)throw Error('Authentication configuration unavailable.');config=await response.json();}
+        if(!config)config=await readStudyAuthConfig({endpoint:origin,fetchImpl,signal:controller.signal});
         if(serial!==revision)return;
         if(config?.enabled===false){publish({status:'local',enabled:false});return;}
         if(config?.enabled!==true||!config.firebase||!['apiKey','authDomain','projectId','appId'].every(key=>typeof config.firebase[key]==='string'&&config.firebase[key])||!Number.isFinite(config.limitUsd)||config.limitUsd<=0)throw Error('Authentication configuration incomplete.');
@@ -89,6 +90,7 @@ export function createStudyAuth({endpoint='',fetchImpl=globalThis.fetch,mockSDK=
         firebaseAuth=sdk.initializeAuth(app,{persistence:sdk.browserSessionPersistence,popupRedirectResolver:sdk.browserPopupRedirectResolver});
         await new Promise(resolve=>{stopObserver=sdk.onAuthStateChanged(firebaseAuth,user=>{if(instance!==lifecycle){resolve();return;}void observeUser(user).finally(resolve);},()=>{if(instance===lifecycle)publish({status:'error',user:null,quota:null,error:'Google sign-in could not be opened. Try again.'});resolve();});});
       }catch(error){if(serial===revision)publish(native&&webUrl?{status:'web-required',user:null,quota:null,error:''}:{status:'error',user:null,quota:null,error:studyAuthMessage(error)});}
+      finally{if(configurationController===controller)configurationController=null;}
     })();
     initialization=promise;await promise;
     if(state.status==='error'&&initialization===promise)initialization=null;
@@ -106,6 +108,6 @@ export function createStudyAuth({endpoint='',fetchImpl=globalThis.fetch,mockSDK=
       await refreshSession();
     },
     async signOut(){publish({entitlements:null,importsStatus:'idle'});revision++;allowedUid='';sessionRequest=null;publish({status:'signed-out',user:null,quota:null,error:'',needsSignIn:false});await sdk.signOut(firebaseAuth);},
-    dispose(){revision++;lifecycle++;allowedUid='';stopObserver?.();stopObserver=null;initialization=null;sessionRequest=null;state={...state,status:'loading',user:null,quota:null,entitlements:null,importsStatus:'idle'};},
+    dispose(){revision++;lifecycle++;configurationController?.abort();configurationController=null;allowedUid='';stopObserver?.();stopObserver=null;initialization=null;sessionRequest=null;state={...state,status:'loading',user:null,quota:null,entitlements:null,importsStatus:'idle'};},
   };
 }

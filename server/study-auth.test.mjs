@@ -103,3 +103,19 @@ test('older balance reads cannot overwrite a newer same-account balance',async()
   await auth.initialize();const first=auth.refreshEntitlements();await new Promise(resolve=>setImmediate(resolve));const second=auth.refreshEntitlements();await new Promise(resolve=>setImmediate(resolve));
   replies[1](10);await second;replies[0](0);await first;assert.equal(auth.snapshot().entitlements.imports.remaining,0);auth.dispose();
 });
+
+test('real auth initialization recovers from a transient public configuration failure',async()=>{
+  const fixture=sdkFixture(user('alice'));let reads=0;
+  const auth=createStudyAuth({mockSDK:fixture.sdk,fetchImpl:(url,init)=>{
+    if(url.endsWith('/auth-config')&&++reads===1)return Promise.resolve(new Response('',{status:503}));
+    return transport()(url,init);
+  }});
+  await auth.initialize();assert.equal(reads,2);assert.equal(auth.snapshot().status,'signed-in');auth.dispose();
+});
+
+test('disposing auth cancels pending bootstrap without exposing a user or starting Firebase',async()=>{
+  let signal,loaded=0;
+  const auth=createStudyAuth({fetchImpl:async(_url,init)=>{signal=init.signal;return new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(signal.reason),{once:true}));},loadSDK:async()=>{loaded++;}});
+  const pending=auth.initialize();auth.dispose();await pending;
+  assert.equal(signal.aborted,true);assert.equal(loaded,0);assert.equal(auth.snapshot().user,null);assert.equal(auth.snapshot().status,'loading');
+});

@@ -11,7 +11,7 @@ export function stripeSandboxConfig(env=process.env){
   requireStudy(testUids.length>0&&testUids.length<=20&&testUids.every(v=>v.length<=128&&!/[\u0000-\u0020\u007f]/.test(v)),'billing_configuration_invalid',503);
   let url;try{url=new URL(origin);}catch{}
   requireStudy(url&&url.origin===origin&&(url.protocol==='https:'||url.protocol==='http:'&&['127.0.0.1','localhost'].includes(url.hostname)),'billing_configuration_invalid',503);
-  return {merchantId,apiKey,webhookSecret,origin,testUids:[...new Set(testUids)],livemode:false};
+  return {merchantId,apiKey,webhookSecret,origin,testUids:[...new Set(testUids)],salesPaused:env.DELTA_STRIPE_SALES_PAUSED==='true',livemode:false};
 }
 export function checkoutParameters(order,config){
   const suffix=order.id.replaceAll('-','').slice(0,8).replace(/[0-9a-f]/g,c=>String.fromCharCode(97+parseInt(c,16)));

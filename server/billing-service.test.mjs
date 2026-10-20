@@ -3,7 +3,7 @@ import {createStarterPackService} from './billing/service.mjs';import {createPur
 import {memoryStore} from './billing-test-support.mjs';
 const id='00000000-0000-4000-8000-000000000001';
 function fixture(){const store=memoryStore(),ledger=createPurchaseLedger({store,key:Buffer.alloc(32,7),merchantId:'acct_fixture',now:()=>1000,newId:()=>id});let payment,captures=0,cancels=0,lost=false;const provider={async createCheckout(order){payment={id:'cs_test_fixture',status:'open',livemode:false,amount:500,currency:'usd',userKey:order.userKey,orderId:order.id,pack:'delta-starter-v1',items:[{quantity:1,amount:500,currency:'usd',pack:'delta-starter-v1'}],intent:null};return {id:payment.id,url:'https://checkout.stripe.com/c/pay/cs_test_fixture',expiresAt:2000};},read:async()=>structuredClone(payment),async capture(){assert.equal(store.records.get(STUDY_PROJECT_BUDGET_PATH).reservedMicros,2500000);captures++;payment.intent.status='succeeded';payment.intent.received=500;payment.intent.capturable=0;if(lost)throw Error('response lost');},async cancel(){cancels++;payment.intent.status='canceled';},event:raw=>JSON.parse(raw)};
- const service=createStarterPackService({ledger,provider,testUids:['alice']});return {service,ledger,store,get payment(){return payment;},get captures(){return captures;},get cancels(){return cancels;},lose(){lost=true;},authorize(){payment.status='complete';payment.intent={id:'pi_fixture',status:'requires_capture',livemode:false,amount:500,received:0,capturable:500,currency:'usd',captureMethod:'manual',orderId:id,refunded:0,disputed:false,card:true};}};}
+ const service=createStarterPackService({ledger,provider,testUids:['alice']});return {service,ledger,store,provider,get payment(){return payment;},get captures(){return captures;},get cancels(){return cancels;},lose(){lost=true;},authorize(){payment.status='complete';payment.intent={id:'pi_fixture',status:'requires_capture',livemode:false,amount:500,received:0,capturable:500,currency:'usd',captureMethod:'manual',orderId:id,refunded:0,disputed:false,card:true};}};}
 async function open(f){return f.service.checkout('alice',{requestId:id});}
 test('success URL/order query does not grant; canonical authorization reserves then captures exactly once',async()=>{const f=fixture();await open(f);assert.equal((await f.service.reconcile(id,'alice')).granted,false);f.authorize();const a=await f.service.reconcile(id,'alice');assert.equal(a.granted,true);await f.service.reconcile(id,'alice');assert.equal(f.captures,1);assert.equal((await f.service.snapshot('alice')).sessions.remaining,20);});
 test('duplicate and reordered events cannot duplicate grant; wrong mode or totals cannot capture',async()=>{const f=fixture();await open(f);f.authorize();for(const mutate of [p=>p.livemode=true,p=>p.amount=1,p=>p.currency='eur',p=>p.items[0].quantity=2]){const saved=structuredClone(f.payment);mutate(f.payment);await assert.rejects(f.service.reconcile(id,'alice'),{code:'payment_mismatch'});Object.assign(f.payment,saved);}assert.equal(f.captures,0);
@@ -13,3 +13,24 @@ test('ambiguous capture retains capacity and canonical reconciliation recovers w
 test('refund/dispute retracts unused entitlements and cannot be reversed by an old success event',async()=>{const f=fixture();await open(f);f.authorize();await f.service.reconcile(id,'alice');f.payment.intent.refunded=500;await f.service.reconcile(id,'alice');assert.equal((await f.service.snapshot('alice')).sessions.remaining,0);await f.service.reconcile(id,'alice');assert.equal(f.store.records.get(STUDY_PROJECT_BUDGET_PATH).reservedMicros,0);});
 
 test('unapproved Sandbox users cannot open test-card checkouts or mint real AI allowance',async()=>{const f=fixture();await assert.rejects(f.service.checkout('bob',{requestId:id}),{code:'billing_test_account_required'});assert.equal(f.service.canPurchase('bob'),false);assert.equal(f.service.canPurchase('alice'),true);assert.equal([...f.store.records.keys()].filter(p=>p.startsWith('studyPurchases/')).length,0);});
+
+
+test('pausing new sales preserves signed fulfillment, reconciliation and granted entitlement reads',async()=>{
+  const f=fixture();await open(f);
+  const paused=createStarterPackService({ledger:f.ledger,provider:f.provider,testUids:['alice'],salesPaused:true});
+  assert.equal(paused.canPurchase('alice'),false);
+  await assert.rejects(paused.checkout('alice',{requestId:'00000000-0000-4000-8000-000000000002'}),{code:'billing_sales_paused'});
+  await assert.rejects(paused.checkout('bob',{requestId:id}),{code:'billing_test_account_required'});
+  assert.equal([...f.store.records.keys()].filter(p=>p.startsWith('studyPurchases/')).length,1);
+  f.authorize();
+  const event={id:'evt_fixture',livemode:false,type:'payment_intent.amount_capturable_updated',data:{object:{metadata:{delta_order_id:id}}}};
+  await paused.webhook(Buffer.from(JSON.stringify(event)));
+  assert.equal((await paused.reconcile(id,'alice')).granted,true);
+  assert.equal((await paused.snapshot('alice')).sessions.remaining,20);
+  assert.equal((await paused.snapshot('alice')).imports.remaining,100);
+  assert.equal(f.captures,1);
+  const resumed=createStarterPackService({ledger:f.ledger,provider:f.provider,testUids:['alice']});
+  assert.equal(resumed.canPurchase('alice'),true);
+  assert.equal((await resumed.reconcile(id,'alice')).granted,true);
+  assert.equal(f.captures,1);
+});

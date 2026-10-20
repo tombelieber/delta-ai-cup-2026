@@ -9,6 +9,7 @@ import StudyWorkspace from './StudyWorkspace.jsx';
 import HostedActionWorkspace from './HostedActionWorkspace.jsx';
 import WebMapWorkspace from './WebMapWorkspace.jsx';
 import { studySourceFromSearch } from './study-client.mjs';
+import { readStudyAuthConfig } from './study-auth-config.mjs';
 
 const KEY = 'delta-learning-live-v1';
 // Must match the server's reviewed-source contract; old model-timed lessons cannot be restored as current.
@@ -349,13 +350,11 @@ export default function LiveLearningApp(props) {
   useEffect(() => {
     if (legacy || study || hosted || webMap) return;
     let mounted = true;
-    const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 15000);
-    fetch('/api/study/auth-config', { method: 'GET', credentials: 'omit', redirect: 'error', cache: 'no-store', signal: controller.signal })
-      .then(async response => { if (!response.ok) throw Error('Learning service unavailable.'); const config = await response.json(); if (typeof config?.enabled !== 'boolean') throw Error('Learning service configuration incomplete.'); return config; })
+    const controller = new AbortController();
+    readStudyAuthConfig({signal: controller.signal})
       .then(config => { if (mounted) setEntry({ status: config.enabled ? 'study' : 'legacy', config }); })
-      .catch(() => { if (mounted) setEntry({ status: 'error', config: null }); })
-      .finally(() => clearTimeout(timeout));
-    return () => { mounted = false; clearTimeout(timeout); controller.abort(); };
+      .catch(() => { if (mounted) setEntry({ status: 'error', config: null }); });
+    return () => { mounted = false; controller.abort(); };
   }, [legacy, study, hosted, webMap]);
   const intro = <header className="dll-page-intro study-app-header"><div className="study-brand-group"><a className="dll-page-brand" href="/"><span className="study-brand-mark" aria-hidden="true">Δ</span><span>Delta</span></a><a className="study-app-section" href={labHref}>Learning lab</a><a className="study-app-section" href="/learn?map=1" aria-current={webMap ? 'page' : undefined}>My map</a></div><nav className="study-header-links" aria-label="Delta resources"><a href="#install-extension">Install pilot</a><a href="/privacy.html">Privacy</a><a href="/support.html">Support</a><details className="study-header-more"><summary>More</summary><div className="study-header-menu"><a href={labHref}>Learning lab</a><a href="/learn?map=1">My map</a><a href="/learn?legacy=1">View saved SUMIF</a></div></details></nav></header>;
   const install = <details id="install-extension" className="study-install"><summary>Install the unpacked Chrome pilot</summary><div className="study-install-content"><p className="study-install-note">Developer-mode pilot · install from the extracted ZIP. This is not a Chrome Web Store release.</p><a className="study-install-download" href="/downloads/Delta-Chrome-MVP-0.7.0.zip" download>Download Chrome pilot 0.7.0 <DownloadIcon width="14" height="14" /></a><ol><li>Download and unzip Delta Chrome pilot 0.7.0.</li><li>Open chrome://extensions, enable Developer mode, choose Load unpacked and select the extracted folder.</li><li>Open a YouTube teaching video and use Delta. Google sign-in and AI actions continue on the learning website.</li></ol></div></details>;

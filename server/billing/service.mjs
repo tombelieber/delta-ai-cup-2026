@@ -3,8 +3,8 @@ import {validId} from './policy.mjs';
 import {validateCanonicalPayment} from './stripe.mjs';
 const EVENTS=new Set(['checkout.session.completed','checkout.session.async_payment_succeeded','checkout.session.expired','payment_intent.amount_capturable_updated','payment_intent.succeeded','payment_intent.canceled','payment_intent.payment_failed','charge.refunded','charge.dispute.created','charge.dispute.funds_withdrawn']);
 
-export function createStarterPackService({ledger,provider,testUids=[]}){
-  const testers=new Set(testUids.map(uid=>ledger.keys.user(uid))),canPurchase=uid=>testers.has(ledger.keys.user(uid));
+export function createStarterPackService({ledger,provider,testUids=[],salesPaused=false}){
+  const testers=new Set(testUids.map(uid=>ledger.keys.user(uid))),canPurchase=uid=>!salesPaused&&testers.has(ledger.keys.user(uid));
   const locks=new Map();
   const serial=async(id,run)=>{const next=(locks.get(id)||Promise.resolve()).catch(()=>{}).then(run);locks.set(id,next);try{return await next;}finally{if(locks.get(id)===next)locks.delete(id);}};
   async function reconcile(id,uid){return serial(id,async()=>{
@@ -42,7 +42,7 @@ export function createStarterPackService({ledger,provider,testUids=[]}){
   });}
   return {
     canPurchase,snapshot:uid=>ledger.snapshot(uid),
-    async checkout(uid,input){requireStudy(canPurchase(uid),'billing_test_account_required',403,'Sandbox checkout is available only to approved test accounts.');requireStudy(input&&Object.keys(input).length===1&&validId(input.requestId),'invalid_purchase',400);
+    async checkout(uid,input){requireStudy(testers.has(ledger.keys.user(uid)),'billing_test_account_required',403,'Sandbox checkout is available only to approved test accounts.');requireStudy(!salesPaused,'billing_sales_paused',503,'New purchases are paused. Existing purchases and paid sessions remain available.');requireStudy(input&&Object.keys(input).length===1&&validId(input.requestId),'invalid_purchase',400);
       const order=await ledger.open(uid,input.requestId);if(order.checkoutId)return ledger.publicOrder(order);
       const checkout=await provider.createCheckout(order);return ledger.attach(order.id,checkout);},
     reconcile,
